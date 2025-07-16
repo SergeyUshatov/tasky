@@ -1,15 +1,58 @@
 [versions]
+# Project versions
+projectApplicationId = "com.sergius.tasky"
+projectVersionCode = "1"
+projectVersionName = "1.0.0"
+projectMinSdkVersion = "26"
+projectTargetSdkVersion = "36"
+projectCompileSdkVersion = "36"
+
 agp = "8.11.1"
-kotlin = "2.0.21"
+kotlin = "2.2.0"
+jetbrainsKotlinJvm = "2.2.0"
+ksp = "2.2.0-2.0.2"
+kotlin_serialization = "1.9.0"
 coreKtx = "1.16.0"
+androidTools = "31.11.1"
+lifecycleRuntimeKtx = "2.9.1"
+activityCompose = "1.10.1"
+composeBom = "2025.06.01"
+desugar_jdk_libs = "2.1.5"
+secretsPlugin = "2.0.1"
+
+timber = "5.0.1"
+room = "2.7.2"
+ktor = "3.2.2"
+
+# testing versions
+jacoco = "0.8.13"
+android_junit5 = "1.13.1.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.9.1"
-activityCompose = "1.10.1"
-composeBom = "2024.09.00"
 
 [libraries]
+# kror
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor" }
+
+kotlin-serialization-json = { group = 'org.jetbrains.kotlinx', name = 'kotlinx-serialization-json', version.ref = "kotlin_serialization" }
+
+# Logging
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+
+# Gradle
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
+
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -24,9 +67,45 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
+androidDynamicFeature = { id = "com.android.dynamic-feature", version.ref = "agp" }
+
+mapsplatform-secrets-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsPlugin" }
+
+android-junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "android_junit5" }
+jacoco = { id = "jacoco" }
+
+sergius-android-application = { id = "sergius.android.application" }
+sergius-android-application-compose = { id = "sergius.android.application.compose" }
+sergius-android-library = { id = "sergius.android.library" }
+sergius-android-library-compose = { id = "sergius.android.library.compose" }
+sergius-android-feature-ui = { id = "sergius.android.feature.ui" }
+sergius-android-room = { id = "sergius.android.room" }
+sergius-jvm-library = { id = "sergius.jvm.library" }
+sergius-jvm-ktor = { id = "sergius.jvm.ktor" }
+sergius-android-application-jacoco = { id = "sergius.android.application.jacoco" }
+sergius-android-library-jacoco = { id = "sergius.android.library.jacoco" }
+
+[bundles]
+ktor = [
+    "ktor-client-auth",
+    "ktor-client-cio",
+    "ktor-client-content-negotiation",
+    "ktor-client-core",
+    "ktor-client-logging",
+    "ktor-serialization-kotlinx-json"
+]
