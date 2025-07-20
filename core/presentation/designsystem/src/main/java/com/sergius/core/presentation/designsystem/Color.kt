@@ -1,0 +1,19 @@
+package com.sergius.core.presentation.designsystem
+
+import androidx.compose.ui.graphics.Color
+
+val TaskyWhite = Color(0xFFFFFFFF)
+val TaskyWhite10 = Color(0xFFF2F3F7)
+val TaskyBlack = Color(0xFF16161C)
+val TaskyBlack10 = Color(0xFF242428)
+val TaskyGreen = Color(0xFF52B28D)
+val TaskyLightGreen = Color(0xFFCAEF45)
+val TaskyDarkGreen = Color(0xFF258E66)
+val TaskyDarkGreen10 = Color(0xFF34A579)
+val TaskyYellow = Color(0xFFFDEFA8)
+val TaskyRed = Color(0xFFF34B51)
+val TaskyDarkRed = Color(0xFFF88084)
+val TaskyLightGrey = Color(0xFF9FA7B1)
+val TaskyDarkGrey = Color(0xFF656C79)
+val TaskyLightPurple = Color(0xFF8E97FD)
+val TaskyDarkPurple = Color(0xFFB1B8FE)
