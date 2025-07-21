@@ -1,6 +1,7 @@
 package com.sergius.tasky
 
 import android.app.Application
+import com.sergius.auth.presentation.di.authViewModelModule
 import com.sergius.tasky.di.appModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -23,6 +24,7 @@ class TaskyApp: Application() {
             androidContext(this@TaskyApp)
             modules(
                 appModule,
+                authViewModelModule,
             )
         }
     }

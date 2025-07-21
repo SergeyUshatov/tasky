@@ -8,6 +8,10 @@ val AppLogo: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.tasky_logo)
 
-val PasswordHidden: ImageVector
+val EyeClosed: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.eye_closed)
+
+val EyeOpened: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.eye_opened)

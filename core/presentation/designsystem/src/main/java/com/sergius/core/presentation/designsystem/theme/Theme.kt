@@ -13,7 +13,6 @@ import androidx.core.view.WindowCompat
 val LightColorScheme = lightColorScheme(
     primary = TaskyLightPrimary,
     onPrimary = TaskyLightOnPrimary,
-    background = TaskyBlack,
     onBackground = TaskyLightOnBackground,
     secondary = TaskyGreen,
     tertiary = TaskyLightGreen,
@@ -21,17 +20,21 @@ val LightColorScheme = lightColorScheme(
     surface = TaskyLightSurface,
     onSurface = TaskyLightOnSurface,
     onSurfaceVariant = TaskyLightOnSurfaceVariant,
+    surfaceContainerHigh = TaskyLightOnSurfaceHigh,
     error = TaskyRed,
     tertiaryContainer = TaskyLightPurple
 )
 
 val DarkColorScheme = darkColorScheme(
-    primary = TaskyBlack,
-    background = TaskyBlack,
+    primary = TaskyDarkPrimary,
+    onPrimary = TaskyDarkOnPrimary,
+    onBackground = TaskyDarkOnBackground,
+    surface = TaskyDarkSurface,
+    onSurfaceVariant = TaskyDarkOnSurfaceVariant,
+    surfaceContainerHigh = TaskyDarkOnSurfaceHigh,
+    onSurface = TaskyLightPrimary,
     secondary = TaskyGreen,
     tertiary = TaskyLightGreen,
-    secondaryContainer = TaskyBlack10,
-    onSurface = TaskyLightPrimary,
     error = TaskyDarkRed,
     tertiaryContainer = TaskyDarkPurple
 )
@@ -41,7 +44,8 @@ fun TaskyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val colorScheme = if (!darkTheme) DarkColorScheme else LightColorScheme
+    val typography = if (!darkTheme) DarkTypography else LightTypography
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -52,7 +56,7 @@ fun TaskyTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = LightTypography,
+        typography = typography,
         content = content
     )
 }
