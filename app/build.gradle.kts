@@ -11,6 +11,16 @@ android {
 
 dependencies {
     implementation(projects.core.presentation.designsystem)
+    implementation(projects.auth.presentation)
+
+    implementation(libs.bundles.koin)
+
+    // Logging
+    implementation(libs.timber)
+
+    implementation(libs.androidx.lifecycle.navigation3)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

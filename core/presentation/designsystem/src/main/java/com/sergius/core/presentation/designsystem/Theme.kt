@@ -1,6 +1,7 @@
 package com.sergius.core.presentation.designsystem
 
 import android.app.Activity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
@@ -10,7 +11,7 @@ import androidx.core.view.WindowCompat
 
 val LightColorScheme = darkColorScheme(
     primary = TaskyWhite,
-    background = TaskyWhite,
+    background = TaskyBlack,
     secondary = TaskyGreen,
     tertiary = TaskyLightGreen,
     primaryContainer = TaskyWhite,
@@ -32,8 +33,11 @@ val DarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun TaskyTheme(content: @Composable () -> Unit) {
-    val colorScheme = LightColorScheme
+fun TaskyTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
