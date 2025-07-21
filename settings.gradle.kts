@@ -26,3 +26,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "tasky"
 include(":app")
+include(":core:domain")
+include(":core:presentation:ui")
+include(":core:presentation:designsystem")
+include(":auth:presentation")
