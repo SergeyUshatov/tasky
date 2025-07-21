@@ -7,3 +7,7 @@ import androidx.compose.ui.res.vectorResource
 val AppLogo: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.tasky_logo)
+
+val PasswordHidden: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.eye_closed)

@@ -1,22 +1,26 @@
-package com.sergius.core.presentation.designsystem
+package com.sergius.core.presentation.designsystem.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-val LightColorScheme = darkColorScheme(
-    primary = TaskyWhite,
+val LightColorScheme = lightColorScheme(
+    primary = TaskyLightPrimary,
+    onPrimary = TaskyLightOnPrimary,
     background = TaskyBlack,
+    onBackground = TaskyLightOnBackground,
     secondary = TaskyGreen,
     tertiary = TaskyLightGreen,
-    primaryContainer = TaskyWhite,
-    secondaryContainer = TaskyWhite10,
-    onSurface = TaskyWhite,
+    primaryContainer = TaskyLightPrimary,
+    surface = TaskyLightSurface,
+    onSurface = TaskyLightOnSurface,
+    onSurfaceVariant = TaskyLightOnSurfaceVariant,
     error = TaskyRed,
     tertiaryContainer = TaskyLightPurple
 )
@@ -27,7 +31,7 @@ val DarkColorScheme = darkColorScheme(
     secondary = TaskyGreen,
     tertiary = TaskyLightGreen,
     secondaryContainer = TaskyBlack10,
-    onSurface = TaskyWhite,
+    onSurface = TaskyLightPrimary,
     error = TaskyDarkRed,
     tertiaryContainer = TaskyDarkPurple
 )
@@ -48,7 +52,7 @@ fun TaskyTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = LightTypography,
         content = content
     )
 }
