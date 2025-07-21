@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.sergius.core.presentation.designsystem.TaskyTheme
+import com.sergius.core.presentation.designsystem.theme.TaskyTheme
 import com.sergius.tasky.navigation.NavigationRoot
 
 class MainActivity : ComponentActivity() {

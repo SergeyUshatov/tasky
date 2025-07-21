@@ -1,11 +1,13 @@
-package com.sergius.core.presentation.designsystem
+package com.sergius.core.presentation.designsystem.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.sergius.core.presentation.designsystem.R
 
 val Inter = FontFamily(
     Font(
@@ -30,7 +32,7 @@ val Inter = FontFamily(
     ),
 )
 
-val Typography = Typography(
+val LightTypography = Typography(
     bodySmall = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Companion.Normal,
@@ -41,8 +43,10 @@ val Typography = Typography(
     bodyMedium = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Companion.Normal,
-        fontSize = 14.sp,
-        lineHeight = 22.sp,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 1.sp,
+        color = TaskyLightOnSurfaceVariant
     ),
     bodyLarge = TextStyle(
         fontFamily = Inter,
@@ -57,10 +61,19 @@ val Typography = Typography(
         fontSize = 14.sp,
         lineHeight = 24.sp,
     ),
-    headlineMedium = TextStyle(
+    labelSmall = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Companion.SemiBold,
-        fontSize = 24.sp,
-        color = TaskyWhite
+        fontStyle = FontStyle.Normal,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 1.sp,
+    ),
+    headlineMedium = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Companion.Bold,
+        fontSize = 28.sp,
+        lineHeight = 30.sp,
+        color = TaskyLightOnBackground
     ),
 )
