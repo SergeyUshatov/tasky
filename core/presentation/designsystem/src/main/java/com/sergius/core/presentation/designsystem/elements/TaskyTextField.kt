@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sergius.core.presentation.designsystem.theme.TaskyCheckIconColor
 import com.sergius.core.presentation.designsystem.theme.TaskyTheme
 
 @Composable
@@ -43,6 +44,7 @@ fun TaskyTextField(
     onFocusChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     endIcon: ImageVector? = null,
+    endIconTint: Color? = null,
     placeholder: String? = null,
     error: String? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -125,7 +127,7 @@ fun TaskyTextField(
                         Icon(
                             imageVector = endIcon,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            tint = endIconTint?: MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier
                                 .padding(end = 8.dp)
                         )
@@ -143,9 +145,10 @@ private fun RuniqueTextFieldPreview() {
         TaskyTextField(
             isFocused = false,
             onFocusChanged = {},
-            state = TextFieldState(),
+            state = TextFieldState("asdv"),
             error = "Invalid email address",
             endIcon = Icons.Default.Check,
+            endIconTint = TaskyCheckIconColor,
             placeholder = "example@test.com",
             modifier = Modifier
                 .fillMaxWidth()

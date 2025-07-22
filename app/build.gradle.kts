@@ -11,6 +11,7 @@ android {
 
 dependencies {
     implementation(projects.core.presentation.designsystem)
+    implementation(projects.auth.data)
     implementation(projects.auth.presentation)
 
     implementation(libs.bundles.koin)
