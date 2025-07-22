@@ -33,13 +33,6 @@ val Inter = FontFamily(
 )
 
 val LightTypography = Typography(
-    bodySmall = TextStyle(
-        fontFamily = Inter,
-        fontWeight = FontWeight.Companion.Normal,
-        fontSize = 12.sp,
-        lineHeight = 20.sp,
-        color = TaskyBlack
-    ),
     bodyMedium = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Companion.Normal,
@@ -55,11 +48,12 @@ val LightTypography = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp,
     ),
-    labelLarge = TextStyle(
+    labelMedium = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Companion.Normal,
-        fontSize = 14.sp,
+        fontSize = 16.sp,
         lineHeight = 24.sp,
+        color = TaskyLightOnPrimary
     ),
     labelSmall = TextStyle(
         fontFamily = Inter,
@@ -68,12 +62,47 @@ val LightTypography = Typography(
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 1.sp,
+        color = TaskyLightOnSurfaceVariant
     ),
-    headlineMedium = TextStyle(
+    headlineLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Companion.Bold,
         fontSize = 28.sp,
         lineHeight = 30.sp,
         color = TaskyLightOnBackground
+    ),
+)
+
+val DarkTypography = Typography(
+    bodyMedium = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Companion.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 1.sp,
+        color = TaskyDarkOnSurfaceVariant
+    ),
+    labelMedium = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Companion.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        color = TaskyDarkOnPrimary
+    ),
+    labelSmall = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Companion.SemiBold,
+        fontStyle = FontStyle.Normal,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 1.sp,
+        color = TaskyDarkOnSurfaceVariant
+    ),
+    headlineLarge = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Companion.Bold,
+        fontSize = 28.sp,
+        lineHeight = 30.sp,
+        color = TaskyDarkOnBackground
     ),
 )

@@ -1,4 +1,4 @@
-package com.sergius.auth.presentation
+package com.sergius.auth.presentation.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,28 +24,34 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sergius.core.presentation.designsystem.PasswordHidden
+import com.sergius.auth.presentation.R
 import com.sergius.core.presentation.designsystem.elements.TaskyActionButton
+import com.sergius.core.presentation.designsystem.elements.TaskyPasswordField
 import com.sergius.core.presentation.designsystem.elements.TaskyTextField
 import com.sergius.core.presentation.designsystem.theme.TaskyLightLink
 import com.sergius.core.presentation.designsystem.theme.TaskyTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SignInScreenRoot() {
+fun SignInScreenRoot(
+    onSignUpClick: () -> Unit,
+    viewModel: LoginViewModel = koinViewModel(),
+) {
     SignInScreen(
+        state = viewModel.state,
         onAction = { action ->
-            when (action) {
-                SignInScreenAction.OnLoginButtonClick -> {
-                }
-
-                SignInScreenAction.OnSignUpClick -> {}
+            when(action) {
+                is SignInScreenAction.OnSignUpClick -> onSignUpClick()
+                else -> Unit
             }
+            viewModel.onAction(action)
         }
     )
 }
 
 @Composable
 fun SignInScreen(
+    state: LoginState,
     onAction: (SignInScreenAction) -> Unit
 ) {
     Scaffold { innerPadding ->
@@ -88,14 +94,16 @@ fun SignInScreen(
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    TaskyTextField(
+                    TaskyPasswordField(
                         state = rememberTextFieldState(""),
-                        keyboardType = KeyboardType.Password,
+                        isPasswordVisible = state.isPasswordVisible,
                         placeholder = stringResource(R.string.password),
-                        endIcon = PasswordHidden,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = 16.dp),
+                        onTogglePasswordVisibility = {
+                            onAction(SignInScreenAction.OnTogglePasswordVisibility)
+                        }
                     )
 
                     Spacer(modifier = Modifier.height(32.dp))
@@ -131,7 +139,6 @@ fun SignInScreen(
                         )
                     }
                 }
-
             }
         }
     }
@@ -140,8 +147,10 @@ fun SignInScreen(
 @Preview
 @Composable
 fun SignInScreenPreview() {
+
     TaskyTheme {
         SignInScreen(
+            state = LoginState(),
             onAction = {}
         )
     }

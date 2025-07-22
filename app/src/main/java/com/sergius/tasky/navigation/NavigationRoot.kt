@@ -9,7 +9,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
-import com.sergius.auth.presentation.SignInScreenRoot
+import com.sergius.auth.presentation.login.SignInScreenRoot
 
 @Composable
 fun NavigationRoot() {
@@ -27,7 +27,11 @@ fun NavigationRoot() {
             when (key) {
                 is AuthorizeNavKey -> {
                     NavEntry(key = key) {
-                        SignInScreenRoot()
+                        SignInScreenRoot(
+                            onSignUpClick = {
+                                Toast.makeText(context,"Sign up - Not yet implemented", Toast.LENGTH_SHORT).show()
+                            }
+                        )
                     }
                 }
 
