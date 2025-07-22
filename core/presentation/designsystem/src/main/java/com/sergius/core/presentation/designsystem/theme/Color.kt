@@ -3,8 +3,8 @@ package com.sergius.core.presentation.designsystem.theme
 import androidx.compose.ui.graphics.Color
 
 val TaskyLightBackground = Color(0xFF16161C)
-val TaskyLightPrimary = Color(0xFFFFFFFF)
-val TaskyLightOnPrimary = Color(0xFF16161C)
+val TaskyLightPrimary = Color(0xFF16161C)
+val TaskyLightOnPrimary = Color(0xFFFFFFFF)
 val TaskyLightOnBackground = Color(0xFFFFFFFF)
 val TaskyLightSurface = Color(0xFFFFFFFF)
 val TaskyLightOnSurface = Color(0xFF3A4045)

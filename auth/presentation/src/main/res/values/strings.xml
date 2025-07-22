@@ -9,4 +9,5 @@
     <string name="welcome_back">Welcome Back!</string>
     <string name="create_your_account">Create your account</string>
     <string name="already_have_an_account">ALREADY HAVE AN ACCOUNT?</string>
+    <string name="get_started">GET STARTED</string>
 </resources>

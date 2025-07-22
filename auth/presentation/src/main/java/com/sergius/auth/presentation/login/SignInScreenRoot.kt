@@ -53,8 +53,7 @@ fun SignInScreenRoot(
 
             is LoginEvent.LoginSuccess -> {
                 keyboardController?.hide()
-                Toast.makeText(context, "you are logged in", Toast.LENGTH_LONG).show()
-//                onLoginSuccess()
+                Toast.makeText(context, "You are logged in", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -81,7 +80,7 @@ private fun SignInScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.onPrimary),
+                .background(color = MaterialTheme.colorScheme.background),
         ) {
             ScreenTitleText()
 
@@ -154,7 +153,8 @@ private fun LoginButton(
             onAction(SignInScreenAction.OnLoginClick)
         },
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
     )
 }
 
@@ -218,7 +218,7 @@ private fun ScreenTitleText() {
 private fun SignInScreenPreview() {
     TaskyTheme {
         SignInScreen(
-            state = LoginState(),
+            state = LoginState(canLogin = true),
             onAction = {}
         )
     }
