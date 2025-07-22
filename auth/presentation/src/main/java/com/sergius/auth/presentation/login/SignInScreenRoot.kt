@@ -81,10 +81,10 @@ private fun SignInScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.primary),
+                .background(color = MaterialTheme.colorScheme.onPrimary),
         ) {
             Text(
-                text = "Welcome Back!",
+                text = stringResource(R.string.welcome_back),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier
@@ -99,7 +99,6 @@ private fun SignInScreen(
                     .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                     .background(color = MaterialTheme.colorScheme.surface)
             ) {
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -141,7 +140,8 @@ private fun SignInScreen(
                     Spacer(modifier = Modifier.height(32.dp))
                     TaskyActionButton(
                         text = stringResource(R.string.log_in),
-                        isLoading = false,
+                        isLoading = state.isLoggingIn,
+                        enabled = state.canLogin && !state.isLoggingIn,
                         onClick = {
                             onAction(SignInScreenAction.OnLoginClick)
                         },
