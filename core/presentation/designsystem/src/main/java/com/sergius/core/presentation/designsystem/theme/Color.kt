@@ -10,6 +10,7 @@ val TaskyLightOnSurface = Color(0xFF3A4045)
 val TaskyLightOnSurfaceHigh = Color(0xFFF2F3F7)
 val TaskyLightOnSurfaceVariant = Color(0xFF76808F)
 val TaskyLightLink = Color(0xFF8E97FD)
+val TaskyCheckIconColor = Color(0xFF279F70)
 
 val TaskyDarkPrimary = Color(0xFF16161C)
 val TaskyDarkOnPrimary = Color(0xFF16161C)

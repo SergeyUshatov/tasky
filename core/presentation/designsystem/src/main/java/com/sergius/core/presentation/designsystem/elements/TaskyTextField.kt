@@ -43,6 +43,7 @@ fun TaskyTextField(
     onFocusChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     endIcon: ImageVector? = null,
+    endIconTint: Color? = null,
     placeholder: String? = null,
     error: String? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -125,7 +126,7 @@ fun TaskyTextField(
                         Icon(
                             imageVector = endIcon,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            tint = endIconTint?: MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier
                                 .padding(end = 8.dp)
                         )

@@ -1,5 +1,6 @@
 package com.sergius.auth.presentation.login
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,17 +19,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sergius.auth.presentation.R
+import com.sergius.core.presentation.designsystem.CheckIcon
 import com.sergius.core.presentation.designsystem.elements.TaskyActionButton
 import com.sergius.core.presentation.designsystem.elements.TaskyPasswordField
 import com.sergius.core.presentation.designsystem.elements.TaskyTextField
+import com.sergius.core.presentation.designsystem.theme.TaskyCheckIconColor
 import com.sergius.core.presentation.designsystem.theme.TaskyLightLink
 import com.sergius.core.presentation.designsystem.theme.TaskyTheme
+import com.sergius.core.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -36,10 +42,27 @@ fun SignInScreenRoot(
     onSignUpClick: () -> Unit,
     viewModel: LoginViewModel = koinViewModel(),
 ) {
+    val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is LoginEvent.Error -> {
+                keyboardController?.hide()
+                Toast.makeText(context, event.error.asString(context), Toast.LENGTH_LONG).show()
+            }
+
+            is LoginEvent.LoginSuccess -> {
+                keyboardController?.hide()
+                Toast.makeText(context, "you are logged in", Toast.LENGTH_LONG).show()
+//                onLoginSuccess()
+            }
+        }
+    }
+
     SignInScreen(
         state = viewModel.state,
         onAction = { action ->
-            when(action) {
+            when (action) {
                 is SignInScreenAction.OnSignUpClick -> onSignUpClick()
                 else -> Unit
             }
@@ -85,6 +108,8 @@ private fun SignInScreen(
                 ) {
                     TaskyTextField(
                         state = state.email,
+                        endIcon = if (state.isEmailValid) CheckIcon else null,
+                        endIconTint = TaskyCheckIconColor,
                         isFocused = state.isEmailFocused,
                         onFocusChanged = { isFocused ->
                             onAction(SignInScreenAction.OnEmailFocusChanged(isFocused))
@@ -122,11 +147,12 @@ private fun SignInScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth(),
-                        )
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    Row(modifier = Modifier
-                        .fillMaxWidth(),
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
