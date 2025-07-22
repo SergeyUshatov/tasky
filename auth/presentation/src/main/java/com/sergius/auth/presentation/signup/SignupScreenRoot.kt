@@ -1,5 +1,6 @@
 package com.sergius.auth.presentation.signup
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -30,6 +33,7 @@ import com.sergius.core.presentation.designsystem.elements.TaskyPasswordField
 import com.sergius.core.presentation.designsystem.elements.TaskyTextField
 import com.sergius.core.presentation.designsystem.theme.TaskyCheckIconColor
 import com.sergius.core.presentation.designsystem.theme.TaskyLightLink
+import com.sergius.core.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -37,6 +41,21 @@ fun SignupScreenRoot(
     onLoginClick: () -> Unit,
     viewModel: SignupViewModel = koinViewModel(),
 ) {
+    val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is SignupEvent.Error -> {
+                keyboardController?.hide()
+                Toast.makeText(context, event.error.asString(context), Toast.LENGTH_LONG).show()
+            }
+            is SignupEvent.SignupSuccess -> {
+                keyboardController?.hide()
+                Toast.makeText(context, "You are signed up", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
     SignupScreen(
         state = viewModel.state,
         onAction = { action ->
@@ -60,7 +79,7 @@ private fun SignupScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.onPrimary),
+                .background(color = MaterialTheme.colorScheme.background),
         ) {
             ScreenTitleText()
 
@@ -141,14 +160,15 @@ private fun SignUpButton(
     onAction: (SignUpScreenAction) -> Unit
 ) {
     TaskyActionButton(
-        text = "GET STARTED",
+        text = stringResource(R.string.get_started),
         isLoading = state.isSigningUp,
         enabled = state.canSignup && !state.isSigningUp,
         onClick = {
-            onAction(SignUpScreenAction.OnGetStartedClick)
+            onAction(SignUpScreenAction.OnSignUpClick)
         },
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
     )
 }
 
