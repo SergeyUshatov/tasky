@@ -83,14 +83,7 @@ private fun SignInScreen(
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.onPrimary),
         ) {
-            Text(
-                text = stringResource(R.string.welcome_back),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-            )
+            ScreenTitleText()
 
             Spacer(modifier = Modifier.padding(vertical = 16.dp))
             Column(
@@ -105,78 +98,119 @@ private fun SignInScreen(
                         .padding(horizontal = 16.dp)
                         .padding(vertical = 32.dp),
                 ) {
-                    TaskyTextField(
-                        state = state.email,
-                        endIcon = if (state.isEmailValid) CheckIcon else null,
-                        endIconTint = TaskyCheckIconColor,
-                        isFocused = state.isEmailFocused,
-                        onFocusChanged = { isFocused ->
-                            onAction(SignInScreenAction.OnEmailFocusChanged(isFocused))
-                        },
-                        keyboardType = KeyboardType.Email,
-                        placeholder = stringResource(R.string.email_address),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    )
+                    EmailField(state, onAction)
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    TaskyPasswordField(
-                        state = state.password,
-                        isFocused = state.isPasswordFocused,
-                        onFocusChanged = { isFocused ->
-                            onAction(SignInScreenAction.OnPasswordFocusChanged(isFocused))
-                        },
-                        isPasswordVisible = state.isPasswordVisible,
-                        placeholder = stringResource(R.string.password),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        onTogglePasswordVisibility = {
-                            onAction(SignInScreenAction.OnTogglePasswordVisibility)
-                        }
-                    )
+                    PasswordField(state, onAction)
 
                     Spacer(modifier = Modifier.height(32.dp))
-                    TaskyActionButton(
-                        text = stringResource(R.string.log_in),
-                        isLoading = state.isLoggingIn,
-                        enabled = state.canLogin && !state.isLoggingIn,
-                        onClick = {
-                            onAction(SignInScreenAction.OnLoginClick)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                    )
+                    LoginButton(state, onAction)
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.don_t_have_an_account),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier
-                        )
-                        Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-                        Text(
-                            text = stringResource(R.string.sign_up),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = TaskyLightLink,
-                            modifier = Modifier
-                                .clickable {
-                                    onAction(SignInScreenAction.OnSignUpClick)
-                                }
-                        )
-                    }
+                    SignUpAsNewUser(onAction)
                 }
             }
         }
     }
+}
+
+@Composable
+private fun SignUpAsNewUser(onAction: (SignInScreenAction) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(R.string.don_t_have_an_account),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier
+        )
+        Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+        Text(
+            text = stringResource(R.string.sign_up),
+            style = MaterialTheme.typography.labelSmall,
+            color = TaskyLightLink,
+            modifier = Modifier
+                .clickable {
+                    onAction(SignInScreenAction.OnSignUpClick)
+                }
+        )
+    }
+}
+
+@Composable
+private fun LoginButton(
+    state: LoginState,
+    onAction: (SignInScreenAction) -> Unit
+) {
+    TaskyActionButton(
+        text = stringResource(R.string.log_in),
+        isLoading = state.isLoggingIn,
+        enabled = state.canLogin && !state.isLoggingIn,
+        onClick = {
+            onAction(SignInScreenAction.OnLoginClick)
+        },
+        modifier = Modifier
+            .fillMaxWidth(),
+    )
+}
+
+@Composable
+private fun PasswordField(
+    state: LoginState,
+    onAction: (SignInScreenAction) -> Unit
+) {
+    TaskyPasswordField(
+        state = state.password,
+        isFocused = state.isPasswordFocused,
+        onFocusChanged = { isFocused ->
+            onAction(SignInScreenAction.OnPasswordFocusChanged(isFocused))
+        },
+        isPasswordVisible = state.isPasswordVisible,
+        placeholder = stringResource(R.string.password),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        onTogglePasswordVisibility = {
+            onAction(SignInScreenAction.OnTogglePasswordVisibility)
+        }
+    )
+}
+
+@Composable
+private fun EmailField(
+    state: LoginState,
+    onAction: (SignInScreenAction) -> Unit
+) {
+    TaskyTextField(
+        state = state.email,
+        endIcon = if (state.isEmailValid) CheckIcon else null,
+        endIconTint = TaskyCheckIconColor,
+        isFocused = state.isEmailFocused,
+        onFocusChanged = { isFocused ->
+            onAction(SignInScreenAction.OnEmailFocusChanged(isFocused))
+        },
+        keyboardType = KeyboardType.Email,
+        placeholder = stringResource(R.string.email_address),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    )
+}
+
+@Composable
+private fun ScreenTitleText() {
+    Text(
+        text = stringResource(R.string.welcome_back),
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.headlineMedium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+    )
 }
 
 @Preview

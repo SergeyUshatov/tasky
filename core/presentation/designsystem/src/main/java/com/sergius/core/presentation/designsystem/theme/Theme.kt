@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 val LightColorScheme = lightColorScheme(
+    background = TaskyLightBackground,
     primary = TaskyLightPrimary,
     onPrimary = TaskyLightOnPrimary,
     onBackground = TaskyLightOnBackground,
@@ -26,6 +27,7 @@ val LightColorScheme = lightColorScheme(
 )
 
 val DarkColorScheme = darkColorScheme(
+    background = TaskyDarkBackground,
     primary = TaskyDarkPrimary,
     onPrimary = TaskyDarkOnPrimary,
     onBackground = TaskyDarkOnBackground,
