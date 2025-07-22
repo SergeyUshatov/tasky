@@ -10,6 +10,7 @@ import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.sergius.auth.presentation.login.SignInScreenRoot
+import com.sergius.auth.presentation.signup.SignupScreenRoot
 
 @Composable
 fun NavigationRoot() {
@@ -29,9 +30,15 @@ fun NavigationRoot() {
                     NavEntry(key = key) {
                         SignInScreenRoot(
                             onSignUpClick = {
-                                Toast.makeText(context,"Sign up - Not yet implemented", Toast.LENGTH_SHORT).show()
+                                backStack.add(SignupNavKey)
                             }
                         )
+                    }
+                }
+
+                is SignupNavKey -> {
+                    NavEntry(key = key) {
+                        SignupScreenRoot()
                     }
                 }
 

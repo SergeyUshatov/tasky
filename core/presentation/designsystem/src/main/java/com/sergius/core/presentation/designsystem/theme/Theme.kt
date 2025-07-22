@@ -44,8 +44,8 @@ fun TaskyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (!darkTheme) DarkColorScheme else LightColorScheme
-    val typography = if (!darkTheme) DarkTypography else LightTypography
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val typography = if (darkTheme) DarkTypography else LightTypography
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {

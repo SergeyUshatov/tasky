@@ -16,7 +16,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
@@ -24,10 +23,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,13 +39,14 @@ import com.sergius.core.presentation.designsystem.theme.TaskyTheme
 @Composable
 fun TaskyTextField(
     state: TextFieldState,
-    endIcon: ImageVector? = null,
-    placeholder: String,
+    isFocused: Boolean,
+    onFocusChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    endIcon: ImageVector? = null,
+    placeholder: String? = null,
     error: String? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
 ) {
-    var isFocused by remember { mutableStateOf(false) }
     Column(
         modifier = modifier
     ) {
@@ -78,15 +74,25 @@ fun TaskyTextField(
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
-                .background(textFieldBackgroundColor(isFocused))
+                .background(
+                    if (isFocused) {
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainerHigh
+                    }
+                )
                 .border(
                     width = 1.dp,
-                    color = textFieldBorderColor(isFocused),
+                    color = if (isFocused) {
+                        MaterialTheme.colorScheme.surfaceContainerHigh
+                    } else {
+                        Color.Transparent
+                    },
                     shape = RoundedCornerShape(8.dp)
                 )
                 .padding(12.dp)
                 .onFocusChanged {
-                    isFocused = it.isFocused
+                    onFocusChanged(it.isFocused)
                 },
             decorator = { innerBox ->
                 Row(
@@ -98,15 +104,18 @@ fun TaskyTextField(
                         modifier = Modifier
                             .weight(1f)
                     ) {
-                        if (state.text.isEmpty() && !isFocused) {
-                            Text(
-                                text = placeholder,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                    alpha = 0.7f
-                                ),
-                                modifier = Modifier.fillMaxWidth()
-                            )
+                        placeholder?.let {
+                            if (state.text.isEmpty() && !isFocused) {
+                                Text(
+                                    text = placeholder,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        .copy(
+                                        alpha = 0.5f
+                                    ),
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
                         }
                         innerBox()
                     }
@@ -132,7 +141,9 @@ fun TaskyTextField(
 private fun RuniqueTextFieldPreview() {
     TaskyTheme {
         TaskyTextField(
-            state = rememberTextFieldState(),
+            isFocused = false,
+            onFocusChanged = {},
+            state = TextFieldState(),
             error = "Invalid email address",
             endIcon = Icons.Default.Check,
             placeholder = "example@test.com",

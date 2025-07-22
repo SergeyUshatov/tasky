@@ -18,10 +18,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,14 +35,13 @@ import com.sergius.core.presentation.designsystem.theme.TaskyTheme
 @Composable
 fun TaskyPasswordField(
     state: TextFieldState,
+    isFocused: Boolean,
+    onFocusChanged: (Boolean) -> Unit,
+    placeholder: String,
     isPasswordVisible: Boolean,
     onTogglePasswordVisibility: () -> Unit,
-    placeholder: String,
     modifier: Modifier = Modifier,
 ) {
-    var isFocused by remember {
-        mutableStateOf(false)
-    }
     Column(
         modifier = modifier
     ) {
@@ -59,15 +54,25 @@ fun TaskyPasswordField(
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
-                .background(textFieldBackgroundColor(isFocused))
+                .background(
+                    if (isFocused) {
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainerHigh
+                    }
+                )
                 .border(
                     width = 1.dp,
-                    color = textFieldBorderColor(isFocused),
+                    color = if (isFocused) {
+                        MaterialTheme.colorScheme.surfaceContainerHigh
+                    } else {
+                        Color.Transparent
+                    },
                     shape = RoundedCornerShape(8.dp)
                 )
                 .padding(horizontal = 12.dp)
                 .onFocusChanged {
-                    isFocused = it.isFocused
+                    onFocusChanged(it.isFocused)
                 },
             decorator = { innerBox ->
                 Row(
@@ -108,25 +113,13 @@ fun TaskyPasswordField(
     }
 }
 
-@Composable
-fun textFieldBorderColor(isFocused: Boolean): Color = if (isFocused) {
-    MaterialTheme.colorScheme.primary
-} else {
-    Color.Transparent
-}
-
-@Composable
-fun textFieldBackgroundColor(isFocused: Boolean): Color = if (isFocused) {
-    MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
-} else {
-    MaterialTheme.colorScheme.surfaceContainerHigh
-}
-
 @Preview
 @Composable
 private fun RuniqueTextFieldPreview() {
     TaskyTheme {
         TaskyPasswordField(
+            isFocused = false,
+            onFocusChanged = {},
             state = rememberTextFieldState(),
             isPasswordVisible = false,
             placeholder = "Password",

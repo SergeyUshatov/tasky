@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,7 +49,7 @@ fun SignInScreenRoot(
 }
 
 @Composable
-fun SignInScreen(
+private fun SignInScreen(
     state: LoginState,
     onAction: (SignInScreenAction) -> Unit
 ) {
@@ -85,7 +84,11 @@ fun SignInScreen(
                         .padding(vertical = 32.dp),
                 ) {
                     TaskyTextField(
-                        state = rememberTextFieldState(""),
+                        state = state.email,
+                        isFocused = state.isEmailFocused,
+                        onFocusChanged = { isFocused ->
+                            onAction(SignInScreenAction.OnEmailFocusChanged(isFocused))
+                        },
                         keyboardType = KeyboardType.Email,
                         placeholder = stringResource(R.string.email_address),
                         modifier = Modifier
@@ -95,7 +98,11 @@ fun SignInScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
                     TaskyPasswordField(
-                        state = rememberTextFieldState(""),
+                        state = state.password,
+                        isFocused = state.isPasswordFocused,
+                        onFocusChanged = { isFocused ->
+                            onAction(SignInScreenAction.OnPasswordFocusChanged(isFocused))
+                        },
                         isPasswordVisible = state.isPasswordVisible,
                         placeholder = stringResource(R.string.password),
                         modifier = Modifier
@@ -110,7 +117,9 @@ fun SignInScreen(
                     TaskyActionButton(
                         text = stringResource(R.string.log_in),
                         isLoading = false,
-                        onClick = {},
+                        onClick = {
+                            onAction(SignInScreenAction.OnLoginClick)
+                        },
                         modifier = Modifier
                             .fillMaxWidth(),
                         )
@@ -146,8 +155,7 @@ fun SignInScreen(
 
 @Preview
 @Composable
-fun SignInScreenPreview() {
-
+private fun SignInScreenPreview() {
     TaskyTheme {
         SignInScreen(
             state = LoginState(),

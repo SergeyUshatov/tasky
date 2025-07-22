@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
 fun TaskyActionButton(
     text: String,
     isLoading: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,

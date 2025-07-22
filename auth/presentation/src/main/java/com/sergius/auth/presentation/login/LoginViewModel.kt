@@ -12,10 +12,20 @@ class LoginViewModel: ViewModel() {
 
     fun onAction(action: SignInScreenAction) {
         when(action) {
-            SignInScreenAction.OnLoginClick -> login()
-            SignInScreenAction.OnTogglePasswordVisibility -> {
+            is SignInScreenAction.OnLoginClick -> login()
+            is SignInScreenAction.OnTogglePasswordVisibility -> {
                 state = state.copy(
                     isPasswordVisible = !state.isPasswordVisible
+                )
+            }
+            is SignInScreenAction.OnEmailFocusChanged -> {
+                state = state.copy(
+                    isEmailFocused = action.isFocused
+                )
+            }
+            is SignInScreenAction.OnPasswordFocusChanged -> {
+                state = state.copy(
+                    isPasswordFocused = action.isFocused
                 )
             }
             else -> Unit
