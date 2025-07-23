@@ -26,6 +26,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sergius.auth.presentation.EmailFieldState
+import com.sergius.auth.presentation.PasswordFieldState
 import com.sergius.auth.presentation.R
 import com.sergius.core.presentation.designsystem.CheckIcon
 import com.sergius.core.presentation.designsystem.elements.TaskyActionButton
@@ -42,6 +45,7 @@ fun SignInScreenRoot(
     onSignUpClick: () -> Unit,
     viewModel: LoginViewModel = koinViewModel(),
 ) {
+    viewModel.isComposing.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
     ObserveAsEvents(viewModel.events) { event ->
@@ -51,7 +55,7 @@ fun SignInScreenRoot(
                 Toast.makeText(context, event.error.asString(context), Toast.LENGTH_LONG).show()
             }
 
-            is LoginEvent.LoginSuccess -> {
+            is LoginEvent.Success -> {
                 keyboardController?.hide()
                 Toast.makeText(context, "You are logged in", Toast.LENGTH_LONG).show()
             }
@@ -96,16 +100,15 @@ private fun SignInScreen(
                         .fillMaxSize()
                         .padding(horizontal = 16.dp)
                         .padding(vertical = 32.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    EmailField(state, onAction)
+                    EmailField(state.emailState, onAction)
+                    PasswordField(state.passwordState, onAction)
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    PasswordField(state, onAction)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    LoginButton(state.canLogin, state.isLoggingIn, onAction)
 
-                    Spacer(modifier = Modifier.height(32.dp))
-                    LoginButton(state, onAction)
-
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     SignUpAsNewUser(onAction)
                 }
             }
@@ -142,13 +145,14 @@ private fun SignUpAsNewUser(onAction: (SignInScreenAction) -> Unit) {
 
 @Composable
 private fun LoginButton(
-    state: LoginState,
+    canLogin: Boolean,
+    isLoggingIn: Boolean,
     onAction: (SignInScreenAction) -> Unit
 ) {
     TaskyActionButton(
         text = stringResource(R.string.log_in),
-        isLoading = state.isLoggingIn,
-        enabled = state.canLogin && !state.isLoggingIn,
+        isLoading = isLoggingIn,
+        enabled = canLogin && !isLoggingIn,
         onClick = {
             onAction(SignInScreenAction.OnLoginClick)
         },
@@ -160,7 +164,7 @@ private fun LoginButton(
 
 @Composable
 private fun PasswordField(
-    state: LoginState,
+    state: PasswordFieldState,
     onAction: (SignInScreenAction) -> Unit
 ) {
     TaskyPasswordField(
@@ -182,7 +186,7 @@ private fun PasswordField(
 
 @Composable
 private fun EmailField(
-    state: LoginState,
+    state: EmailFieldState,
     onAction: (SignInScreenAction) -> Unit
 ) {
     TaskyTextField(

@@ -4,5 +4,5 @@ import com.sergius.core.presentation.ui.UiText
 
 interface SignupEvent {
     data class Error(val error: UiText): SignupEvent
-    data object SignupSuccess: SignupEvent
+    data object Success: SignupEvent
 }
