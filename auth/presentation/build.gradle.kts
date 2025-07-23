@@ -10,4 +10,6 @@ android {
 dependencies {
     implementation(projects.auth.domain)
     implementation(projects.auth.data)
+
+    implementation(libs.timber)
 }
