@@ -1,6 +1,6 @@
-package com.sergius.data.di
+package com.sergius.auth.data.di
 
-import com.sergius.data.EmailPatternValidator
+import com.sergius.auth.data.EmailPatternValidator
 import com.sergius.domain.PatternValidator
 import com.sergius.domain.UserDataValidator
 import org.koin.core.module.dsl.singleOf

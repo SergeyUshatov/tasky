@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sergius.data"
+    namespace = "com.sergius.auth.data"
 }
 
 dependencies {

@@ -1,4 +1,4 @@
-package com.sergius.data
+package com.sergius.auth.data
 
 import android.util.Patterns
 import com.sergius.domain.PatternValidator

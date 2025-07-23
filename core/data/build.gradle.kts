@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sergius.data"
+    namespace = "com.sergius.core.data"
 }
 
 dependencies {
