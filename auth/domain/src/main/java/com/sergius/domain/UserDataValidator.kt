@@ -1,6 +1,6 @@
 package com.sergius.domain
 
-import kotlin.text.matches
+private const val MIN_PASSWORD_LENGTH = 9
 
 class UserDataValidator(
     private val patternValidator: PatternValidator
@@ -21,9 +21,5 @@ class UserDataValidator(
             hasLowerCaseCharacter = hasLowerCaseCharacter,
             hasUpperCaseCharacter = hasUpperCaseCharacter
         )
-    }
-
-    companion object {
-        const val MIN_PASSWORD_LENGTH = 9
     }
 }

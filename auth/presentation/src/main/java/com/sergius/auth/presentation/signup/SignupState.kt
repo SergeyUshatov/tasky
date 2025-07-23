@@ -1,16 +1,13 @@
 package com.sergius.auth.presentation.signup
 
-import androidx.compose.foundation.text.input.TextFieldState
+import com.sergius.auth.presentation.EmailFieldState
+import com.sergius.auth.presentation.NameFieldState
+import com.sergius.auth.presentation.PasswordFieldState
 
 data class SignupState(
-    val name: TextFieldState = TextFieldState(),
-    val isNameFocused: Boolean = false,
-    val email: TextFieldState = TextFieldState(),
-    val isEmailFocused: Boolean = false,
-    val isEmailValid: Boolean = false,
-    val password: TextFieldState = TextFieldState(),
-    val isPasswordFocused: Boolean = false,
-    val isPasswordVisible: Boolean = false,
+    val nameState: NameFieldState = NameFieldState(),
+    val emailState: EmailFieldState = EmailFieldState(),
+    val passwordState: PasswordFieldState = PasswordFieldState(),
     val canSignup: Boolean = false,
     val isSigningUp: Boolean = false
 )

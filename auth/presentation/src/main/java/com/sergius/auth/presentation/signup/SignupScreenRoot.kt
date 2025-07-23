@@ -26,6 +26,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sergius.auth.presentation.EmailFieldState
+import com.sergius.auth.presentation.NameFieldState
+import com.sergius.auth.presentation.PasswordFieldState
 import com.sergius.auth.presentation.R
 import com.sergius.core.presentation.designsystem.CheckIcon
 import com.sergius.core.presentation.designsystem.elements.TaskyActionButton
@@ -33,6 +37,7 @@ import com.sergius.core.presentation.designsystem.elements.TaskyPasswordField
 import com.sergius.core.presentation.designsystem.elements.TaskyTextField
 import com.sergius.core.presentation.designsystem.theme.TaskyCheckIconColor
 import com.sergius.core.presentation.designsystem.theme.TaskyLightLink
+import com.sergius.core.presentation.designsystem.theme.TaskyTheme
 import com.sergius.core.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
@@ -41,6 +46,7 @@ fun SignupScreenRoot(
     onLoginClick: () -> Unit,
     viewModel: SignupViewModel = koinViewModel(),
 ) {
+    viewModel.isComposing.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
     ObserveAsEvents(viewModel.events) { event ->
@@ -49,7 +55,8 @@ fun SignupScreenRoot(
                 keyboardController?.hide()
                 Toast.makeText(context, event.error.asString(context), Toast.LENGTH_LONG).show()
             }
-            is SignupEvent.SignupSuccess -> {
+
+            is SignupEvent.Success -> {
                 keyboardController?.hide()
                 Toast.makeText(context, "You are signed up", Toast.LENGTH_LONG).show()
             }
@@ -95,19 +102,16 @@ private fun SignupScreen(
                         .fillMaxSize()
                         .padding(horizontal = 16.dp)
                         .padding(vertical = 32.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    NameField(state, onAction)
+                    NameField(state.nameState, onAction)
+                    EmailField(state.emailState, onAction)
+                    PasswordField(state.passwordState, onAction)
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    EmailField(state, onAction)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    SignUpButton(state.canSignup, state.isSigningUp, onAction)
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    PasswordField(state, onAction)
-
-                    Spacer(modifier = Modifier.height(32.dp))
-                    SignUpButton(state, onAction)
-
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     LoginAsExistingUser(onAction)
                 }
             }
@@ -156,13 +160,14 @@ private fun LoginAsExistingUser(onAction: (SignUpScreenAction) -> Unit) {
 
 @Composable
 private fun SignUpButton(
-    state: SignupState,
+    canSignup: Boolean,
+    isSigningUp: Boolean,
     onAction: (SignUpScreenAction) -> Unit
 ) {
     TaskyActionButton(
         text = stringResource(R.string.get_started),
-        isLoading = state.isSigningUp,
-        enabled = state.canSignup && !state.isSigningUp,
+        isLoading = isSigningUp,
+        enabled = canSignup && !isSigningUp,
         onClick = {
             onAction(SignUpScreenAction.OnSignUpClick)
         },
@@ -174,7 +179,7 @@ private fun SignUpButton(
 
 @Composable
 private fun PasswordField(
-    state: SignupState,
+    state: PasswordFieldState,
     onAction: (SignUpScreenAction) -> Unit
 ) {
     TaskyPasswordField(
@@ -196,7 +201,7 @@ private fun PasswordField(
 
 @Composable
 private fun EmailField(
-    state: SignupState,
+    state: EmailFieldState,
     onAction: (SignUpScreenAction) -> Unit
 ) {
     TaskyTextField(
@@ -217,7 +222,7 @@ private fun EmailField(
 
 @Composable
 private fun NameField(
-    state: SignupState,
+    state: NameFieldState,
     onAction: (SignUpScreenAction) -> Unit
 ) {
     TaskyTextField(
@@ -235,12 +240,13 @@ private fun NameField(
     )
 }
 
-
 @Preview
 @Composable
 private fun SignupScreenPreview() {
-    SignupScreen(
-        state = SignupState(),
-        onAction = {}
-    )
+    TaskyTheme {
+        SignupScreen(
+            state = SignupState(),
+            onAction = {}
+        )
+    }
 }
