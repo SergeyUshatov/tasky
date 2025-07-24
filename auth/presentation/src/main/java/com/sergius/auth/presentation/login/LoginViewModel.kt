@@ -1,8 +1,5 @@
 package com.sergius.auth.presentation.login
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,22 +19,16 @@ class LoginViewModel(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    var state by mutableStateOf(LoginState())
-        private set
-
-    private val eventChannel = Channel<LoginEvent>()
-    val events = eventChannel.receiveAsFlow()
-
-    private val _isComposing = MutableStateFlow(false)
-    val isComposing = _isComposing
+    private val _state = MutableStateFlow(LoginState())
+    val state = _state
         .onStart {
             combine(
-                snapshotFlow { state.emailState.email.text },
-                snapshotFlow { state.passwordState.password.text }
+                snapshotFlow { _state.value.emailState.email.text },
+                snapshotFlow { _state.value.passwordState.password.text }
             ) { email, password ->
                 val isEmailValid = userDataValidator.isValidEmail(email = email.toString())
-                state = state.copy(
-                    emailState = state.emailState.copy(isEmailValid = isEmailValid),
+                _state.value = _state.value.copy(
+                    emailState = _state.value.emailState.copy(isEmailValid = isEmailValid),
                     canLogin = isEmailValid && password.isNotEmpty()
                 )
             }.launchIn(viewModelScope)
@@ -45,27 +36,32 @@ class LoginViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(2000),
-            initialValue = false
+            initialValue = LoginState()
         )
+
+    private val eventChannel = Channel<LoginEvent>()
+    val events = eventChannel.receiveAsFlow()
 
     fun onAction(action: SignInScreenAction) {
         when (action) {
             is SignInScreenAction.OnLoginClick -> login()
             is SignInScreenAction.OnTogglePasswordVisibility -> {
-                state = state.copy(
-                    passwordState = state.passwordState.copy(isPasswordVisible = !state.passwordState.isPasswordVisible)
+                _state.value = _state.value.copy(
+                    passwordState = _state.value.passwordState.copy(
+                        isPasswordVisible = !_state.value.passwordState.isPasswordVisible
+                    )
                 )
             }
 
             is SignInScreenAction.OnEmailFocusChanged -> {
-                state = state.copy(
-                    emailState = state.emailState.copy(isEmailFocused = action.isFocused)
+                _state.value = _state.value.copy(
+                    emailState = _state.value.emailState.copy(isEmailFocused = action.isFocused)
                 )
             }
 
             is SignInScreenAction.OnPasswordFocusChanged -> {
-                state = state.copy(
-                    passwordState = state.passwordState.copy(isPasswordFocused = action.isFocused)
+                _state.value = _state.value.copy(
+                    passwordState = _state.value.passwordState.copy(isPasswordFocused = action.isFocused)
                 )
             }
 

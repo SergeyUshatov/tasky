@@ -11,6 +11,7 @@ sealed interface DataError: Error {
         TOO_MANY_REQUESTS,
         NO_INTERNET,
         PAYLOAD_TOO_LARGE,
+        UNPROCESSABLE,
         SERVER_ERROR,
         SERIALIZATION,
         UNKNOWN

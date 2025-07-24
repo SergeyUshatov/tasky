@@ -1,6 +1,6 @@
 package com.sergius.auth.data.di
 
-import com.sergius.auth.data.AuthRepositoryImpl
+import com.sergius.auth.data.DefaultUserRepository
 import com.sergius.auth.data.EmailPatternValidator
 import com.sergius.domain.AuthRepository
 import com.sergius.domain.PatternValidator
@@ -12,5 +12,5 @@ import org.koin.dsl.module
 val authDataModule = module {
     single<PatternValidator> { EmailPatternValidator }
     singleOf(::UserDataValidator)
-    singleOf(::AuthRepositoryImpl).bind<AuthRepository>()
+    singleOf(::DefaultUserRepository).bind<AuthRepository>()
 }

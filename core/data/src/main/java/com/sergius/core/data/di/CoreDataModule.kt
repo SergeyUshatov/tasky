@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-private val Context.sessionStore: DataStore<UserPreferences> by dataStore(
+private val Context.sessionStore: DataStore<UserPreferences?> by dataStore(
     fileName = "user_session_store",
     serializer = UserPreferencesSerializer
 )
