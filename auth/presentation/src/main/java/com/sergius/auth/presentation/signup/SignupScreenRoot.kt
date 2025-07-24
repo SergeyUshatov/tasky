@@ -46,7 +46,7 @@ fun SignupScreenRoot(
     onLoginClick: () -> Unit,
     viewModel: SignupViewModel = koinViewModel(),
 ) {
-    viewModel.isComposing.collectAsStateWithLifecycle()
+    val state = viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
     ObserveAsEvents(viewModel.events) { event ->
@@ -64,7 +64,7 @@ fun SignupScreenRoot(
     }
 
     SignupScreen(
-        state = viewModel.state,
+        state = state.value,
         onAction = { action ->
             when (action) {
                 is SignUpScreenAction.OnLoginClick -> onLoginClick()

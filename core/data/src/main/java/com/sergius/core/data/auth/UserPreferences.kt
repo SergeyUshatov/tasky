@@ -12,16 +12,16 @@ import kotlin.io.encoding.Base64
 
 @Serializable
 data class UserPreferences(
-    val accessToken: String? = null,
-    val refreshToken: String? = null,
-    val userId: String? = null
+    val accessToken: String,
+    val refreshToken: String,
+    val userId: String
 )
 
-object UserPreferencesSerializer : Serializer<UserPreferences> {
+object UserPreferencesSerializer : Serializer<UserPreferences?> {
     override val defaultValue: UserPreferences
-        get() = UserPreferences()
+        get() = UserPreferences("UNDEFINED", "UNDEFINED", "UNDEFINED")
 
-    override suspend fun readFrom(input: InputStream): UserPreferences {
+    override suspend fun readFrom(input: InputStream): UserPreferences? {
         val encryptedBase64 = withContext(Dispatchers.IO) {
             input.use { it.readBytes() }
         }
@@ -32,7 +32,7 @@ object UserPreferencesSerializer : Serializer<UserPreferences> {
         return Json.decodeFromString(decodedJsonString)
     }
 
-    override suspend fun writeTo(t: UserPreferences, output: OutputStream) {
+    override suspend fun writeTo(t: UserPreferences?, output: OutputStream) {
         val json = Json.encodeToString(t)
         val bytes = json.toByteArray()
         val encrypted = Crypto.encrypt(bytes)
