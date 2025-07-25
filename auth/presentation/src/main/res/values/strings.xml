@@ -10,5 +10,4 @@
     <string name="create_your_account">Create your account</string>
     <string name="already_have_an_account">ALREADY HAVE AN ACCOUNT?</string>
     <string name="get_started">GET STARTED</string>
-    <string name="error_email_exists">A user with that email already exists.</string>
 </resources>

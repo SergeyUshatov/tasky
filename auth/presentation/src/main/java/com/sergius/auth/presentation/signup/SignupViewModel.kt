@@ -3,10 +3,10 @@ package com.sergius.auth.presentation.signup
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sergius.auth.presentation.R
 import com.sergius.core.domain.util.DataError
 import com.sergius.core.domain.util.onError
 import com.sergius.core.domain.util.onSuccess
+import com.sergius.core.presentation.ui.R
 import com.sergius.core.presentation.ui.UiText
 import com.sergius.core.presentation.ui.asUiText
 import com.sergius.domain.AuthRepository

@@ -3,6 +3,12 @@ package com.sergius.auth.presentation.login
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sergius.core.domain.util.DataError
+import com.sergius.core.domain.util.onError
+import com.sergius.core.domain.util.onSuccess
+import com.sergius.core.presentation.ui.R
+import com.sergius.core.presentation.ui.UiText
+import com.sergius.core.presentation.ui.asUiText
 import com.sergius.domain.AuthRepository
 import com.sergius.domain.UserDataValidator
 import kotlinx.coroutines.channels.Channel
@@ -13,6 +19,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val userDataValidator: UserDataValidator,
@@ -70,6 +77,28 @@ class LoginViewModel(
     }
 
     private fun login() {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isLoggingIn = true)
+            authRepository.login(
+                email = _state.value.emailState.email.text.toString().trim(),
+                password = _state.value.passwordState.password.text.toString()
+            ).onSuccess {
+                eventChannel.send(LoginEvent.Success)
+            }.onError { error ->
+                when(error) {
+                    DataError.Network.UNAUTHORIZED -> {
+                        eventChannel.send(
+                            LoginEvent.Error(
+                                UiText.StringResource(R.string.error_email_or_password_incorrect)
+                            )
+                        )
+                    }
+                    else -> {
+                        eventChannel.send(LoginEvent.Error(error.asUiText()))
+                    }
+                }
+            }
+            _state.value = _state.value.copy(isLoggingIn = false)
+        }
     }
 }
