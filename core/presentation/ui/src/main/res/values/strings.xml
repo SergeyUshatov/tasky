@@ -8,4 +8,11 @@
     <string name="error_server_error">Oops, something went wrong, please try again.</string>
     <string name="error_serialization">Oops, couldn\'t parse data.</string>
     <string name="error_unknown">An unknown error occurred.</string>
+    <string name="error_bad_request">Bad request, something went wrong.</string>
+    <string name="error_unauthorized">You are unauthorized.</string>
+    <string name="error_forbidden">You don\'t have access.</string>
+    <string name="error_not_found">Requested resource not found.</string>
+    <string name="error_unprocessable">Request is unprocessable.</string>
+    <string name="error_email_or_password_incorrect">The email or password is incorrect.</string>
+    <string name="error_email_exists">A user with that email already exists.</string>
 </resources>

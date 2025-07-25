@@ -63,10 +63,23 @@ class SignUpStateSubject(
         return this
     }
 
+    fun notSigningUp(): SignUpStateSubject {
+        isSigningUp().isNotNull()
+        isSigningUp().isFalse()
+        return this
+    }
+
+    fun signingUp(): SignUpStateSubject {
+        isSigningUp().isNotNull()
+        isSigningUp().isTrue()
+        return this
+    }
+
     private fun nameFocus() = check("nameState.isNameFocused").that(actual!!.nameState.isNameFocused)
     private fun emailFocus() = check("emailState.isEmailFocused").that(actual!!.emailState.isEmailFocused)
     private fun passwordFocus() = check("passwordState.isPasswordFocused").that(actual!!.passwordState.isPasswordFocused)
     private fun passwordVisibility() = check("passwordState.isPasswordVisible").that(actual!!.passwordState.isPasswordVisible)
+    private fun isSigningUp() = check("isSigningUp").that(actual!!.isSigningUp)
 
     companion object {
         fun assertThat(signupState: SignupState): SignUpStateSubject {
