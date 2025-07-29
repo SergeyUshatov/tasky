@@ -27,7 +27,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 )
 
                 defaultConfig {
-                    testInstrumentationRunner = "com.sergius.common.android_test.KoinTestRunner"
+                    testInstrumentationRunner = "com.sergius.tasky.KoinTestRunner"
                     consumerProguardFiles("consumer-rules.pro")
                 }
             }

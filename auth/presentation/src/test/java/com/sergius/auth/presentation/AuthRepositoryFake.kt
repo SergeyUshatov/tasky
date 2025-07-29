@@ -2,21 +2,13 @@ package com.sergius.auth.presentation
 
 import com.sergius.core.domain.util.DataError
 import com.sergius.core.domain.util.EmptyResult
-import com.sergius.domain.AuthRepository
 import com.sergius.core.domain.util.Result
+import com.sergius.domain.AuthRepository
 
 class AuthRepositoryFake: AuthRepository {
 
-    private var loginResult: Result<Unit, DataError.Network> = Result.Success(Unit)
-    private var signUpResult: Result<Unit, DataError.Network> = Result.Success(Unit)
-
-    fun setLoginResult(result: Result<Unit, DataError.Network>) {
-        this.loginResult = result
-    }
-
-    fun setSignUpResult(result: Result<Unit, DataError.Network>) {
-        this.signUpResult = result
-    }
+    var loginResult: Result<Unit, DataError.Network> = Result.Success(Unit)
+    var signUpResult: Result<Unit, DataError.Network> = Result.Success(Unit)
 
     override suspend fun login(
         email: String,
