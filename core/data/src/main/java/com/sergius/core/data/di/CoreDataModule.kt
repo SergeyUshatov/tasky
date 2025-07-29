@@ -7,8 +7,10 @@ import com.sergius.core.data.auth.EncryptedAuthStorage
 import com.sergius.core.data.auth.UserPreferences
 import com.sergius.core.data.auth.UserPreferencesSerializer
 import com.sergius.core.data.networking.HttpClientFactory
+import com.sergius.core.domain.SessionStorage
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val Context.sessionStore: DataStore<UserPreferences?> by dataStore(
@@ -23,5 +25,5 @@ val coreDataModule = module {
 
     single {
         EncryptedAuthStorage(dataStore = androidContext().sessionStore, dispatcher = Dispatchers.IO)
-    }
+    }.bind<SessionStorage>()
 }

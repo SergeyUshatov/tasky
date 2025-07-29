@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,6 +54,7 @@ fun TaskyPasswordField(
             ),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             modifier = Modifier
+                .testTag("basic_secure_text_field")
                 .clip(RoundedCornerShape(8.dp))
                 .background(
                     if (isFocused) {
@@ -98,11 +100,11 @@ fun TaskyPasswordField(
                     }
                     IconButton(onClick = onTogglePasswordVisibility) {
                         Icon(
-                            imageVector = if (!isPasswordVisible) EyeClosed else EyeOpened,
+                            imageVector = if (isPasswordVisible) EyeOpened else EyeClosed,
                             contentDescription = if (isPasswordVisible) {
-                                stringResource(R.string.show_password)
-                            } else {
                                 stringResource(R.string.hide_password)
+                            } else {
+                                stringResource(R.string.show_password)
                             },
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )

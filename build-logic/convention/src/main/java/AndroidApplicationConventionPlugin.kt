@@ -1,10 +1,10 @@
-import org.gradle.api.Plugin
-import org.gradle.api.Project
 import com.android.build.api.dsl.ApplicationExtension
 import com.sergius.convention.ExtensionType
 import com.sergius.convention.configureBuildTypes
 import com.sergius.convention.configureKotlinAndroid
 import com.sergius.convention.libs
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
 class AndroidApplicationConventionPlugin: Plugin<Project> {

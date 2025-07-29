@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -157,6 +158,7 @@ private fun LoginButton(
             onAction(SignInScreenAction.OnLoginClick)
         },
         modifier = Modifier
+            .testTag("login_button")
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
     )
@@ -200,6 +202,7 @@ private fun EmailField(
         keyboardType = KeyboardType.Email,
         placeholder = stringResource(R.string.email_address),
         modifier = Modifier
+            .testTag("email_field")
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     )

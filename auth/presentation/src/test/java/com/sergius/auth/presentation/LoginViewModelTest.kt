@@ -8,7 +8,6 @@ import com.sergius.auth.presentation.truth.LoginStateSubject.Companion.assertTha
 import com.sergius.core.domain.util.DataError
 import com.sergius.core.domain.util.Result
 import com.sergius.core.presentation.ui.R
-import com.sergius.core.presentation.ui.UiText
 import com.sergius.domain.UserDataValidator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -79,7 +78,7 @@ class LoginViewModelTest {
 
     @Test
     fun `test login successful`() = runTest {
-        authRepository.setLoginResult(Result.Success(Unit))
+        authRepository.loginResult = Result.Success(Unit)
 
         viewModel.events.test {
             viewModel.onAction(SignInScreenAction.OnLoginClick)
@@ -89,9 +88,8 @@ class LoginViewModelTest {
 
     @ParameterizedTest
     @MethodSource("eventErrorData")
-    fun `test login returns network error`(error: DataError.Network, resourceId: Int) = runTest {
-        authRepository.setLoginResult(Result.Error(error))
-        val expectedResourceId = UiText.StringResource(resourceId).id
+    fun `test login returns network error`(error: DataError.Network, expectedResourceId: Int) = runTest {
+        authRepository.loginResult = Result.Error(error)
 
         viewModel.events.test {
             viewModel.onAction(SignInScreenAction.OnLoginClick)

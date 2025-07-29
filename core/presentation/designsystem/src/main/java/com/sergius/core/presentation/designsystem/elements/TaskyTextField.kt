@@ -30,6 +30,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -75,6 +76,7 @@ fun TaskyTextField(
             lineLimits = TextFieldLineLimits.SingleLine,
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             modifier = Modifier
+                .testTag("basic_text_field")
                 .clip(RoundedCornerShape(8.dp))
                 .background(
                     if (isFocused) {
@@ -126,7 +128,7 @@ fun TaskyTextField(
                         Spacer(modifier = Modifier.width(16.dp))
                         Icon(
                             imageVector = endIcon,
-                            contentDescription = null,
+                            contentDescription = "text field end icon",
                             tint = endIconTint?: MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier
                                 .padding(end = 8.dp)
