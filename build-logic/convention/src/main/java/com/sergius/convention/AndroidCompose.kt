@@ -16,6 +16,11 @@ internal fun Project.configureAndroidCompose(
             val bom = libs.findLibrary("androidx.compose.bom").get()
             "implementation"(platform(bom))
             "androidTestImplementation"(platform(bom))
+            "androidTestImplementation"(libs.findLibrary("androidx.compose.ui.test.junit4").get())
+            "androidTestImplementation"(libs.findLibrary("androidx.test.uiautomator").get())
+            "androidTestImplementation"(libs.findLibrary("androidx.test.orchestrator").get())
+            "androidTestImplementation"(libs.findLibrary("androidx.espresso.core").get())
+
             "debugImplementation"(libs.findLibrary("androidx.compose.ui.tooling.preview").get())
         }
     }

@@ -40,6 +40,7 @@ espressoCore = "3.6.1"
 appcompat = "1.7.1"
 material = "1.12.0"
 junit4 = "4.13.2"
+junit4Params = "1.3.0"
 junit5 = "5.13.4"
 junitRunner = "1.6.2"
 google_truth = "1.4.4"
@@ -109,6 +110,7 @@ koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin"
 koin-test-junit4 = { group = "io.insert-koin", name = "koin-test-junit4", version.ref = "koin" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 junit = { group = "junit", name = "junit", version.ref = "junit4" }
+android-junit4-params = { group = "com.forkingcode.androidjunitparams", name = "androidjunitparams", version.ref = "junit4Params" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidJunit" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "junitRunner" }
