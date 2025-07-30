@@ -1,5 +1,6 @@
 package com.sergius.auth.presentation.signup
 
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -44,6 +46,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SignupScreenRoot(
     onLoginClick: () -> Unit,
+    onSignupSuccess: () -> Unit,
     viewModel: SignupViewModel = koinViewModel(),
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
@@ -58,6 +61,7 @@ fun SignupScreenRoot(
 
             is SignupEvent.Success -> {
                 keyboardController?.hide()
+                onSignupSuccess()
                 Toast.makeText(context, "You are signed up", Toast.LENGTH_LONG).show()
             }
         }
@@ -78,8 +82,23 @@ fun SignupScreenRoot(
 
 @Composable
 private fun SignupScreen(
-    state: SignupState,
     onAction: (SignUpScreenAction) -> Unit,
+    state: SignupState,
+) {
+    when (LocalConfiguration.current.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            LandscapeLayout(state = state, onAction = onAction)
+        }
+        else -> {
+            PortraitLayout(state = state, onAction = onAction)
+        }
+    }
+}
+
+@Composable
+private fun PortraitLayout(
+    onAction: (SignUpScreenAction) -> Unit,
+    state: SignupState,
 ) {
     Scaffold { innerPadding ->
         Column(
@@ -97,25 +116,68 @@ private fun SignupScreen(
                     .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                     .background(color = MaterialTheme.colorScheme.surface)
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp)
-                        .padding(vertical = 32.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    NameField(state.nameState, onAction)
-                    EmailField(state.emailState, onAction)
-                    PasswordField(state.passwordState, onAction)
-
-                    Spacer(modifier = Modifier.height(4.dp))
-                    SignUpButton(state.canSignup, state.isSigningUp, onAction)
-
-                    Spacer(modifier = Modifier.height(4.dp))
-                    LoginAsExistingUser(onAction)
-                }
+                SignupForm(state, onAction)
             }
         }
+    }
+}
+
+@Composable
+private fun LandscapeLayout(
+    onAction: (SignUpScreenAction) -> Unit,
+    state: SignupState,
+) {
+    Scaffold { innerPadding ->
+        Row(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                ScreenTitleText()
+            }
+
+            Column(
+                modifier = Modifier
+                    .padding( top = 16.dp, end = 16.dp)
+                    .weight(2f)
+                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                    .background(color = MaterialTheme.colorScheme.surface)
+            ) {
+                SignupForm(state, onAction)
+            }
+        }
+    }
+}
+
+@Composable
+private fun SignupForm(
+    state: SignupState,
+    onAction: (SignUpScreenAction) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+            .padding(vertical = 32.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        NameField(state.nameState, onAction)
+        EmailField(state.emailState, onAction)
+        PasswordField(state.passwordState, onAction)
+
+        Spacer(modifier = Modifier.height(4.dp))
+        SignUpButton(state.canSignup, state.isSigningUp, onAction)
+
+        Spacer(modifier = Modifier.height(4.dp))
+        LoginAsExistingUser(onAction)
     }
 }
 
@@ -241,6 +303,10 @@ private fun NameField(
 }
 
 @Preview
+@Preview(
+    name = "Phone - Landscape",
+    device = "spec:width = 411dp, height = 891dp, orientation = landscape, dpi = 420",
+    )
 @Composable
 private fun SignupScreenPreview() {
     TaskyTheme {
