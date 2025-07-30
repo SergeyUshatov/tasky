@@ -32,7 +32,8 @@ fun NavigationRoot() {
                             onSignUpClick = {
                                 backStack.clear()
                                 backStack.add(SignupNavKey)
-                            }
+                            },
+                            onSignInSuccess = {}
                         )
                     }
                 }
@@ -41,6 +42,10 @@ fun NavigationRoot() {
                     NavEntry(key = key) {
                         SignupScreenRoot(
                             onLoginClick = {
+                                backStack.clear()
+                                backStack.add(AuthorizeNavKey)
+                            },
+                            onSignupSuccess = {
                                 backStack.clear()
                                 backStack.add(AuthorizeNavKey)
                             }

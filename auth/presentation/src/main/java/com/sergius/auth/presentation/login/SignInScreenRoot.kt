@@ -1,5 +1,6 @@
 package com.sergius.auth.presentation.login
 
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
@@ -44,6 +46,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SignInScreenRoot(
     onSignUpClick: () -> Unit,
+    onSignInSuccess: () -> Unit,
     viewModel: LoginViewModel = koinViewModel(),
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
@@ -58,6 +61,7 @@ fun SignInScreenRoot(
 
             is LoginEvent.Success -> {
                 keyboardController?.hide()
+                onSignInSuccess()
                 Toast.makeText(context, "You are logged in", Toast.LENGTH_LONG).show()
             }
         }
@@ -77,8 +81,24 @@ fun SignInScreenRoot(
 
 @Composable
 private fun SignInScreen(
+    onAction: (SignInScreenAction) -> Unit,
     state: LoginState,
-    onAction: (SignInScreenAction) -> Unit
+) {
+    when (LocalConfiguration.current.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            LandscapeLayout(state = state, onAction = onAction)
+        }
+
+        else -> {
+            PortraitLayout(state = state, onAction = onAction)
+        }
+    }
+}
+
+@Composable
+private fun PortraitLayout(
+    onAction: (SignInScreenAction) -> Unit,
+    state: LoginState,
 ) {
     Scaffold { innerPadding ->
         Column(
@@ -96,24 +116,67 @@ private fun SignInScreen(
                     .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                     .background(color = MaterialTheme.colorScheme.surface)
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp)
-                        .padding(vertical = 32.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    EmailField(state.emailState, onAction)
-                    PasswordField(state.passwordState, onAction)
-
-                    Spacer(modifier = Modifier.height(4.dp))
-                    LoginButton(state.canLogin, state.isLoggingIn, onAction)
-
-                    Spacer(modifier = Modifier.height(4.dp))
-                    SignUpAsNewUser(onAction)
-                }
+                LoginForm(state, onAction)
             }
         }
+    }
+}
+
+@Composable
+private fun LandscapeLayout(
+    onAction: (SignInScreenAction) -> Unit,
+    state: LoginState,
+) {
+    Scaffold { innerPadding ->
+        Row(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                ScreenTitleText()
+            }
+
+            Column(
+                modifier = Modifier
+                    .padding( top = 16.dp, end = 16.dp)
+                    .weight(2f)
+                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                    .background(color = MaterialTheme.colorScheme.surface)
+            ) {
+                LoginForm(state, onAction)
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoginForm(
+    state: LoginState,
+    onAction: (SignInScreenAction) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+            .padding(vertical = 32.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        EmailField(state.emailState, onAction)
+        PasswordField(state.passwordState, onAction)
+
+        Spacer(modifier = Modifier.height(4.dp))
+        LoginButton(state.canLogin, state.isLoggingIn, onAction)
+
+        Spacer(modifier = Modifier.height(4.dp))
+        SignUpAsNewUser(onAction)
     }
 }
 
@@ -221,6 +284,10 @@ private fun ScreenTitleText() {
 }
 
 @Preview
+@Preview(
+    name = "Phone - Landscape",
+    device = "spec:width = 411dp, height = 891dp, orientation = landscape, dpi = 420",
+)
 @Composable
 private fun SignInScreenPreview() {
     TaskyTheme {
