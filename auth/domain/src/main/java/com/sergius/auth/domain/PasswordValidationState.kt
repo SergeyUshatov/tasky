@@ -1,4 +1,4 @@
-package com.sergius.domain
+package com.sergius.auth.domain
 
 data class PasswordValidationState(
     val hasMinLength: Boolean = false,

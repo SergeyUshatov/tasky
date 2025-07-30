@@ -3,7 +3,7 @@ package com.sergius.auth.presentation
 import com.sergius.core.domain.util.DataError
 import com.sergius.core.domain.util.EmptyResult
 import com.sergius.core.domain.util.Result
-import com.sergius.domain.AuthRepository
+import com.sergius.auth.domain.AuthRepository
 
 class AuthRepositoryFake: AuthRepository {
 

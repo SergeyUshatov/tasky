@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.sergius.android.library)
     alias(libs.plugins.sergius.jvm.ktor)
+    alias(libs.plugins.android.junit5)
 }
 
 android {
@@ -13,4 +14,6 @@ dependencies {
     implementation(projects.core.data)
 
     implementation(libs.bundles.koin)
+
+    androidTestImplementation(projects.common.androidTest)
 }

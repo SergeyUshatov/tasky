@@ -1,4 +1,4 @@
-package com.sergius.domain
+package com.sergius.auth.domain
 
 private const val MIN_PASSWORD_LENGTH = 9
 
