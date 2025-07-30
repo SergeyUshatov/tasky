@@ -1,7 +1,7 @@
 package com.sergius.auth.data
 
 import android.util.Patterns
-import com.sergius.domain.PatternValidator
+import com.sergius.auth.domain.PatternValidator
 
 object EmailPatternValidator: PatternValidator {
     override fun matches(value: String): Boolean {

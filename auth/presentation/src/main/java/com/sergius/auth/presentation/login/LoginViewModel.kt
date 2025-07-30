@@ -9,8 +9,8 @@ import com.sergius.core.domain.util.onSuccess
 import com.sergius.core.presentation.ui.R
 import com.sergius.core.presentation.ui.UiText
 import com.sergius.core.presentation.ui.asUiText
-import com.sergius.domain.AuthRepository
-import com.sergius.domain.UserDataValidator
+import com.sergius.auth.domain.AuthRepository
+import com.sergius.auth.domain.UserDataValidator
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

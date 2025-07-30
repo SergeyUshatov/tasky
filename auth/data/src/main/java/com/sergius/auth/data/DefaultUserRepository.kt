@@ -7,7 +7,7 @@ import com.sergius.core.domain.util.DataError
 import com.sergius.core.domain.util.EmptyResult
 import com.sergius.core.domain.util.Result
 import com.sergius.core.domain.util.asEmptyDataResult
-import com.sergius.domain.AuthRepository
+import com.sergius.auth.domain.AuthRepository
 import io.ktor.client.HttpClient
 
 class DefaultUserRepository(

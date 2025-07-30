@@ -8,7 +8,7 @@ import com.sergius.auth.presentation.truth.LoginStateSubject.Companion.assertTha
 import com.sergius.core.domain.util.DataError
 import com.sergius.core.domain.util.Result
 import com.sergius.core.presentation.ui.R
-import com.sergius.domain.UserDataValidator
+import com.sergius.auth.domain.UserDataValidator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach

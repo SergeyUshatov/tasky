@@ -1,4 +1,4 @@
-package com.sergius.domain
+package com.sergius.auth.domain
 
 import com.sergius.core.domain.util.DataError
 import com.sergius.core.domain.util.EmptyResult
