@@ -27,7 +27,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 )
 
                 defaultConfig {
-                    testInstrumentationRunner = "com.sergius.tasky.KoinTestRunner"
+                    testInstrumentationRunner = "com.sergius.common.anroidtest.KoinTestRunner"
                     consumerProguardFiles("consumer-rules.pro")
                 }
             }
@@ -42,6 +42,12 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 "testImplementation"(libs.findLibrary("kotlinx.coroutines.test").get())
                 "testImplementation"(libs.findLibrary("androidx.arch.core.test").get())
                 "testImplementation"(libs.findLibrary("cash.turbine").get())
+
+                "androidTestImplementation"(libs.findLibrary("androidx.junit").get())
+                "androidTestImplementation"(libs.findLibrary("androidx.test.rules").get())
+                "androidTestImplementation"(libs.findLibrary("androidx.test.runner").get())
+                "androidTestImplementation"(libs.findLibrary("koin.test").get())
+                "androidTestImplementation"(libs.findLibrary("koin.test.junit4").get())
             }
         }
     }
