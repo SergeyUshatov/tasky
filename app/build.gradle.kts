@@ -18,6 +18,7 @@ dependencies {
     implementation(projects.core.presentation.designsystem)
     implementation(projects.auth.data)
     implementation(projects.auth.presentation)
+    implementation(projects.feature.agenda.presentation)
 
     implementation(libs.bundles.koin)
 
