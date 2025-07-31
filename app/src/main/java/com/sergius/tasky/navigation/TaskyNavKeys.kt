@@ -8,3 +8,6 @@ data object AuthorizeNavKey : NavKey
 
 @Serializable
 data object SignupNavKey : NavKey
+
+@Serializable
+data object AgendaNavKey : NavKey

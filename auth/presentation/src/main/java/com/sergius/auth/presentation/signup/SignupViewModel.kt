@@ -86,7 +86,7 @@ class SignupViewModel(
         viewModelScope.launch {
             _state.value = _state.value.copy(isSigningUp = true)
             authRepository.signUp(
-                name = _state.value.emailState.email.text.toString(),
+                name = _state.value.nameState.name.text.toString(),
                 email = _state.value.emailState.email.text.toString().trim(),
                 password = _state.value.passwordState.password.text.toString()
             ).onSuccess {

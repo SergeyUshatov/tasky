@@ -11,10 +11,13 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.sergius.auth.presentation.login.SignInScreenRoot
 import com.sergius.auth.presentation.signup.SignupScreenRoot
+import com.sergius.agenda.presentation.AgendaScreenRoot
 
 @Composable
-fun NavigationRoot() {
-    val initialNavKey = AuthorizeNavKey
+fun NavigationRoot(
+    isLoggedIn: Boolean
+) {
+    val initialNavKey = if (isLoggedIn) AgendaNavKey else AuthorizeNavKey
     val backStack = rememberNavBackStack(initialNavKey)
     val context = LocalContext.current
     NavDisplay(
@@ -33,7 +36,10 @@ fun NavigationRoot() {
                                 backStack.clear()
                                 backStack.add(SignupNavKey)
                             },
-                            onSignInSuccess = {}
+                            onSignInSuccess = {
+                                backStack.clear()
+                                backStack.add(AgendaNavKey)
+                            }
                         )
                     }
                 }
@@ -50,6 +56,12 @@ fun NavigationRoot() {
                                 backStack.add(AuthorizeNavKey)
                             }
                         )
+                    }
+                }
+
+                is AgendaNavKey -> {
+                    NavEntry(key = key) {
+                        AgendaScreenRoot()
                     }
                 }
 
