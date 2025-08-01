@@ -19,3 +19,11 @@ val EyeOpened: ImageVector
 val CheckIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.check_icon)
+
+val DropdownIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.dropdown)
+
+val CalendarTodayIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.calendar_today)

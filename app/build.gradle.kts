@@ -14,6 +14,7 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.domain)
     implementation(projects.core.data)
     implementation(projects.core.presentation.designsystem)
     implementation(projects.auth.data)
@@ -24,6 +25,8 @@ dependencies {
 
     // Logging
     implementation(libs.timber)
+
+    implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.androidx.lifecycle.navigation3)
     implementation(libs.androidx.navigation3.runtime)

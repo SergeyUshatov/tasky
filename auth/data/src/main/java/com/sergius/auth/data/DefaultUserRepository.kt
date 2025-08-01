@@ -45,7 +45,7 @@ class DefaultUserRepository(
         return httpClient.post<RegisterRequest, Unit>(
             route = "/auth/register",
             body = RegisterRequest(
-                name = name,
+                fullName = name,
                 email = email,
                 password = password
             )

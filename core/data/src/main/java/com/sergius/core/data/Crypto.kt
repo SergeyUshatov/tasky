@@ -24,8 +24,8 @@ object Crypto {
 
     fun encrypt(data: ByteArray): ByteArray {
         val key = getKey()
-        val iv = cipher.iv
         cipher.init(Cipher.ENCRYPT_MODE, key)
+        val iv = cipher.iv
         return iv + cipher.doFinal(data)
     }
 
