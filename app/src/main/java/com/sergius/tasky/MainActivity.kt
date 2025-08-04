@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sergius.core.presentation.designsystem.theme.TaskyTheme
 import com.sergius.tasky.navigation.NavigationRoot
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -18,21 +19,22 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                viewModel.state.isCheckingAuth
-            }
-        }
 
         setContent {
+            val state = viewModel.state.collectAsStateWithLifecycle()
+            installSplashScreen().apply {
+                setKeepOnScreenCondition {
+                    state.value.isCheckingAuth
+                }
+            }
             TaskyTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if (!viewModel.state.isCheckingAuth) {
+                    if (!state.value.isCheckingAuth) {
                         NavigationRoot(
-                            isLoggedIn = viewModel.state.isLoggedIn
+                            isLoggedIn = state.value.isLoggedIn
                         )
                     }
                 }

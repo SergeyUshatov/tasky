@@ -27,6 +27,7 @@ navigation3Lifecycle = "1.0.0-alpha03"
 koin = "4.1.0"
 
 coroutines = "1.10.2"
+kotlinDate = "0.7.1"
 timber = "5.0.1"
 room = "2.7.2"
 ktor = "3.2.2"
@@ -75,6 +76,7 @@ ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging", versio
 
 kotlin-serialization-json = { group = 'org.jetbrains.kotlinx', name = 'kotlinx-serialization-json', version.ref = "kotlin_serialization" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-datetime = {group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinDate" }
 
 # Logging
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }

@@ -1,5 +1,7 @@
 package com.sergius.core.presentation.designsystem
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -27,3 +29,7 @@ val DropdownIcon: ImageVector
 val CalendarTodayIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.calendar_today)
+
+val CalendarAddItemIcon: ImageVector
+    @Composable
+    get() = Icons.Filled.Add

@@ -11,6 +11,7 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.data)
 
+    implementation(libs.kotlinx.datetime)
     implementation(libs.androidx.activity.compose)
     implementation(libs.timber)
 }
