@@ -14,6 +14,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -28,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sergius.core.presentation.designsystem.CalendarAddItemIcon
 import com.sergius.core.presentation.designsystem.CalendarTodayIcon
 import com.sergius.core.presentation.designsystem.DropdownIcon
 import com.sergius.core.presentation.designsystem.theme.TaskyCalendarSupplementary
@@ -60,7 +64,16 @@ private fun AgendaScreen(
     onAction: (AgendaAction) -> Unit,
     state: AgendaState
 ) {
-    Scaffold { innerPadding ->
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {}
+            ) {
+                Icon(CalendarAddItemIcon, "Add Agenda Item")
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -87,6 +100,7 @@ private fun AgendaScreen(
                 )
             }
         }
+
     }
 }
 
