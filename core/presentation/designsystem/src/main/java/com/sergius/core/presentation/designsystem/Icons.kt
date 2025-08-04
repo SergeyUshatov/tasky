@@ -33,3 +33,15 @@ val CalendarTodayIcon: ImageVector
 val CalendarAddItemIcon: ImageVector
     @Composable
     get() = Icons.Filled.Add
+
+val ReminderIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.reminder_icon)
+
+val TaskIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.task_icon)
+
+val EventIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.event_icon)

@@ -58,6 +58,11 @@ class AgendaViewModel : ViewModel() {
     }
 
     fun onAction(action: AgendaAction) {
-        TODO("Not yet implemented")
+        when(action) {
+            is AgendaAction.OnCreateAgendaItemClick -> {
+                _state.value = _state.value.copy(fabExpanded = !_state.value.fabExpanded)
+            }
+            else -> Unit
+        }
     }
 }
