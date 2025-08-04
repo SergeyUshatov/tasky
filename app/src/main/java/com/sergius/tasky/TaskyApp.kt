@@ -1,6 +1,7 @@
 package com.sergius.tasky
 
 import android.app.Application
+import com.sergius.agenda.presentation.di.agendaModule
 import com.sergius.auth.presentation.di.authViewModelModule
 import com.sergius.auth.data.di.authDataModule
 import com.sergius.core.data.di.coreDataModule
@@ -29,6 +30,7 @@ class TaskyApp: Application() {
                 coreDataModule,
                 authDataModule,
                 authViewModelModule,
+                agendaModule,
             )
         }
     }

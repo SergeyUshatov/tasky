@@ -71,6 +71,13 @@ val LightTypography = Typography(
         lineHeight = 30.sp,
         color = TaskyLightOnBackground
     ),
+    headlineMedium = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Companion.SemiBold,
+        fontSize = 20.sp,
+        lineHeight = 24.sp,
+        color = TaskyLightPrimary
+    ),
 )
 
 val DarkTypography = Typography(
