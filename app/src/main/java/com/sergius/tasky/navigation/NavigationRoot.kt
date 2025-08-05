@@ -9,9 +9,9 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
+import com.sergius.agenda.presentation.AgendaScreenRoot
 import com.sergius.auth.presentation.login.SignInScreenRoot
 import com.sergius.auth.presentation.signup.SignupScreenRoot
-import com.sergius.agenda.presentation.AgendaScreenRoot
 
 @Composable
 fun NavigationRoot(
@@ -61,12 +61,16 @@ fun NavigationRoot(
 
                 is AgendaNavKey -> {
                     NavEntry(key = key) {
-                        AgendaScreenRoot()
+                        AgendaScreenRoot(
+                            onTaskCreateClick = {},
+                            onEventCreateClick = {},
+                            onReminderCreateClick = {},
+                        )
                     }
                 }
 
                 else -> {
-                    Toast.makeText(context,"Unknown navigation key: $key", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Unknown navigation key: $key", Toast.LENGTH_SHORT).show()
                     NavEntry(key = key) {}
                 }
             }
