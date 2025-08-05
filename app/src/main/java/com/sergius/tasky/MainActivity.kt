@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -21,10 +22,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val state = viewModel.state.collectAsStateWithLifecycle()
+            val state by viewModel.state.collectAsStateWithLifecycle()
             installSplashScreen().apply {
                 setKeepOnScreenCondition {
-                    state.value.isCheckingAuth
+                    state.isCheckingAuth
                 }
             }
             TaskyTheme {
@@ -32,9 +33,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if (!state.value.isCheckingAuth) {
+                    if (!state.isCheckingAuth) {
                         NavigationRoot(
-                            isLoggedIn = state.value.isLoggedIn
+                            isLoggedIn = state.isLoggedIn
                         )
                     }
                 }

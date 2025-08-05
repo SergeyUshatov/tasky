@@ -1,4 +1,4 @@
-package com.sergius.agenda.presentation
+package com.sergius.agenda.presentation.agendaoverview
 
 import kotlinx.datetime.Month
 

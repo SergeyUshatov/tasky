@@ -1,4 +1,4 @@
-package com.sergius.agenda.presentation
+package com.sergius.agenda.presentation.agendaoverview
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

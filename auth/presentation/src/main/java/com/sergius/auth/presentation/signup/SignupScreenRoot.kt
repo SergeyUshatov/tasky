@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,7 +50,7 @@ fun SignupScreenRoot(
     onSignupSuccess: () -> Unit,
     viewModel: SignupViewModel = koinViewModel(),
 ) {
-    val state = viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
     ObserveAsEvents(viewModel.events) { event ->
@@ -68,7 +69,7 @@ fun SignupScreenRoot(
     }
 
     SignupScreen(
-        state = state.value,
+        state = state,
         onAction = { action ->
             when (action) {
                 is SignUpScreenAction.OnLoginClick -> onLoginClick()

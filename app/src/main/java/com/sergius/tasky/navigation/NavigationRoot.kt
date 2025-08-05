@@ -9,7 +9,10 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
-import com.sergius.agenda.presentation.AgendaScreenRoot
+import com.sergius.agenda.presentation.agendaoverview.AgendaScreenRoot
+import com.sergius.agenda.presentation.event.EventDetailsRoot
+import com.sergius.agenda.presentation.reminder.ReminderDetailsRoot
+import com.sergius.agenda.presentation.task.TaskDetailsRoot
 import com.sergius.auth.presentation.login.SignInScreenRoot
 import com.sergius.auth.presentation.signup.SignupScreenRoot
 
@@ -62,10 +65,34 @@ fun NavigationRoot(
                 is AgendaNavKey -> {
                     NavEntry(key = key) {
                         AgendaScreenRoot(
-                            onTaskCreateClick = {},
-                            onEventCreateClick = {},
-                            onReminderCreateClick = {},
+                            onTaskCreateClick = {
+                                backStack.add(TaskNavKey)
+                            },
+                            onEventCreateClick = {
+                                backStack.add(EventNavKey)
+                            },
+                            onReminderCreateClick = {
+                                backStack.add(ReminderNavKey)
+                            },
                         )
+                    }
+                }
+
+                is TaskNavKey -> {
+                    NavEntry(key = key) {
+                        TaskDetailsRoot()
+                    }
+                }
+
+                is EventNavKey -> {
+                    NavEntry(key = key) {
+                        EventDetailsRoot()
+                    }
+                }
+
+                is ReminderNavKey -> {
+                    NavEntry(key = key) {
+                        ReminderDetailsRoot()
                     }
                 }
 
