@@ -1,6 +1,5 @@
-package com.sergius.agenda.presentation
+package com.sergius.agenda.presentation.agendaoverview
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
@@ -42,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -74,25 +72,24 @@ fun AgendaScreenRoot(
     onReminderCreateClick: () -> Unit,
     viewModel: AgendaViewModel = koinViewModel()
 ) {
-    val state = viewModel.state.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+    val state by viewModel.state.collectAsStateWithLifecycle()
     AgendaScreen(
-        state = state.value,
+        state = state,
         onAction = { action ->
             when (action) {
                 is AgendaAction.OnTaskCreateClick -> {
-                    Toast.makeText(context, "Task", Toast.LENGTH_SHORT).show()
-                    onTaskCreateClick
+                    viewModel.onAction(AgendaAction.OnCreateAgendaItemClick)
+                    onTaskCreateClick()
                 }
 
                 is AgendaAction.OnEventCreateClick -> {
-                    onEventCreateClick
-                    Toast.makeText(context, "Event", Toast.LENGTH_SHORT).show()
+                    viewModel.onAction(AgendaAction.OnCreateAgendaItemClick)
+                    onEventCreateClick()
                 }
 
                 is AgendaAction.OnReminderCreateClick -> {
-                    Toast.makeText(context, "Reminder", Toast.LENGTH_SHORT).show()
-                    onReminderCreateClick
+                    viewModel.onAction(AgendaAction.OnCreateAgendaItemClick)
+                    onReminderCreateClick()
                 }
 
                 else -> Unit
@@ -273,7 +270,7 @@ private fun CalendarDays(
 
 @Composable
 private fun AgendaHeader(
-    month: Month
+    month: String
 ) {
     Row(
         modifier = Modifier
@@ -318,7 +315,7 @@ private fun AgendaHeader(
 
 @Composable
 private fun MonthHeaderItem(
-    month: Month
+    month: String
 ) {
     Row(
         modifier = Modifier
@@ -326,7 +323,7 @@ private fun MonthHeaderItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = month.name,
+            text = month,
             style = MaterialTheme.typography.labelMedium,
         )
 
@@ -355,7 +352,7 @@ private fun AgendaScreenPreview() {
     }
     val state = AgendaState(
         fabExpanded = true,
-        month = Month.AUGUST,
+        month = Month.AUGUST.name,
         days = calendarDays
     )
 

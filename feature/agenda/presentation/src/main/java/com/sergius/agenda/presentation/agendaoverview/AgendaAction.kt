@@ -1,4 +1,4 @@
-package com.sergius.agenda.presentation
+package com.sergius.agenda.presentation.agendaoverview
 
 sealed interface AgendaAction {
     data class OnDayClick(val day: CalendarUi) : AgendaAction

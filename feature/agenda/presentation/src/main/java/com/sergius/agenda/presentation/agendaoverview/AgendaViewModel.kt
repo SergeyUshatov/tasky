@@ -1,4 +1,4 @@
-package com.sergius.agenda.presentation
+package com.sergius.agenda.presentation.agendaoverview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
@@ -18,28 +18,28 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class AgendaViewModel : ViewModel() {
-
-    private val _state = MutableStateFlow(
-        AgendaState(
-            month = getCurrentMonth(),
-            days = getDaysOfMonth()
-        )
-    )
+    private var isInitialized = false
+    private val _state = MutableStateFlow(AgendaState())
     val state = _state
         .onStart {
+            if (isInitialized) return@onStart
+            _state.update {
+                it.copy(
+                    month = getCurrentMonth(),
+                    days = getDaysOfMonth()
+                )
+            }
             getDaysOfMonth()
+            isInitialized = true
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(2000),
-            initialValue = AgendaState(
-                month = getCurrentMonth(),
-                days = getDaysOfMonth()
-            )
+            initialValue = AgendaState()
         )
 
-    private fun getCurrentMonth(): Month {
-        return now().month
+    private fun getCurrentMonth(): String {
+        return now().month.name
     }
 
     private fun now(): LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault())

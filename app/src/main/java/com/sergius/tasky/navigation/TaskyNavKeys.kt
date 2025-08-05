@@ -11,3 +11,12 @@ data object SignupNavKey : NavKey
 
 @Serializable
 data object AgendaNavKey : NavKey
+
+@Serializable
+data object TaskNavKey : NavKey
+
+@Serializable
+data object EventNavKey : NavKey
+
+@Serializable
+data object ReminderNavKey : NavKey
