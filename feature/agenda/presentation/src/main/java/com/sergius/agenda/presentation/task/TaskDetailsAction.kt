@@ -1,0 +1,9 @@
+package com.sergius.agenda.presentation.task
+
+sealed interface TaskDetailsAction {
+    object OnCancelClick: TaskDetailsAction
+    object OnSaveClick: TaskDetailsAction
+    object OnEditTitleClick: TaskDetailsAction
+    object OnEditDescriptionClick: TaskDetailsAction
+    object OnDeleteClick: TaskDetailsAction
+}
