@@ -15,22 +15,30 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sergius.core.presentation.designsystem.BellIcon
-import com.sergius.core.presentation.designsystem.ChevronRightIcon
+import com.sergius.core.presentation.designsystem.DropdownIcon
+import com.sergius.core.presentation.designsystem.elements.ChevronButton
+import com.sergius.core.presentation.designsystem.elements.DatePickerModal
+import com.sergius.core.presentation.designsystem.elements.TimePickerDialog
 import com.sergius.core.presentation.designsystem.theme.TaskyRed
 import com.sergius.core.presentation.designsystem.theme.TaskyTaskColor
 import com.sergius.core.presentation.designsystem.theme.TaskyTheme
@@ -42,7 +50,9 @@ fun TaskDetailsRoot(
     onSaveClick: () -> Unit,
     viewModel: TaskDetailsViewModel = koinViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
     TaskDetails(
+        state = state,
         onAction = { action ->
             when (action) {
                 TaskDetailsAction.OnCancelClick -> {
@@ -53,11 +63,7 @@ fun TaskDetailsRoot(
                     onSaveClick()
                 }
 
-                TaskDetailsAction.OnDeleteClick -> {
-
-                }
-
-                else -> {}
+                else -> viewModel.onAction(action)
             }
         }
     )
@@ -65,7 +71,8 @@ fun TaskDetailsRoot(
 
 @Composable
 private fun TaskDetails(
-    onAction: (TaskDetailsAction) -> Unit
+    onAction: (TaskDetailsAction) -> Unit,
+    state: TaskDetailsState
 ) {
     Scaffold { innerPadding ->
         Column(
@@ -91,7 +98,13 @@ private fun TaskDetails(
                 TaskDescription(onAction)
                 TaskyDivider()
 
-                TaskDateTime(onAction)
+                TaskDateTime(
+                    onAction = onAction,
+                    showTimerDialog = state.showTimerDialog,
+                    timePickerState = state.timePickerState,
+                    showDateDialog = state.showDateDialog,
+                    datePickerState = state.datePickerState
+                )
                 TaskyDivider()
 
                 Reminder(onAction)
@@ -111,7 +124,9 @@ private fun TaskyDivider() {
 }
 
 @Composable
-private fun Reminder(onAction: (TaskDetailsAction) -> Unit) {
+private fun Reminder(
+    onAction: (TaskDetailsAction) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -130,17 +145,127 @@ private fun Reminder(onAction: (TaskDetailsAction) -> Unit) {
 }
 
 @Composable
-private fun TaskDateTime(onAction: (TaskDetailsAction) -> Unit) {
+private fun TaskDateTime(
+    onAction: (TaskDetailsAction) -> Unit,
+    showTimerDialog: Boolean,
+    timePickerState: TimePickerState,
+    showDateDialog: Boolean,
+    datePickerState: DatePickerState
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp, horizontal = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
             text = "At",
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+        )
+
+        TimePickerField(
+            onAction = onAction,
+            timePickerState = timePickerState,
+            showTimerDialog = showTimerDialog,
+            modifier = Modifier
+                .weight(1f)
+                .padding(vertical = 12.dp, horizontal = 4.dp)
+                .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
+        )
+
+        DatePickerField(
+            showModal = showDateDialog,
+            onAction = onAction,
+            datePickerState = datePickerState,
+            modifier = Modifier
+                .weight(1f)
+                .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
+        )
+    }
+}
+
+@Composable
+private fun TimePickerField(
+    onAction: (TaskDetailsAction) -> Unit,
+    timePickerState: TimePickerState,
+    showTimerDialog: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .padding(4.dp)
+            .clickable { onAction(TaskDetailsAction.OnToggleTimerDialogVisibility) },
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = timePickerState.toFormattedTime(),
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .weight(1f),
+            textAlign = TextAlign.Center
+        )
+
+        Icon(
+            imageVector = DropdownIcon,
+            contentDescription = "Dropdown Icon",
+            tint = MaterialTheme.colorScheme.primary
+        )
+
+        if (showTimerDialog) {
+            TimePickerDialog(
+                onDismiss = {
+                    onAction(TaskDetailsAction.OnToggleTimerDialogVisibility)
+                },
+                onConfirm = {
+                    onAction(TaskDetailsAction.OnToggleTimerDialogVisibility)
+                }
+            ) {
+                TimePicker(
+                    state = timePickerState,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DatePickerField(
+    onAction: (TaskDetailsAction) -> Unit,
+    showModal: Boolean,
+    datePickerState: DatePickerState,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .padding(4.dp)
+            .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
+            .clickable {
+                onAction(TaskDetailsAction.OnToggleDateDialogVisibility)
+            },
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = datePickerState.selectedDateMillis?.convertMillisToDate() ?: "date",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .weight(1f),
+            textAlign = TextAlign.Center
+        )
+
+        Icon(
+            imageVector = DropdownIcon,
+            contentDescription = "Dropdown Icon",
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
+
+    if (showModal) {
+        DatePickerModal(
+            datePickerState = datePickerState,
+            onDateSelected = { onAction(TaskDetailsAction.OnDateSelected(it)) },
+            onDismiss = { onAction(TaskDetailsAction.OnToggleDateDialogVisibility) }
         )
     }
 }
@@ -190,21 +315,6 @@ private fun TaskTitle(onAction: (TaskDetailsAction) -> Unit) {
             color = MaterialTheme.colorScheme.primary
         )
         ChevronButton(onClick = { onAction(TaskDetailsAction.OnEditTitleClick) })
-    }
-}
-
-@Composable
-private fun ChevronButton(
-    onClick: () -> Unit,
-) {
-    IconButton(
-        onClick = onClick
-    ) {
-        Icon(
-            imageVector = ChevronRightIcon,
-            contentDescription = "chevron",
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }
 
@@ -296,9 +406,11 @@ private fun Header(
 @Preview
 @Composable
 private fun TaskDetailsPreview() {
+    val state = TaskDetailsState()
     TaskyTheme {
         TaskDetails(
-            onAction = {}
+            state = state,
+            onAction = {},
         )
     }
 }

@@ -6,4 +6,7 @@ sealed interface TaskDetailsAction {
     object OnEditTitleClick: TaskDetailsAction
     object OnEditDescriptionClick: TaskDetailsAction
     object OnDeleteClick: TaskDetailsAction
+    object OnToggleTimerDialogVisibility: TaskDetailsAction
+    object OnToggleDateDialogVisibility: TaskDetailsAction
+    data class OnDateSelected(val date: Long?): TaskDetailsAction
 }
