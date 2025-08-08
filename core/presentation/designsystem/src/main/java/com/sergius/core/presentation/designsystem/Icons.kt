@@ -45,3 +45,11 @@ val TaskIcon: ImageVector
 val EventIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.event_icon)
+
+val ChevronRightIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.chevron_right)
+
+val BellIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.bell_icon)

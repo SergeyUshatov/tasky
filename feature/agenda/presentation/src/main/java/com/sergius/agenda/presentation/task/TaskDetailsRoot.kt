@@ -1,33 +1,295 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.sergius.agenda.presentation.task
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.sergius.core.presentation.designsystem.BellIcon
+import com.sergius.core.presentation.designsystem.ChevronRightIcon
+import com.sergius.core.presentation.designsystem.theme.TaskyRed
+import com.sergius.core.presentation.designsystem.theme.TaskyTaskColor
 import com.sergius.core.presentation.designsystem.theme.TaskyTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TaskDetailsRoot() {
-    TaskDetails()
+fun TaskDetailsRoot(
+    onCancelClick: () -> Unit,
+    onSaveClick: () -> Unit,
+    viewModel: TaskDetailsViewModel = koinViewModel()
+) {
+    TaskDetails(
+        onAction = { action ->
+            when (action) {
+                TaskDetailsAction.OnCancelClick -> {
+                    onCancelClick()
+                }
+
+                TaskDetailsAction.OnSaveClick -> {
+                    onSaveClick()
+                }
+
+                TaskDetailsAction.OnDeleteClick -> {
+
+                }
+
+                else -> {}
+            }
+        }
+    )
 }
 
 @Composable
-private fun TaskDetails() {
+private fun TaskDetails(
+    onAction: (TaskDetailsAction) -> Unit
+) {
     Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize(),
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
-            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background)
         ) {
-            Text(text = "Task Details will be here")
+            Header(onAction)
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(innerPadding)
+                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                    .background(color = MaterialTheme.colorScheme.surface)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.Start
+            ) {
+                ItemType()
+                TaskTitle(onAction)
+                TaskyDivider()
+
+                TaskDescription(onAction)
+                TaskyDivider()
+
+                TaskDateTime(onAction)
+                TaskyDivider()
+
+                Reminder(onAction)
+            }
+            Footer(onAction)
         }
+    }
+}
+
+@Composable
+private fun TaskyDivider() {
+    HorizontalDivider(
+        thickness = 1.dp,
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+    )
+}
+
+@Composable
+private fun Reminder(onAction: (TaskDetailsAction) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp, horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(imageVector = BellIcon, contentDescription = "reminder icon")
+        Text(
+            modifier = Modifier
+                .weight(1f),
+            text = "30 minutes before",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@Composable
+private fun TaskDateTime(onAction: (TaskDetailsAction) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp, horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = "At",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@Composable
+private fun TaskDescription(onAction: (TaskDetailsAction) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp, horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            modifier = Modifier
+                .weight(1f),
+            text = "Task\nDescription",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        ChevronButton(onClick = { onAction(TaskDetailsAction.OnEditDescriptionClick) })
+    }
+}
+
+@Composable
+private fun TaskTitle(onAction: (TaskDetailsAction) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp, horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(8.dp)
+                .size(20.dp)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = CircleShape
+                )
+        )
+        Text(
+            modifier = Modifier
+                .weight(1f),
+            text = "Task Title",
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.primary
+        )
+        ChevronButton(onClick = { onAction(TaskDetailsAction.OnEditTitleClick) })
+    }
+}
+
+@Composable
+private fun ChevronButton(
+    onClick: () -> Unit,
+) {
+    IconButton(
+        onClick = onClick
+    ) {
+        Icon(
+            imageVector = ChevronRightIcon,
+            contentDescription = "chevron",
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun Footer(
+    onAction: (TaskDetailsAction) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.surface)
+            .padding(vertical = 16.dp, horizontal = 12.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "DELETE TASK",
+            style = MaterialTheme.typography.labelSmall,
+            color = TaskyRed,
+            modifier = Modifier
+                .clickable {
+                    onAction(TaskDetailsAction.OnDeleteClick)
+                }
+        )
+    }
+}
+
+@Composable
+private fun ItemType() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp, horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(8.dp)
+                .size(20.dp)
+                .background(
+                    color = TaskyTaskColor,
+                    shape = RoundedCornerShape(4.dp)
+                )
+        )
+
+        Text(
+            text = "TASK",
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Companion.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
+private fun Header(
+    onAction: (TaskDetailsAction) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "Cancel",
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier
+                .clickable {
+                    onAction(TaskDetailsAction.OnCancelClick)
+                }
+        )
+        Text(
+            text = "EDIT TASK",
+            style = MaterialTheme.typography.labelMedium
+        )
+        Text(
+            text = "Save",
+            style = MaterialTheme.typography.labelMedium,
+            color = TaskyTaskColor,
+            modifier = Modifier
+                .clickable {
+                    onAction(TaskDetailsAction.OnSaveClick)
+                }
+        )
     }
 }
 
@@ -35,6 +297,8 @@ private fun TaskDetails() {
 @Composable
 private fun TaskDetailsPreview() {
     TaskyTheme {
-        TaskDetails()
+        TaskDetails(
+            onAction = {}
+        )
     }
 }

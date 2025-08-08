@@ -31,9 +31,9 @@ fun NavigationRoot(
             rememberSceneSetupNavEntryDecorator()
         ),
         entryProvider = { key ->
-            when (key) {
-                is AuthorizeNavKey -> {
-                    NavEntry(key = key) {
+            NavEntry(key = key) {
+                when (key) {
+                    is AuthorizeNavKey -> {
                         SignInScreenRoot(
                             onSignUpClick = {
                                 backStack.clear()
@@ -45,10 +45,8 @@ fun NavigationRoot(
                             }
                         )
                     }
-                }
 
-                is SignupNavKey -> {
-                    NavEntry(key = key) {
+                    is SignupNavKey -> {
                         SignupScreenRoot(
                             onLoginClick = {
                                 backStack.clear()
@@ -60,10 +58,8 @@ fun NavigationRoot(
                             }
                         )
                     }
-                }
 
-                is AgendaNavKey -> {
-                    NavEntry(key = key) {
+                    is AgendaNavKey -> {
                         AgendaScreenRoot(
                             onTaskCreateClick = {
                                 backStack.add(TaskNavKey)
@@ -76,29 +72,30 @@ fun NavigationRoot(
                             },
                         )
                     }
-                }
 
-                is TaskNavKey -> {
-                    NavEntry(key = key) {
-                        TaskDetailsRoot()
+                    is TaskNavKey -> {
+                        TaskDetailsRoot(
+                            onCancelClick = {
+                                backStack.clear()
+                                backStack.add(AgendaNavKey)
+                            },
+                            onSaveClick = {
+                                backStack.clear()
+                                backStack.add(AgendaNavKey)
+                            },
+                        )
                     }
-                }
 
-                is EventNavKey -> {
-                    NavEntry(key = key) {
+                    is EventNavKey -> {
                         EventDetailsRoot()
                     }
-                }
 
-                is ReminderNavKey -> {
-                    NavEntry(key = key) {
+                    is ReminderNavKey -> {
                         ReminderDetailsRoot()
                     }
-                }
-
-                else -> {
-                    Toast.makeText(context, "Unknown navigation key: $key", Toast.LENGTH_SHORT).show()
-                    NavEntry(key = key) {}
+                    else -> {
+                        Toast.makeText(context, "Unknown navigation key: $key", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
