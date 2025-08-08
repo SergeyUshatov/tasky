@@ -3,6 +3,7 @@ package com.sergius.agenda.presentation.task
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimePickerState
+import com.sergius.core.domain.ReminderItem
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -16,7 +17,11 @@ data class TaskDetailsState(
     val timePickerState: TimePickerState = TimePickerState(initialHour = 0, initialMinute = 0, is24Hour = true),
     val showDateDialog: Boolean = false,
     val selectedDate: Long? = null,
-    val datePickerState: DatePickerState = DatePickerState(locale = Locale.getDefault())
+    val datePickerState: DatePickerState = DatePickerState(locale = Locale.getDefault()),
+    val showReminderDropdown: Boolean = false,
+    val reminderOptions: List<String> = ReminderItem.entries.map { it.text },
+    val reminderSelectedIndex: Int = 0,
+    val reminderSelectedOption: String = reminderOptions[reminderSelectedIndex]
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

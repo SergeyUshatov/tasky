@@ -2,6 +2,8 @@
 
 package com.sergius.agenda.presentation.task
 
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,7 +20,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,15 +31,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sergius.core.presentation.designsystem.BellIcon
-import com.sergius.core.presentation.designsystem.DropdownIcon
 import com.sergius.core.presentation.designsystem.elements.ChevronButton
 import com.sergius.core.presentation.designsystem.elements.DatePickerModal
+import com.sergius.core.presentation.designsystem.elements.DropdownIcon
+import com.sergius.core.presentation.designsystem.elements.TaskyDivider
 import com.sergius.core.presentation.designsystem.elements.TimePickerDialog
 import com.sergius.core.presentation.designsystem.theme.TaskyRed
 import com.sergius.core.presentation.designsystem.theme.TaskyTaskColor
@@ -85,7 +89,6 @@ private fun TaskDetails(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(innerPadding)
                     .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                     .background(color = MaterialTheme.colorScheme.surface)
                     .fillMaxSize(),
@@ -107,40 +110,85 @@ private fun TaskDetails(
                 )
                 TaskyDivider()
 
-                Reminder(onAction)
+                Reminder(
+                    onAction = onAction,
+                    items = state.reminderOptions,
+                    selectedOption = state.reminderSelectedOption,
+                    expanded = state.showReminderDropdown,
+                )
             }
+
+            TaskyDivider()
             Footer(onAction)
         }
     }
 }
 
 @Composable
-private fun TaskyDivider() {
-    HorizontalDivider(
-        thickness = 1.dp,
-        modifier = Modifier
-            .padding(horizontal = 12.dp)
-    )
-}
-
-@Composable
 private fun Reminder(
-    onAction: (TaskDetailsAction) -> Unit
+    onAction: (TaskDetailsAction) -> Unit,
+    items: List<String>,
+    selectedOption: String,
+    expanded: Boolean,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp, horizontal = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(imageVector = BellIcon, contentDescription = "reminder icon")
-        Text(
+    Column {
+        Row(
             modifier = Modifier
-                .weight(1f),
-            text = "30 minutes before",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
+                .fillMaxWidth()
+                .padding(vertical = 16.dp, horizontal = 12.dp)
+                .clickable {
+                    onAction(TaskDetailsAction.OnToggleReminderDropdownVisibility)
+                },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Icon(
+                imageVector = BellIcon,
+                contentDescription = "reminder icon",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+            )
+
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .weight(1f),
+                text = selectedOption,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            val transition = updateTransition(targetState = expanded, label = "transition")
+            val rotation by transition.animateFloat(label = "rotation") {
+                if (it) 180f else 0f
+            }
+            DropdownIcon(modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .rotate(rotation)
+            )
+        }
+
+        if (expanded) {
+            val itemList = items.map {
+                DropdownItem(
+                    text = it,
+                    onClick = {
+                        onAction(TaskDetailsAction.OnDropdownItemClick(items.indexOf(it)))
+                    }
+                )
+            }
+            Row {
+                Spacer(modifier = Modifier.weight(1f))
+                DropdownList(
+                    items = itemList,
+                    selectedIndex = items.indexOf(selectedOption),
+                    onDismissRequest = {
+                        onAction(TaskDetailsAction.OnToggleReminderDropdownVisibility)
+                    }
+                )
+            }
+        }
     }
 }
 
@@ -207,11 +255,7 @@ private fun TimePickerField(
             textAlign = TextAlign.Center
         )
 
-        Icon(
-            imageVector = DropdownIcon,
-            contentDescription = "Dropdown Icon",
-            tint = MaterialTheme.colorScheme.primary
-        )
+        DropdownIcon()
 
         if (showTimerDialog) {
             TimePickerDialog(
@@ -223,6 +267,8 @@ private fun TimePickerField(
                 }
             ) {
                 TimePicker(
+                    modifier = Modifier
+                        .weight(1f),
                     state = timePickerState,
                 )
             }
@@ -254,11 +300,7 @@ private fun DatePickerField(
             textAlign = TextAlign.Center
         )
 
-        Icon(
-            imageVector = DropdownIcon,
-            contentDescription = "Dropdown Icon",
-            tint = MaterialTheme.colorScheme.primary
-        )
+        DropdownIcon()
     }
 
     if (showModal) {

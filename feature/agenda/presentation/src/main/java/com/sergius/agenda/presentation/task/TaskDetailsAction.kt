@@ -9,4 +9,6 @@ sealed interface TaskDetailsAction {
     object OnToggleTimerDialogVisibility: TaskDetailsAction
     object OnToggleDateDialogVisibility: TaskDetailsAction
     data class OnDateSelected(val date: Long?): TaskDetailsAction
+    object OnToggleReminderDropdownVisibility: TaskDetailsAction
+    data class OnDropdownItemClick(val itemIndex: Int): TaskDetailsAction
 }
