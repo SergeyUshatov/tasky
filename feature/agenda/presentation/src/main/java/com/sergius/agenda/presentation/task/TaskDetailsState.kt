@@ -20,8 +20,7 @@ data class TaskDetailsState(
     val datePickerState: DatePickerState = DatePickerState(locale = Locale.getDefault()),
     val showReminderDropdown: Boolean = false,
     val reminderOptions: List<String> = ReminderItem.entries.map { it.text },
-    val reminderSelectedIndex: Int = 0,
-    val reminderSelectedOption: String = reminderOptions[reminderSelectedIndex]
+    val reminderSelectedOption: String = reminderOptions.first()
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -174,7 +174,7 @@ private fun Reminder(
                 DropdownItem(
                     text = it,
                     onClick = {
-                        onAction(TaskDetailsAction.OnDropdownItemClick(items.indexOf(it)))
+                        onAction(TaskDetailsAction.OnDropdownItemClick(it))
                     }
                 )
             }

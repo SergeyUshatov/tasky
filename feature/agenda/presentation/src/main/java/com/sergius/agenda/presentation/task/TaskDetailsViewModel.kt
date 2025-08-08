@@ -35,8 +35,7 @@ class TaskDetailsViewModel: ViewModel() {
 
             is TaskDetailsAction.OnDropdownItemClick -> {
                 _state.value = _state.value.copy(
-                    reminderSelectedIndex = action.itemIndex,
-                    reminderSelectedOption = _state.value.reminderOptions[action.itemIndex],
+                    reminderSelectedOption = action.item,
                     showReminderDropdown = false
                 )
             }
