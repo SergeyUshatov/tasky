@@ -6,38 +6,53 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 
 @OptIn(ExperimentalMaterial3Api::class)
-class TaskDetailsViewModel: ViewModel() {
+class TaskDetailsViewModel : ViewModel() {
 
     private val _state = MutableStateFlow(TaskDetailsState())
     val state = _state
-        .onStart {  }
+        .onStart { }
         .stateIn(
             scope = viewModelScope,
-            started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(2000),
+            started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000),
             initialValue = TaskDetailsState()
         )
 
     fun onAction(action: TaskDetailsAction) {
-        when(action) {
+        when (action) {
             is TaskDetailsAction.OnToggleTimerDialogVisibility -> {
-                _state.value = _state.value.copy(showTimerDialog = !_state.value.showTimerDialog)
+                _state.update {
+                    it.copy(
+                        showTimerDialog = !_state.value.showTimerDialog
+                    )
+                }
             }
 
             is TaskDetailsAction.OnToggleDateDialogVisibility -> {
-                _state.value = _state.value.copy(showDateDialog = !_state.value.showDateDialog)
+                _state.update {
+                    it.copy(
+                        showDateDialog = !_state.value.showDateDialog
+                    )
+                }
             }
 
             is TaskDetailsAction.OnToggleReminderDropdownVisibility -> {
-                _state.value = _state.value.copy(showReminderDropdown = !_state.value.showReminderDropdown)
+                _state.update {
+                    it.copy(
+                        showReminderDropdown = !_state.value.showReminderDropdown
+                    )
+                }
             }
 
             is TaskDetailsAction.OnDropdownItemClick -> {
-                _state.value = _state.value.copy(
-                    reminderSelectedOption = action.item,
-                    showReminderDropdown = false
-                )
+                _state.update {
+                    it.copy(
+                        reminderSelectedOption = action.item,
+                        showReminderDropdown = false
+                    )
+                }
             }
 
             else -> Unit
