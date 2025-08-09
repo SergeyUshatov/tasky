@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="task_description">Task\nDescription</string>
+    <string name="task_title">Task Title</string>
+    <string name="delete_task">DELETE TASK</string>
+    <string name="task">Task</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit_task">EDIT TASK</string>
+    <string name="save">Save</string>
+    <string name="at">At</string>
+    <string name="date">date</string>
+    <string name="today">Today</string>
+    <string name="event">Event</string>
+    <string name="reminder">Reminder</string>
+</resources>

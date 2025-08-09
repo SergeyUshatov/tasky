@@ -41,12 +41,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sergius.agenda.presentation.R
 import com.sergius.core.presentation.designsystem.CalendarAddItemIcon
 import com.sergius.core.presentation.designsystem.CalendarTodayIcon
 import com.sergius.core.presentation.designsystem.DropdownIcon
@@ -130,7 +132,7 @@ private fun AgendaScreen(
                 CalendarDays(calendarDays = state.days, onClick = onAction)
 
                 Text(
-                    text = "Today",
+                    text = stringResource(R.string.today),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -149,15 +151,15 @@ private fun FabUi(
 ) {
     val items = listOf(
         MiniFabItem(
-            icon = TaskIcon, title = "Task",
+            icon = TaskIcon, title = stringResource(R.string.task),
             onClick = { onAction(AgendaAction.OnTaskCreateClick) }
         ),
         MiniFabItem(
-            icon = EventIcon, title = "Event",
+            icon = EventIcon, title = stringResource(R.string.event),
             onClick = { onAction(AgendaAction.OnEventCreateClick) }
         ),
         MiniFabItem(
-            icon = ReminderIcon, title = "Reminder",
+            icon = ReminderIcon, title = stringResource(R.string.reminder),
             onClick = { onAction(AgendaAction.OnReminderCreateClick) }
         )
     )
@@ -220,7 +222,7 @@ private fun ItemUi(
             modifier = Modifier.size(48.dp),
             containerColor = MaterialTheme.colorScheme.primary
         ) {
-            Icon(imageVector = icon, contentDescription = "")
+            Icon(imageVector = icon, contentDescription = null)
         }
     }
 }

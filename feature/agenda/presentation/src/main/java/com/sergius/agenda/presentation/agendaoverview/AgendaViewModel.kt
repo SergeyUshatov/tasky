@@ -34,7 +34,7 @@ class AgendaViewModel : ViewModel() {
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(2000),
+            started = SharingStarted.WhileSubscribed(5000),
             initialValue = AgendaState()
         )
 
@@ -60,7 +60,7 @@ class AgendaViewModel : ViewModel() {
     fun onAction(action: AgendaAction) {
         when(action) {
             is AgendaAction.OnCreateAgendaItemClick -> {
-                _state.value = _state.value.copy(fabExpanded = !_state.value.fabExpanded)
+                _state.update { it.copy(fabExpanded = !_state.value.fabExpanded) }
             }
             else -> Unit
         }

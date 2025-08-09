@@ -7,26 +7,30 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val sessionStorage: SessionStorage
-): ViewModel() {
+) : ViewModel() {
 
     private val _state = MutableStateFlow(MainState())
     val state = _state
         .onStart {
             viewModelScope.launch {
-                _state.value = _state.value.copy(isCheckingAuth = true)
-                _state.value = _state.value.copy(
-                    isLoggedIn = sessionStorage.get() != null
-                )
-                _state.value = _state.value.copy(isCheckingAuth = false)
+                _state.update {
+                    it.copy(
+                        isCheckingAuth = true,
+                        isLoggedIn = sessionStorage.get() != null
+                    )
+                }
+
+                _state.update { it.copy(isCheckingAuth = false) }
             }
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(2000),
+            started = SharingStarted.WhileSubscribed(5000),
             initialValue = MainState()
         )
 }
