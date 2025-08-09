@@ -29,6 +29,17 @@ class TaskDetailsViewModel: ViewModel() {
                 _state.value = _state.value.copy(showDateDialog = !_state.value.showDateDialog)
             }
 
+            is TaskDetailsAction.OnToggleReminderDropdownVisibility -> {
+                _state.value = _state.value.copy(showReminderDropdown = !_state.value.showReminderDropdown)
+            }
+
+            is TaskDetailsAction.OnDropdownItemClick -> {
+                _state.value = _state.value.copy(
+                    reminderSelectedOption = action.item,
+                    showReminderDropdown = false
+                )
+            }
+
             else -> Unit
         }
     }
