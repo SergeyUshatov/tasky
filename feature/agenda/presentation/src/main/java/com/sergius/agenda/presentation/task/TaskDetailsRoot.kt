@@ -32,11 +32,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sergius.agenda.presentation.R
 import com.sergius.core.presentation.designsystem.BellIcon
 import com.sergius.core.presentation.designsystem.elements.ChevronButton
 import com.sergius.core.presentation.designsystem.elements.DatePickerModal
@@ -208,7 +212,7 @@ private fun TaskDateTime(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "At",
+            text = stringResource(R.string.at),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary,
         )
@@ -293,7 +297,7 @@ private fun DatePickerField(
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = datePickerState.selectedDateMillis?.convertMillisToDate() ?: "date",
+            text = datePickerState.selectedDateMillis?.convertMillisToDate() ?: stringResource(R.string.date),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .weight(1f),
@@ -323,7 +327,7 @@ private fun TaskDescription(onAction: (TaskDetailsAction) -> Unit) {
         Text(
             modifier = Modifier
                 .weight(1f),
-            text = "Task\nDescription",
+            text = stringResource(R.string.task_description),
             style = MaterialTheme.typography.bodyMedium
         )
         ChevronButton(onClick = { onAction(TaskDetailsAction.OnEditDescriptionClick) })
@@ -352,7 +356,7 @@ private fun TaskTitle(onAction: (TaskDetailsAction) -> Unit) {
         Text(
             modifier = Modifier
                 .weight(1f),
-            text = "Task Title",
+            text = stringResource(R.string.task_title),
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.primary
         )
@@ -372,7 +376,7 @@ private fun Footer(
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "DELETE TASK",
+            text = stringResource(R.string.delete_task),
             style = MaterialTheme.typography.labelSmall,
             color = TaskyRed,
             modifier = Modifier
@@ -402,7 +406,7 @@ private fun ItemType() {
         )
 
         Text(
-            text = "TASK",
+            text = stringResource(R.string.task).toUpperCase(Locale.current),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Companion.SemiBold,
             color = MaterialTheme.colorScheme.onSurface
@@ -422,7 +426,7 @@ private fun Header(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "Cancel",
+            text = stringResource(R.string.cancel),
             style = MaterialTheme.typography.labelMedium,
             modifier = Modifier
                 .clickable {
@@ -430,11 +434,11 @@ private fun Header(
                 }
         )
         Text(
-            text = "EDIT TASK",
+            text = stringResource(R.string.edit_task),
             style = MaterialTheme.typography.labelMedium
         )
         Text(
-            text = "Save",
+            text = stringResource(R.string.save),
             style = MaterialTheme.typography.labelMedium,
             color = TaskyTaskColor,
             modifier = Modifier
