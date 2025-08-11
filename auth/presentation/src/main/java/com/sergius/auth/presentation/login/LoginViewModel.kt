@@ -37,7 +37,7 @@ class LoginViewModel(
                 val isEmailValid = userDataValidator.isValidEmail(email = email.toString())
                 _state.update {
                     it.copy(
-                        emailState = _state.value.emailState.copy(isEmailValid = isEmailValid),
+                        emailState = it.emailState.copy(isEmailValid = isEmailValid),
                         canLogin = isEmailValid && password.isNotEmpty()
                     )
                 }
@@ -58,8 +58,8 @@ class LoginViewModel(
             is SignInScreenAction.OnTogglePasswordVisibility -> {
                 _state.update {
                     it.copy(
-                        passwordState = _state.value.passwordState.copy(
-                            isPasswordVisible = !_state.value.passwordState.isPasswordVisible
+                        passwordState = it.passwordState.copy(
+                            isPasswordVisible = !it.passwordState.isPasswordVisible
                         )
                     )
                 }
@@ -68,7 +68,7 @@ class LoginViewModel(
             is SignInScreenAction.OnEmailFocusChanged -> {
                 _state.update {
                     it.copy(
-                        emailState = _state.value.emailState.copy(isEmailFocused = action.isFocused)
+                        emailState = it.emailState.copy(isEmailFocused = action.isFocused)
                     )
                 }
             }
@@ -76,7 +76,7 @@ class LoginViewModel(
             is SignInScreenAction.OnPasswordFocusChanged -> {
                 _state.update {
                     it.copy(
-                        passwordState = _state.value.passwordState.copy(isPasswordFocused = action.isFocused)
+                        passwordState = it.passwordState.copy(isPasswordFocused = action.isFocused)
                     )
                 }
             }

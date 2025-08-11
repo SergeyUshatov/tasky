@@ -39,7 +39,7 @@ class SignupViewModel(
                 val passwordValidationState = userDataValidator.validatePassword(password = password.toString())
                 _state.update {
                     it.copy(
-                        emailState = _state.value.emailState.copy(isEmailValid = isEmailValid),
+                        emailState = it.emailState.copy(isEmailValid = isEmailValid),
                         canSignup = name.isNotEmpty() && isEmailValid && passwordValidationState.isValidPassword
                     )
                 }
@@ -60,7 +60,7 @@ class SignupViewModel(
             is SignUpScreenAction.OnNameFocusChanged -> {
                 _state.update {
                     it.copy(
-                        nameState = _state.value.nameState.copy(isNameFocused = action.isFocused)
+                        nameState = it.nameState.copy(isNameFocused = action.isFocused)
                     )
                 }
             }
@@ -68,7 +68,7 @@ class SignupViewModel(
             is SignUpScreenAction.OnEmailFocusChanged -> {
                 _state.update {
                     it.copy(
-                        emailState = _state.value.emailState.copy(isEmailFocused = action.isFocused)
+                        emailState = it.emailState.copy(isEmailFocused = action.isFocused)
                     )
                 }
             }
@@ -76,7 +76,7 @@ class SignupViewModel(
             is SignUpScreenAction.OnPasswordFocusChanged -> {
                 _state.update {
                     it.copy(
-                        passwordState = _state.value.passwordState.copy(isPasswordFocused = action.isFocused)
+                        passwordState = it.passwordState.copy(isPasswordFocused = action.isFocused)
                     )
                 }
             }
@@ -84,7 +84,7 @@ class SignupViewModel(
             is SignUpScreenAction.OnTogglePasswordVisibility -> {
                 _state.update {
                     it.copy(
-                        passwordState = _state.value.passwordState.copy(isPasswordVisible = !_state.value.passwordState.isPasswordVisible)
+                        passwordState = it.passwordState.copy(isPasswordVisible = !it.passwordState.isPasswordVisible)
                     )
                 }
             }
