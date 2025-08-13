@@ -18,11 +18,9 @@ class MainViewModel(
     val state = _state
         .onStart {
             viewModelScope.launch {
+                _state.update { it.copy(isCheckingAuth = true) }
                 _state.update {
-                    it.copy(
-                        isCheckingAuth = true,
-                        isLoggedIn = sessionStorage.get() != null
-                    )
+                    it.copy(isLoggedIn = sessionStorage.get() != null)
                 }
 
                 _state.update { it.copy(isCheckingAuth = false) }

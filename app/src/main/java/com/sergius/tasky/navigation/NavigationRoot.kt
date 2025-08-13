@@ -2,7 +2,10 @@ package com.sergius.tasky.navigation
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -12,7 +15,11 @@ import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.sergius.agenda.presentation.agendaoverview.AgendaScreenRoot
 import com.sergius.agenda.presentation.event.EventDetailsRoot
 import com.sergius.agenda.presentation.reminder.ReminderDetailsRoot
+import com.sergius.agenda.presentation.task.EditTaskTitleRoot
+import com.sergius.agenda.presentation.task.TaskDetailsAction
 import com.sergius.agenda.presentation.task.TaskDetailsRoot
+import com.sergius.agenda.presentation.task.TaskDetailsViewModel
+import com.sergius.agenda.presentation.task.TaskTitleAction
 import com.sergius.auth.presentation.login.SignInScreenRoot
 import com.sergius.auth.presentation.signup.SignupScreenRoot
 
@@ -23,6 +30,8 @@ fun NavigationRoot(
     val initialNavKey = if (isLoggedIn) AgendaNavKey else AuthorizeNavKey
     val backStack = rememberNavBackStack(initialNavKey)
     val context = LocalContext.current
+    val taskDetailsViewModel: TaskDetailsViewModel = viewModel()
+    val taskState by taskDetailsViewModel.state.collectAsStateWithLifecycle()
     NavDisplay(
         backStack = backStack,
         entryDecorators = listOf(
@@ -75,14 +84,26 @@ fun NavigationRoot(
 
                     is TaskNavKey -> {
                         TaskDetailsRoot(
-                            onCancelClick = {
-                                backStack.clear()
-                                backStack.add(AgendaNavKey)
-                            },
-                            onSaveClick = {
-                                backStack.clear()
-                                backStack.add(AgendaNavKey)
-                            },
+                            state = taskState,
+                            onAction = { action ->
+                                when (action) {
+                                    TaskDetailsAction.OnCancelClick -> {
+                                        backStack.clear()
+                                        backStack.add(AgendaNavKey)
+                                    }
+
+                                    TaskDetailsAction.OnSaveClick -> {
+                                        backStack.clear()
+                                        backStack.add(AgendaNavKey)
+                                    }
+
+                                    TaskDetailsAction.OnEditTitleClick -> {
+                                        backStack.add(TaskTitleEditNavKey)
+                                    }
+
+                                    else -> taskDetailsViewModel.onAction(action)
+                                }
+                            }
                         )
                     }
 
@@ -93,8 +114,23 @@ fun NavigationRoot(
                     is ReminderNavKey -> {
                         ReminderDetailsRoot()
                     }
+
+                    is TaskTitleEditNavKey -> {
+                        EditTaskTitleRoot(
+                            state = taskState,
+                            onCancelClick = {
+                                taskDetailsViewModel.onAction(TaskTitleAction.OnCancelClick)
+                                backStack.removeAll { key == it }
+                            },
+                            onSaveClick = {
+                                backStack.removeAll { key == it }
+                            }
+                        )
+                    }
+
                     else -> {
-                        Toast.makeText(context, "Unknown navigation key: $key", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Unknown navigation key: $key", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             }

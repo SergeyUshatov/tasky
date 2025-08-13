@@ -50,30 +50,36 @@ import com.sergius.core.presentation.designsystem.elements.TimePickerDialog
 import com.sergius.core.presentation.designsystem.theme.TaskyRed
 import com.sergius.core.presentation.designsystem.theme.TaskyTaskColor
 import com.sergius.core.presentation.designsystem.theme.TaskyTheme
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TaskDetailsRoot(
-    onCancelClick: () -> Unit,
-    onSaveClick: () -> Unit,
-    viewModel: TaskDetailsViewModel = koinViewModel()
+    onAction: (TaskDetailsAction) -> Unit,
+    state: TaskDetailsState,
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+//    val state by viewModel.state.collectAsStateWithLifecycle()
     TaskDetails(
         state = state,
-        onAction = { action ->
-            when (action) {
-                TaskDetailsAction.OnCancelClick -> {
-                    onCancelClick()
-                }
-
-                TaskDetailsAction.OnSaveClick -> {
-                    onSaveClick()
-                }
-
-                else -> viewModel.onAction(action)
-            }
-        }
+        onAction = onAction
+//            { action ->
+//            when (action) {
+//                TaskDetailsAction.OnCancelClick -> {
+//                    onCancelClick()
+//                }
+//
+//                TaskDetailsAction.OnSaveClick -> {
+//                    onSaveClick()
+//                }
+//
+//                TaskDetailsAction.OnEditTitleClick -> {
+////                    viewModel.onAction(TaskDetailsAction.OnEditTitleClick)
+//                    onEditTitleClick()
+//                }
+//
+//                else -> Unit //viewModel.onAction(action)
+//            }
+//        }
     )
 }
 
@@ -99,7 +105,10 @@ private fun TaskDetails(
                 horizontalAlignment = Alignment.Start
             ) {
                 ItemType()
-                TaskTitle(onAction)
+                TaskTitle(
+                    title = state.taskTitle.text.toString(),
+                    onAction = onAction
+                )
                 TaskyDivider()
 
                 TaskDescription(onAction)
@@ -167,9 +176,10 @@ private fun Reminder(
             val rotation by transition.animateFloat(label = "rotation") {
                 if (it) 180f else 0f
             }
-            DropdownIcon(modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .rotate(rotation)
+            DropdownIcon(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .rotate(rotation)
             )
         }
 
@@ -297,7 +307,8 @@ private fun DatePickerField(
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = datePickerState.selectedDateMillis?.convertMillisToDate() ?: stringResource(R.string.date),
+            text = datePickerState.selectedDateMillis?.convertMillisToDate()
+                ?: stringResource(R.string.date),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .weight(1f),
@@ -335,11 +346,17 @@ private fun TaskDescription(onAction: (TaskDetailsAction) -> Unit) {
 }
 
 @Composable
-private fun TaskTitle(onAction: (TaskDetailsAction) -> Unit) {
+private fun TaskTitle(
+    onAction: (TaskDetailsAction) -> Unit,
+    title: String
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp, horizontal = 12.dp),
+            .padding(vertical = 16.dp, horizontal = 12.dp)
+            .clickable {
+                onAction(TaskDetailsAction.OnEditTitleClick)
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -356,11 +373,11 @@ private fun TaskTitle(onAction: (TaskDetailsAction) -> Unit) {
         Text(
             modifier = Modifier
                 .weight(1f),
-            text = stringResource(R.string.task_title),
+            text = title.ifEmpty { stringResource(R.string.task_title) },
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.primary
         )
-        ChevronButton(onClick = { onAction(TaskDetailsAction.OnEditTitleClick) })
+        ChevronButton(onClick = { })
     }
 }
 

@@ -29,7 +29,6 @@ class AgendaViewModel : ViewModel() {
                     days = getDaysOfMonth()
                 )
             }
-            getDaysOfMonth()
             isInitialized = true
         }
         .stateIn(
