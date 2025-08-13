@@ -2,26 +2,21 @@ package com.sergius.tasky.navigation
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
+import com.sergius.agenda.presentation.EditTextScreenRoot
 import com.sergius.agenda.presentation.agendaoverview.AgendaScreenRoot
-import com.sergius.agenda.presentation.event.EventDetailsRoot
-import com.sergius.agenda.presentation.reminder.ReminderDetailsRoot
-import com.sergius.agenda.presentation.task.EditTaskTitleRoot
-import com.sergius.agenda.presentation.task.TaskDetailsAction
 import com.sergius.agenda.presentation.task.TaskDetailsRoot
-import com.sergius.agenda.presentation.task.TaskDetailsViewModel
-import com.sergius.agenda.presentation.task.TaskTitleAction
 import com.sergius.auth.presentation.login.SignInScreenRoot
 import com.sergius.auth.presentation.signup.SignupScreenRoot
+import com.sergius.core.domain.AgendaItemType
+import com.sergius.core.domain.TextType
+import timber.log.Timber
 
 @Composable
 fun NavigationRoot(
@@ -30,8 +25,6 @@ fun NavigationRoot(
     val initialNavKey = if (isLoggedIn) AgendaNavKey else AuthorizeNavKey
     val backStack = rememberNavBackStack(initialNavKey)
     val context = LocalContext.current
-    val taskDetailsViewModel: TaskDetailsViewModel = viewModel()
-    val taskState by taskDetailsViewModel.state.collectAsStateWithLifecycle()
     NavDisplay(
         backStack = backStack,
         entryDecorators = listOf(
@@ -71,64 +64,86 @@ fun NavigationRoot(
                     is AgendaNavKey -> {
                         AgendaScreenRoot(
                             onTaskCreateClick = {
-                                backStack.add(TaskNavKey)
+                                backStack.add(AgendaItemDetailNavKey(AgendaItemType.TASK))
                             },
                             onEventCreateClick = {
-                                backStack.add(EventNavKey)
+                                backStack.add(AgendaItemDetailNavKey(AgendaItemType.EVENT))
                             },
                             onReminderCreateClick = {
-                                backStack.add(ReminderNavKey)
+                                backStack.add(AgendaItemDetailNavKey(AgendaItemType.REMINDER))
                             },
                         )
                     }
 
-                    is TaskNavKey -> {
-                        TaskDetailsRoot(
-                            state = taskState,
-                            onAction = { action ->
-                                when (action) {
-                                    TaskDetailsAction.OnCancelClick -> {
+                    is AgendaItemDetailNavKey -> {
+                        when (key.itemType) {
+                            AgendaItemType.TASK -> {
+                                TaskDetailsRoot(
+                                    onCancelClick = {
                                         backStack.clear()
                                         backStack.add(AgendaNavKey)
-                                    }
-
-                                    TaskDetailsAction.OnSaveClick -> {
+                                    },
+                                    onSaveClick = {
                                         backStack.clear()
                                         backStack.add(AgendaNavKey)
+                                    },
+                                    onEditTitleClick = { state, isFocused ->
+                                        backStack.add(
+                                            TextEditNavKey(
+                                                itemType = key.itemType,
+                                                textType = TextType.TITLE,
+                                                fieldState = state,
+                                                isFocused = isFocused,
+                                                initialText = state.text.toString()
+                                            )
+                                        )
+                                        key.titleState ?: state
                                     }
+                                )
+                            }
 
-                                    TaskDetailsAction.OnEditTitleClick -> {
-                                        backStack.add(TaskTitleEditNavKey)
-                                    }
+                            AgendaItemType.EVENT -> {}
+                            AgendaItemType.REMINDER -> {}
+                        }
+                    }
 
-                                    else -> taskDetailsViewModel.onAction(action)
+                    is TextEditNavKey -> {
+                        EditTextScreenRoot(
+                            textType = key.textType,
+                            fieldState = key.fieldState,
+                            isFocused = key.isFocused,
+                            initialText = key.initialText,
+                            onCancelClick = {
+                                backStack.removeLastOrNull()
+                                            },
+                            onSaveClick = {
+                                // Navigate back to AgendaItemDetailNavKey with the result
+                                val currentAgendaDetail =
+                                    backStack.findLast { it is AgendaItemDetailNavKey } as? AgendaItemDetailNavKey
+                                backStack.removeLastOrNull() // Remove current TextEditNavKey
+                                backStack.removeLastOrNull() // Remove current AgendaItemDetailNavKey
+
+                                when (key.textType) {
+                                    TextType.TITLE -> backStack.add(
+                                        AgendaItemDetailNavKey(
+                                            itemType = key.itemType,
+                                            titleState = currentAgendaDetail?.titleState,
+                                        )
+                                    )
+
+                                    TextType.DESCRIPTION -> backStack.add(
+                                        AgendaItemDetailNavKey(
+                                            itemType = key.itemType,
+                                            descriptionState = currentAgendaDetail?.descriptionState
+                                        )
+                                    )
                                 }
                             }
                         )
                     }
 
-                    is EventNavKey -> {
-                        EventDetailsRoot()
-                    }
-
-                    is ReminderNavKey -> {
-                        ReminderDetailsRoot()
-                    }
-
-                    is TaskTitleEditNavKey -> {
-                        EditTaskTitleRoot(
-                            state = taskState,
-                            onCancelClick = {
-                                taskDetailsViewModel.onAction(TaskTitleAction.OnCancelClick)
-                                backStack.removeAll { key == it }
-                            },
-                            onSaveClick = {
-                                backStack.removeAll { key == it }
-                            }
-                        )
-                    }
-
                     else -> {
+                        Timber.e("Unknown navigation key: $key")
                         Toast.makeText(context, "Unknown navigation key: $key", Toast.LENGTH_SHORT)
                             .show()
                     }

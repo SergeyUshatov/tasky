@@ -1,7 +1,7 @@
-package com.sergius.agenda.presentation.task
+package com.sergius.agenda.presentation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -20,30 +21,40 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sergius.agenda.presentation.R
+import com.sergius.agenda.presentation.task.EditTextAction
+import com.sergius.core.domain.TextType
 import com.sergius.core.presentation.designsystem.elements.TaskyDivider
 import com.sergius.core.presentation.designsystem.elements.TaskyTextField
 import com.sergius.core.presentation.designsystem.theme.TaskyTaskColor
 import com.sergius.core.presentation.designsystem.theme.TaskyTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun EditTaskTitleRoot(
-    onCancelClick: () -> Unit,
+fun EditTextScreenRoot(
+    textType: TextType,
+    fieldState: TextFieldState,
+    isFocused: Boolean,
+    initialText: String,
     onSaveClick: () -> Unit,
-    state: TaskDetailsState,
+    onCancelClick: () -> Unit,
 ) {
-
-    EditTaskTitle(
-        state = state.taskTitle,
-        isFocused = state.isTitleFocused,
+    EditTextScreen(
+        textType = textType,
+        state =  fieldState,
+        isFocused = isFocused,
         onAction = { action ->
             when(action) {
-                is TaskTitleAction.OnCancelClick -> {
+                is EditTextAction.OnCancelClick -> {
+                    fieldState.clearText()
+                    fieldState.edit {
+                        append(initialText)
+                    }
                     onCancelClick()
                 }
-                is TaskTitleAction.OnSaveClick -> {
+                is EditTextAction.OnSaveClick -> {
                     onSaveClick()
                 }
+
                 else -> Unit
             }
         }
@@ -51,10 +62,11 @@ fun EditTaskTitleRoot(
 }
 
 @Composable
-private fun EditTaskTitle(
+private fun EditTextScreen(
+    textType: TextType,
     state: TextFieldState,
     isFocused: Boolean,
-    onAction: (TaskTitleAction) -> Unit
+    onAction: (EditTextAction) -> Unit
 ) {
     Scaffold { innerPadding ->
         Column(modifier = Modifier
@@ -67,23 +79,21 @@ private fun EditTaskTitle(
 
             TaskyTextField(
                 state = state,
-                placeholder = "title",
+                placeholder = textType.name,
                 isFocused = isFocused,
                 onFocusChanged = { isFocused ->
-                    onAction(TaskTitleAction.OnTitleFocusChanged(isFocused))
+                    onAction(EditTextAction.OnFieldFocusChanged(isFocused))
                 },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
-                    .border(width = 1.dp, color = MaterialTheme.colorScheme.primary)
             )
         }
-
     }
 }
 
 @Composable
-private fun Header(onAction: (TaskTitleAction) -> Unit) {
+private fun Header(onAction: (EditTextAction) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -91,14 +101,13 @@ private fun Header(onAction: (TaskTitleAction) -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-
         Text(
             text = stringResource(R.string.cancel),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .clickable {
-                    onAction(TaskTitleAction.OnCancelClick)
+                    onAction(EditTextAction.OnCancelClick)
                 }
         )
         Text(
@@ -112,7 +121,7 @@ private fun Header(onAction: (TaskTitleAction) -> Unit) {
             color = TaskyTaskColor,
             modifier = Modifier
                 .clickable {
-                    onAction(TaskTitleAction.OnSaveClick)
+                    onAction(EditTextAction.OnSaveClick)
                 }
         )
     }
@@ -124,7 +133,8 @@ private fun Header(onAction: (TaskTitleAction) -> Unit) {
 fun EditTaskTitlePreview(
 ) {
     TaskyTheme {
-        EditTaskTitle(
+        EditTextScreen(
+            textType = TextType.TITLE,
             state = TextFieldState(),
             isFocused = false,
             onAction = {}

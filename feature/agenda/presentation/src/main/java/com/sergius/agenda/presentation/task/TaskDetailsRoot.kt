@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -50,36 +51,37 @@ import com.sergius.core.presentation.designsystem.elements.TimePickerDialog
 import com.sergius.core.presentation.designsystem.theme.TaskyRed
 import com.sergius.core.presentation.designsystem.theme.TaskyTaskColor
 import com.sergius.core.presentation.designsystem.theme.TaskyTheme
-import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TaskDetailsRoot(
-    onAction: (TaskDetailsAction) -> Unit,
-    state: TaskDetailsState,
+    onCancelClick: () -> Unit,
+    onSaveClick: () -> Unit,
+    onEditTitleClick: (TextFieldState, Boolean) -> TextFieldState,
+    viewModel: TaskDetailsViewModel = koinViewModel(),
 ) {
-//    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     TaskDetails(
         state = state,
-        onAction = onAction
-//            { action ->
-//            when (action) {
-//                TaskDetailsAction.OnCancelClick -> {
-//                    onCancelClick()
-//                }
-//
-//                TaskDetailsAction.OnSaveClick -> {
-//                    onSaveClick()
-//                }
-//
-//                TaskDetailsAction.OnEditTitleClick -> {
-////                    viewModel.onAction(TaskDetailsAction.OnEditTitleClick)
-//                    onEditTitleClick()
-//                }
-//
-//                else -> Unit //viewModel.onAction(action)
-//            }
-//        }
+        onAction =
+            { action ->
+            when (action) {
+                TaskDetailsAction.OnCancelClick -> {
+                    onCancelClick()
+                }
+
+                TaskDetailsAction.OnSaveClick -> {
+                    onSaveClick()
+                }
+
+                TaskDetailsAction.OnEditTitleClick -> {
+                    val newState = onEditTitleClick(state.taskTitle, state.isTitleFocused)
+                    viewModel.onAction(TaskDetailsAction.OnUpdateTitle(newState))
+                }
+
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 
