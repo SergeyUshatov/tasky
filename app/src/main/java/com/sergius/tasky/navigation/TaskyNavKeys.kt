@@ -1,9 +1,9 @@
 package com.sergius.tasky.navigation
 
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.navigation3.runtime.NavKey
-import com.sergius.agenda.presentation.task.TaskDetailsState
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.sergius.core.domain.AgendaItemType
+import com.sergius.core.domain.TextType
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
@@ -17,14 +17,17 @@ data object SignupNavKey : NavKey
 data object AgendaNavKey : NavKey
 
 @Serializable
-data object TaskNavKey : NavKey
+data class TextEditNavKey(
+    val itemType: AgendaItemType,
+    val textType: TextType,
+    val isFocused: Boolean,
+    val initialText: String,
+    @Contextual val fieldState: TextFieldState
+) : NavKey
 
 @Serializable
-data object EventNavKey : NavKey
-
-@Serializable
-data object ReminderNavKey : NavKey
-
-@Serializable
-//data class TaskTitleEditNavKey(@Contextual val state: MutableStateFlow<TaskDetailsState>) : NavKey
-data object TaskTitleEditNavKey : NavKey
+data class AgendaItemDetailNavKey(
+    val itemType: AgendaItemType,
+    @Contextual val titleState: TextFieldState? = null,
+    @Contextual val descriptionState: TextFieldState? = null,
+) : NavKey

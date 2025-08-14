@@ -1,5 +1,7 @@
 package com.sergius.agenda.presentation.task
 
+import androidx.compose.foundation.text.input.TextFieldState
+
 sealed interface TaskDetailsAction {
     object OnCancelClick: TaskDetailsAction
     object OnSaveClick: TaskDetailsAction
@@ -11,4 +13,6 @@ sealed interface TaskDetailsAction {
     data class OnDateSelected(val date: Long?): TaskDetailsAction
     object OnToggleReminderDropdownVisibility: TaskDetailsAction
     data class OnDropdownItemClick(val item: String): TaskDetailsAction
+
+    data class OnUpdateTitle(val titleSate: TextFieldState): TaskDetailsAction
 }

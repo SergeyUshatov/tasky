@@ -56,38 +56,14 @@ class TaskDetailsViewModel : ViewModel() {
                 }
             }
 
-            is TaskDetailsAction.OnEditTitleClick -> {
-
-            }
-
-            else -> Unit
-        }
-    }
-
-    fun onAction(action: TaskTitleAction) {
-        when (action) {
-            is TaskTitleAction.OnTitleFocusChanged -> {
+            is TaskDetailsAction.OnUpdateTitle -> {
                 _state.update {
                     it.copy(
-                        isTitleFocused = action.isFocused
+                        taskTitle = action.titleSate
                     )
                 }
             }
 
-            is TaskTitleAction.OnCancelClick -> {
-                _state.update {
-                    it.taskTitle.undoState.undo()
-                    it
-                }
-            }
-
-            is TaskTitleAction.OnSaveClick -> {
-                _state.update {
-                    it.copy(
-                        taskTitle = it.taskTitle
-                    )
-                }
-            }
             else -> Unit
         }
     }
