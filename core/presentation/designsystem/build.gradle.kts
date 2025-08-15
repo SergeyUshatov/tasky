@@ -15,5 +15,6 @@ dependencies {
     implementation(libs.timber)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
+    api(libs.androidx.compose.material)
     api(libs.androidx.compose.material3)
 }
