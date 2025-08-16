@@ -1,4 +1,4 @@
-package com.sergius.agenda.presentation.task
+package com.sergius.core.presentation.designsystem.elements
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,9 +34,9 @@ data class DropdownItem(
 
 @Composable
 fun DropdownList(
+    onDismissRequest: () -> Unit,
     items: List<DropdownItem>,
     selectedIndex: Int,
-    onDismissRequest: () -> Unit,
 ) {
     Box {
         val configuration = LocalConfiguration.current
@@ -82,7 +82,7 @@ fun DropdownList(
                             if (index == selectedIndex) {
                                 Icon(
                                     imageVector = CheckIcon,
-                                    contentDescription = "selected reminder",
+                                    contentDescription = "selected item",
                                     tint = TaskyCheckIconColor
                                 )
                             }

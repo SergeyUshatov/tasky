@@ -1,7 +1,7 @@
 package com.sergius.agenda.presentation.di
 
 import com.sergius.agenda.presentation.agendaoverview.AgendaViewModel
-import com.sergius.agenda.presentation.task.AgendaItemDetailsViewModel
+import com.sergius.agenda.presentation.agendaitem.AgendaItemDetailsViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
