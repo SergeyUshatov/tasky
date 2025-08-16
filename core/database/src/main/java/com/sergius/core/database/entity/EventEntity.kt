@@ -16,6 +16,6 @@ data class EventEntity(
     val updatedAt: Long,
     val from: Long,
     val to: Long,
-    val attendeeIds: List<String>,
-    val photoKeys: List<String>
+//    val attendeeIds: List<String>,
+//    val photoKeys: List<String>
 )
