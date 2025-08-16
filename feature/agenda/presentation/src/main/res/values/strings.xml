@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="task_description">Task\nDescription</string>
-    <string name="task_title">Task Title</string>
-    <string name="delete_task">DELETE TASK</string>
+    <string name="item_description">%s\nDescription</string>
+    <string name="item_title">%s Title</string>
+    <string name="delete_item">DELETE %s</string>
     <string name="task">Task</string>
     <string name="cancel">Cancel</string>
     <string name="edit_task">EDIT TASK</string>
@@ -12,5 +12,5 @@
     <string name="today">Today</string>
     <string name="event">Event</string>
     <string name="reminder">Reminder</string>
-    <string name="edit_title">Edit title</string>
+    <string name="edit_screen">Edit %s</string>
 </resources>

@@ -56,14 +56,6 @@ class TaskDetailsViewModel : ViewModel() {
                 }
             }
 
-            is TaskDetailsAction.OnUpdateTitle -> {
-                _state.update {
-                    it.copy(
-                        taskTitle = action.titleSate
-                    )
-                }
-            }
-
             else -> Unit
         }
     }
@@ -71,6 +63,22 @@ class TaskDetailsViewModel : ViewModel() {
     private fun resetState() {
         _state.update {
             it.run { TaskDetailsState() }
+        }
+    }
+
+    fun updateTitle(newTitle: String) {
+        _state.update {
+            it.copy(
+                taskTitle = newTitle
+            )
+        }
+    }
+
+    fun updateDescription(description: String) {
+        _state.update {
+            it.copy(
+                taskDescription = description
+            )
         }
     }
 }

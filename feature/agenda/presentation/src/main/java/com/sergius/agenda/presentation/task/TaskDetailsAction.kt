@@ -15,4 +15,6 @@ sealed interface TaskDetailsAction {
     data class OnDropdownItemClick(val item: String): TaskDetailsAction
 
     data class OnUpdateTitle(val titleSate: TextFieldState): TaskDetailsAction
+
+    data class onResume(val title: String? = null): TaskDetailsAction
 }

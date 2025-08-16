@@ -10,8 +10,9 @@ import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import com.sergius.agenda.presentation.EditTextScreenRoot
+import com.sergius.agenda.presentation.EditTextScreenViewModel
 import com.sergius.agenda.presentation.agendaoverview.AgendaScreenRoot
-import com.sergius.agenda.presentation.task.TaskDetailsRoot
+import com.sergius.agenda.presentation.task.AgendaItemDetailsRoot
 import com.sergius.auth.presentation.login.SignInScreenRoot
 import com.sergius.auth.presentation.signup.SignupScreenRoot
 import com.sergius.core.domain.AgendaItemType
@@ -76,50 +77,40 @@ fun NavigationRoot(
                     }
 
                     is AgendaItemDetailNavKey -> {
-                        when (key.itemType) {
-                            AgendaItemType.TASK -> {
-                                TaskDetailsRoot(
-                                    onCancelClick = {
-                                        backStack.clear()
-                                        backStack.add(AgendaNavKey)
-                                    },
-                                    onSaveClick = {
-                                        backStack.clear()
-                                        backStack.add(AgendaNavKey)
-                                    },
-                                    onEditTitleClick = { state, isFocused ->
-                                        backStack.add(
-                                            TextEditNavKey(
-                                                itemType = key.itemType,
-                                                textType = TextType.TITLE,
-                                                fieldState = state,
-                                                isFocused = isFocused,
-                                                initialText = state.text.toString()
-                                            )
-                                        )
-                                        key.titleState ?: state
-                                    }
+                        AgendaItemDetailsRoot(
+                            title = key.titleText,
+                            itemType = key.itemType,
+                            onCancelClick = {
+                                backStack.clear()
+                                backStack.add(AgendaNavKey)
+                            },
+                            onSaveClick = {
+                                backStack.clear()
+                                backStack.add(AgendaNavKey)
+                            },
+                            onEditTitleClick = { initialText ->
+                                backStack.add(
+                                    TextEditNavKey(
+                                        itemType = key.itemType,
+                                        textType = TextType.TITLE,
+                                        isFocused = false,
+                                        fieldText = initialText,
+                                        initialText = initialText
+                                    )
                                 )
-                            }
-
-                            AgendaItemType.EVENT -> {}
-                            AgendaItemType.REMINDER -> {}
-                        }
+                            },
+                        )
                     }
 
                     is TextEditNavKey -> {
                         EditTextScreenRoot(
+                            viewModel = EditTextScreenViewModel(initialText = key.initialText),
                             textType = key.textType,
-                            fieldState = key.fieldState,
-                            isFocused = key.isFocused,
-                            initialText = key.initialText,
                             onCancelClick = {
                                 backStack.removeLastOrNull()
-                                            },
+                            },
                             onSaveClick = {
                                 // Navigate back to AgendaItemDetailNavKey with the result
-                                val currentAgendaDetail =
-                                    backStack.findLast { it is AgendaItemDetailNavKey } as? AgendaItemDetailNavKey
                                 backStack.removeLastOrNull() // Remove current TextEditNavKey
                                 backStack.removeLastOrNull() // Remove current AgendaItemDetailNavKey
 
@@ -127,14 +118,14 @@ fun NavigationRoot(
                                     TextType.TITLE -> backStack.add(
                                         AgendaItemDetailNavKey(
                                             itemType = key.itemType,
-                                            titleState = currentAgendaDetail?.titleState,
+                                            titleText = it,
                                         )
                                     )
 
                                     TextType.DESCRIPTION -> backStack.add(
                                         AgendaItemDetailNavKey(
                                             itemType = key.itemType,
-                                            descriptionState = currentAgendaDetail?.descriptionState
+                                            descriptionText = it
                                         )
                                     )
                                 }

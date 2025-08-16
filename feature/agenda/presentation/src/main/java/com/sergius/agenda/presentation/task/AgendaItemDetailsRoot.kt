@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
@@ -42,53 +42,72 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sergius.agenda.presentation.R
+import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.presentation.designsystem.BellIcon
 import com.sergius.core.presentation.designsystem.elements.ChevronButton
 import com.sergius.core.presentation.designsystem.elements.DatePickerModal
 import com.sergius.core.presentation.designsystem.elements.DropdownIcon
 import com.sergius.core.presentation.designsystem.elements.TaskyDivider
 import com.sergius.core.presentation.designsystem.elements.TimePickerDialog
+import com.sergius.core.presentation.designsystem.theme.TaskyEventColor
 import com.sergius.core.presentation.designsystem.theme.TaskyRed
+import com.sergius.core.presentation.designsystem.theme.TaskyReminderColor
 import com.sergius.core.presentation.designsystem.theme.TaskyTaskColor
 import com.sergius.core.presentation.designsystem.theme.TaskyTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TaskDetailsRoot(
+fun AgendaItemDetailsRoot(
     onCancelClick: () -> Unit,
     onSaveClick: () -> Unit,
-    onEditTitleClick: (TextFieldState, Boolean) -> TextFieldState,
+    onEditTitleClick: (String) -> Unit,
+    itemType: AgendaItemType,
+    title: String? = null,
+    description: String? = null,
     viewModel: TaskDetailsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    title?.let {
+        if (title != state.taskTitle) {
+            viewModel.updateTitle(title)
+        }
+    }
+
+    description?.let {
+        if (description != state.taskDescription) {
+            viewModel.updateDescription(description)
+        }
+    }
+
     TaskDetails(
+        itemType = itemType,
         state = state,
         onAction =
             { action ->
-            when (action) {
-                TaskDetailsAction.OnCancelClick -> {
-                    onCancelClick()
-                }
+                when (action) {
+                    TaskDetailsAction.OnCancelClick -> {
+                        onCancelClick()
+                    }
 
-                TaskDetailsAction.OnSaveClick -> {
-                    onSaveClick()
-                }
+                    TaskDetailsAction.OnSaveClick -> {
+                        onSaveClick()
+                    }
 
-                TaskDetailsAction.OnEditTitleClick -> {
-                    val newState = onEditTitleClick(state.taskTitle, state.isTitleFocused)
-                    viewModel.onAction(TaskDetailsAction.OnUpdateTitle(newState))
-                }
+                    TaskDetailsAction.OnEditTitleClick -> {
+                        onEditTitleClick(state.taskTitle)
+                    }
 
-                else -> viewModel.onAction(action)
+                    else -> viewModel.onAction(action)
+                }
             }
-        }
     )
 }
 
 @Composable
 private fun TaskDetails(
     onAction: (TaskDetailsAction) -> Unit,
-    state: TaskDetailsState
+    state: TaskDetailsState,
+    itemType: AgendaItemType,
 ) {
     Scaffold { innerPadding ->
         Column(
@@ -106,14 +125,22 @@ private fun TaskDetails(
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.Start
             ) {
-                ItemType()
-                TaskTitle(
-                    title = state.taskTitle.text.toString(),
+                val itemTypeCapitalized = itemType.name
+                    .lowercase()
+                    .capitalize(Locale.current)
+
+                ItemType(itemType)
+                ItemTitle(
+                    title = state.taskTitle,
+                    itemType = itemTypeCapitalized,
                     onAction = onAction
                 )
                 TaskyDivider()
 
-                TaskDescription(onAction)
+                ItemDescription(
+                    onAction = onAction,
+                    itemType = itemTypeCapitalized,
+                )
                 TaskyDivider()
 
                 TaskDateTime(
@@ -134,7 +161,7 @@ private fun TaskDetails(
             }
 
             TaskyDivider()
-            Footer(onAction)
+            Footer(onAction, itemType)
         }
     }
 }
@@ -330,7 +357,10 @@ private fun DatePickerField(
 }
 
 @Composable
-private fun TaskDescription(onAction: (TaskDetailsAction) -> Unit) {
+private fun ItemDescription(
+    onAction: (TaskDetailsAction) -> Unit,
+    itemType: String
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -340,7 +370,7 @@ private fun TaskDescription(onAction: (TaskDetailsAction) -> Unit) {
         Text(
             modifier = Modifier
                 .weight(1f),
-            text = stringResource(R.string.task_description),
+            text = stringResource(R.string.item_description, itemType),
             style = MaterialTheme.typography.bodyMedium
         )
         ChevronButton(onClick = { onAction(TaskDetailsAction.OnEditDescriptionClick) })
@@ -348,9 +378,10 @@ private fun TaskDescription(onAction: (TaskDetailsAction) -> Unit) {
 }
 
 @Composable
-private fun TaskTitle(
+private fun ItemTitle(
     onAction: (TaskDetailsAction) -> Unit,
-    title: String
+    title: String,
+    itemType: String
 ) {
     Row(
         modifier = Modifier
@@ -372,10 +403,12 @@ private fun TaskTitle(
                     shape = CircleShape
                 )
         )
+
+
         Text(
             modifier = Modifier
                 .weight(1f),
-            text = title.ifEmpty { stringResource(R.string.task_title) },
+            text = title.ifEmpty { stringResource(R.string.item_title, itemType) },
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.primary
         )
@@ -385,7 +418,8 @@ private fun TaskTitle(
 
 @Composable
 private fun Footer(
-    onAction: (TaskDetailsAction) -> Unit
+    onAction: (TaskDetailsAction) -> Unit,
+    itemType: AgendaItemType
 ) {
     Row(
         modifier = Modifier
@@ -395,7 +429,7 @@ private fun Footer(
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = stringResource(R.string.delete_task),
+            text = stringResource(R.string.delete_item, itemType.name),
             style = MaterialTheme.typography.labelSmall,
             color = TaskyRed,
             modifier = Modifier
@@ -407,7 +441,9 @@ private fun Footer(
 }
 
 @Composable
-private fun ItemType() {
+private fun ItemType(
+    itemType: AgendaItemType
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -419,13 +455,17 @@ private fun ItemType() {
                 .padding(8.dp)
                 .size(20.dp)
                 .background(
-                    color = TaskyTaskColor,
+                    color = when (itemType) {
+                        AgendaItemType.TASK -> TaskyTaskColor
+                        AgendaItemType.EVENT -> TaskyEventColor
+                        AgendaItemType.REMINDER -> TaskyReminderColor
+                    },
                     shape = RoundedCornerShape(4.dp)
                 )
         )
 
         Text(
-            text = stringResource(R.string.task).toUpperCase(Locale.current),
+            text = itemType.name.toUpperCase(Locale.current),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Companion.SemiBold,
             color = MaterialTheme.colorScheme.onSurface
@@ -476,6 +516,7 @@ private fun TaskDetailsPreview() {
         TaskDetails(
             state = state,
             onAction = {},
+            itemType = AgendaItemType.TASK,
         )
     }
 }
