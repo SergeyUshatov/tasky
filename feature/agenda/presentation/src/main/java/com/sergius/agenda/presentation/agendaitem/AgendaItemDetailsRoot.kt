@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.sergius.agenda.presentation.task
+package com.sergius.agenda.presentation.agendaitem
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
@@ -40,12 +40,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sergius.agenda.presentation.R
-import com.sergius.agenda.presentation.capitalize
 import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.presentation.designsystem.BellIcon
 import com.sergius.core.presentation.designsystem.elements.ChevronIcon
 import com.sergius.core.presentation.designsystem.elements.DatePickerModal
 import com.sergius.core.presentation.designsystem.elements.DropdownIcon
+import com.sergius.core.presentation.designsystem.elements.DropdownItem
+import com.sergius.core.presentation.designsystem.elements.DropdownList
 import com.sergius.core.presentation.designsystem.elements.TaskyDivider
 import com.sergius.core.presentation.designsystem.elements.TimePickerDialog
 import com.sergius.core.presentation.designsystem.theme.TaskyEventColor

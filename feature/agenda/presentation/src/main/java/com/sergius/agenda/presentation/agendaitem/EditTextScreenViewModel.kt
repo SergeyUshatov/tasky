@@ -1,9 +1,8 @@
-package com.sergius.agenda.presentation
+package com.sergius.agenda.presentation.agendaitem
 
 import androidx.compose.foundation.text.input.clearText
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sergius.agenda.presentation.task.EditTextAction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart

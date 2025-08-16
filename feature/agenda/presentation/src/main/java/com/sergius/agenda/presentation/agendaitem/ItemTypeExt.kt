@@ -1,4 +1,4 @@
-package com.sergius.agenda.presentation
+package com.sergius.agenda.presentation.agendaitem
 
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.runtime.Composable

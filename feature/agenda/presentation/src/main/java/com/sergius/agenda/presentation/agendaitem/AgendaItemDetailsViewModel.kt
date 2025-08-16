@@ -1,4 +1,4 @@
-package com.sergius.agenda.presentation.task
+package com.sergius.agenda.presentation.agendaitem
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.ExperimentalMaterial3Api

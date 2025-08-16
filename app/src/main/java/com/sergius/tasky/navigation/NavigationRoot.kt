@@ -9,10 +9,10 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
-import com.sergius.agenda.presentation.EditTextScreenRoot
-import com.sergius.agenda.presentation.EditTextScreenViewModel
+import com.sergius.agenda.presentation.agendaitem.EditTextScreenRoot
+import com.sergius.agenda.presentation.agendaitem.EditTextScreenViewModel
 import com.sergius.agenda.presentation.agendaoverview.AgendaScreenRoot
-import com.sergius.agenda.presentation.task.AgendaItemDetailsRoot
+import com.sergius.agenda.presentation.agendaitem.AgendaItemDetailsRoot
 import com.sergius.auth.presentation.login.SignInScreenRoot
 import com.sergius.auth.presentation.signup.SignupScreenRoot
 import com.sergius.core.domain.AgendaItemType

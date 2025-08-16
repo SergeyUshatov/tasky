@@ -1,4 +1,4 @@
-package com.sergius.agenda.presentation.task
+package com.sergius.agenda.presentation.agendaitem
 
 sealed interface AgendaItemDetailsAction {
     object OnCancelClick: AgendaItemDetailsAction

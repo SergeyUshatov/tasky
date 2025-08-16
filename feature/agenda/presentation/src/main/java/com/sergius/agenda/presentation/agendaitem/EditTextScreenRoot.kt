@@ -1,4 +1,4 @@
-package com.sergius.agenda.presentation
+package com.sergius.agenda.presentation.agendaitem
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -27,7 +27,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sergius.agenda.presentation.R.string.cancel
 import com.sergius.agenda.presentation.R.string.edit_screen
 import com.sergius.agenda.presentation.R.string.save
-import com.sergius.agenda.presentation.task.EditTextAction
 import com.sergius.core.domain.TextType
 import com.sergius.core.presentation.designsystem.elements.TaskyDivider
 import com.sergius.core.presentation.designsystem.theme.TaskyTaskColor
