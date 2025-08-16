@@ -5,7 +5,7 @@
     <string name="delete_item">DELETE %s</string>
     <string name="task">Task</string>
     <string name="cancel">Cancel</string>
-    <string name="edit_task">EDIT TASK</string>
+    <string name="edit_item">EDIT %s</string>
     <string name="save">Save</string>
     <string name="at">At</string>
     <string name="date">date</string>

@@ -23,6 +23,10 @@ class AgendaItemDetailsViewModel : ViewModel() {
 
     fun onAction(action: AgendaItemDetailsAction) {
         when (action) {
+            is AgendaItemDetailsAction.OnSaveClick -> {
+                upsertItem()
+            }
+
             is AgendaItemDetailsAction.OnToggleTimerDialogVisibility -> {
                 _state.update {
                     it.copy(
@@ -58,6 +62,10 @@ class AgendaItemDetailsViewModel : ViewModel() {
 
             else -> Unit
         }
+    }
+
+    private fun upsertItem() {
+
     }
 
     private fun resetState() {

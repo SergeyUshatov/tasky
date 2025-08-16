@@ -15,6 +15,7 @@ android {
 
 dependencies {
     implementation(projects.core.domain)
+    implementation(projects.core.database)
     implementation(projects.core.data)
     implementation(projects.core.presentation.designsystem)
     implementation(projects.auth.data)
