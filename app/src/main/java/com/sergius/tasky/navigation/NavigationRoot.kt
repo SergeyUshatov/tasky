@@ -79,6 +79,7 @@ fun NavigationRoot(
                     is AgendaItemDetailNavKey -> {
                         AgendaItemDetailsRoot(
                             title = key.titleText,
+                            description = key.descriptionText,
                             itemType = key.itemType,
                             onCancelClick = {
                                 backStack.clear()
@@ -93,12 +94,19 @@ fun NavigationRoot(
                                     TextEditNavKey(
                                         itemType = key.itemType,
                                         textType = TextType.TITLE,
-                                        isFocused = false,
-                                        fieldText = initialText,
                                         initialText = initialText
                                     )
                                 )
                             },
+                            onEditDescriptionClick = { initialText ->
+                                backStack.add(
+                                    TextEditNavKey(
+                                        itemType = key.itemType,
+                                        textType = TextType.DESCRIPTION,
+                                        initialText = initialText
+                                    )
+                                )
+                            }
                         )
                     }
 
@@ -111,6 +119,8 @@ fun NavigationRoot(
                             },
                             onSaveClick = {
                                 // Navigate back to AgendaItemDetailNavKey with the result
+                                val currentAgendaDetail =
+                                    backStack.findLast { it is AgendaItemDetailNavKey } as? AgendaItemDetailNavKey
                                 backStack.removeLastOrNull() // Remove current TextEditNavKey
                                 backStack.removeLastOrNull() // Remove current AgendaItemDetailNavKey
 
@@ -119,12 +129,14 @@ fun NavigationRoot(
                                         AgendaItemDetailNavKey(
                                             itemType = key.itemType,
                                             titleText = it,
+                                            descriptionText = currentAgendaDetail?.descriptionText
                                         )
                                     )
 
                                     TextType.DESCRIPTION -> backStack.add(
                                         AgendaItemDetailNavKey(
                                             itemType = key.itemType,
+                                            titleText = currentAgendaDetail?.titleText,
                                             descriptionText = it
                                         )
                                     )

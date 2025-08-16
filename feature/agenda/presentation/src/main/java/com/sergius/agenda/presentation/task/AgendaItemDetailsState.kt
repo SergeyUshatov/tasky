@@ -9,11 +9,10 @@ import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
-data class TaskDetailsState(
-    val taskId: String? = null,
-    val taskTitle: String = "",
-    val isTitleFocused: Boolean = false,
-    val taskDescription: String = "",
+data class AgendaItemDetailsState(
+    val id: String? = null,
+    val title: String = "",
+    val description: String = "",
     val showTimerDialog: Boolean = false,
     val timePickerState: TimePickerState = TimePickerState(initialHour = 0, initialMinute = 0, is24Hour = true),
     val showDateDialog: Boolean = false,
