@@ -10,20 +10,20 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
-class TaskDetailsViewModel : ViewModel() {
+class AgendaItemDetailsViewModel : ViewModel() {
 
-    private val _state = MutableStateFlow(TaskDetailsState())
+    private val _state = MutableStateFlow(AgendaItemDetailsState())
     val state = _state
         .onStart { }
         .stateIn(
             scope = viewModelScope,
             started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000),
-            initialValue = TaskDetailsState()
+            initialValue = AgendaItemDetailsState()
         )
 
-    fun onAction(action: TaskDetailsAction) {
+    fun onAction(action: AgendaItemDetailsAction) {
         when (action) {
-            is TaskDetailsAction.OnToggleTimerDialogVisibility -> {
+            is AgendaItemDetailsAction.OnToggleTimerDialogVisibility -> {
                 _state.update {
                     it.copy(
                         showTimerDialog = !it.showTimerDialog
@@ -31,7 +31,7 @@ class TaskDetailsViewModel : ViewModel() {
                 }
             }
 
-            is TaskDetailsAction.OnToggleDateDialogVisibility -> {
+            is AgendaItemDetailsAction.OnToggleDateDialogVisibility -> {
                 _state.update {
                     it.copy(
                         showDateDialog = !it.showDateDialog
@@ -39,7 +39,7 @@ class TaskDetailsViewModel : ViewModel() {
                 }
             }
 
-            is TaskDetailsAction.OnToggleReminderDropdownVisibility -> {
+            is AgendaItemDetailsAction.OnToggleReminderDropdownVisibility -> {
                 _state.update {
                     it.copy(
                         showReminderDropdown = !it.showReminderDropdown
@@ -47,7 +47,7 @@ class TaskDetailsViewModel : ViewModel() {
                 }
             }
 
-            is TaskDetailsAction.OnDropdownItemClick -> {
+            is AgendaItemDetailsAction.OnDropdownItemClick -> {
                 _state.update {
                     it.copy(
                         reminderSelectedOption = action.item,
@@ -62,14 +62,14 @@ class TaskDetailsViewModel : ViewModel() {
 
     private fun resetState() {
         _state.update {
-            it.run { TaskDetailsState() }
+            it.run { AgendaItemDetailsState() }
         }
     }
 
     fun updateTitle(newTitle: String) {
         _state.update {
             it.copy(
-                taskTitle = newTitle
+                title = newTitle
             )
         }
     }
@@ -77,7 +77,7 @@ class TaskDetailsViewModel : ViewModel() {
     fun updateDescription(description: String) {
         _state.update {
             it.copy(
-                taskDescription = description
+                description = description
             )
         }
     }

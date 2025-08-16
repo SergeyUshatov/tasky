@@ -18,9 +18,7 @@ data object AgendaNavKey : NavKey
 data class TextEditNavKey(
     val itemType: AgendaItemType,
     val textType: TextType,
-    val isFocused: Boolean,
     val initialText: String,
-    val fieldText: String
 ) : NavKey
 
 @Serializable

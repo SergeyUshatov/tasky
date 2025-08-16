@@ -20,3 +20,12 @@ fun ChevronButton(
         )
     }
 }
+
+@Composable
+fun ChevronIcon() {
+    Icon(
+        imageVector = ChevronRightIcon,
+        contentDescription = "chevron",
+        tint = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+}

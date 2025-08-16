@@ -27,24 +27,23 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sergius.agenda.presentation.R
+import com.sergius.agenda.presentation.capitalize
 import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.presentation.designsystem.BellIcon
-import com.sergius.core.presentation.designsystem.elements.ChevronButton
+import com.sergius.core.presentation.designsystem.elements.ChevronIcon
 import com.sergius.core.presentation.designsystem.elements.DatePickerModal
 import com.sergius.core.presentation.designsystem.elements.DropdownIcon
 import com.sergius.core.presentation.designsystem.elements.TaskyDivider
@@ -61,21 +60,22 @@ fun AgendaItemDetailsRoot(
     onCancelClick: () -> Unit,
     onSaveClick: () -> Unit,
     onEditTitleClick: (String) -> Unit,
+    onEditDescriptionClick: (String) -> Unit,
     itemType: AgendaItemType,
     title: String? = null,
     description: String? = null,
-    viewModel: TaskDetailsViewModel = koinViewModel(),
+    viewModel: AgendaItemDetailsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    title?.let {
-        if (title != state.taskTitle) {
-            viewModel.updateTitle(title)
+    LaunchedEffect(title) {
+        title?.let {
+            viewModel.updateTitle(it)
         }
     }
 
-    description?.let {
-        if (description != state.taskDescription) {
-            viewModel.updateDescription(description)
+    LaunchedEffect(description) {
+        description?.let {
+            viewModel.updateDescription(it)
         }
     }
 
@@ -85,16 +85,20 @@ fun AgendaItemDetailsRoot(
         onAction =
             { action ->
                 when (action) {
-                    TaskDetailsAction.OnCancelClick -> {
+                    AgendaItemDetailsAction.OnCancelClick -> {
                         onCancelClick()
                     }
 
-                    TaskDetailsAction.OnSaveClick -> {
+                    AgendaItemDetailsAction.OnSaveClick -> {
                         onSaveClick()
                     }
 
-                    TaskDetailsAction.OnEditTitleClick -> {
-                        onEditTitleClick(state.taskTitle)
+                    AgendaItemDetailsAction.OnEditTitleClick -> {
+                        onEditTitleClick(state.title)
+                    }
+
+                    AgendaItemDetailsAction.OnEditDescriptionClick -> {
+                        onEditDescriptionClick(state.description)
                     }
 
                     else -> viewModel.onAction(action)
@@ -105,8 +109,8 @@ fun AgendaItemDetailsRoot(
 
 @Composable
 private fun TaskDetails(
-    onAction: (TaskDetailsAction) -> Unit,
-    state: TaskDetailsState,
+    onAction: (AgendaItemDetailsAction) -> Unit,
+    state: AgendaItemDetailsState,
     itemType: AgendaItemType,
 ) {
     Scaffold { innerPadding ->
@@ -125,21 +129,18 @@ private fun TaskDetails(
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.Start
             ) {
-                val itemTypeCapitalized = itemType.name
-                    .lowercase()
-                    .capitalize(Locale.current)
-
                 ItemType(itemType)
                 ItemTitle(
-                    title = state.taskTitle,
-                    itemType = itemTypeCapitalized,
+                    title = state.title,
+                    itemType = itemType.capitalize(),
                     onAction = onAction
                 )
                 TaskyDivider()
 
                 ItemDescription(
+                    description = state.description,
                     onAction = onAction,
-                    itemType = itemTypeCapitalized,
+                    itemType = itemType.capitalize(),
                 )
                 TaskyDivider()
 
@@ -168,7 +169,7 @@ private fun TaskDetails(
 
 @Composable
 private fun Reminder(
-    onAction: (TaskDetailsAction) -> Unit,
+    onAction: (AgendaItemDetailsAction) -> Unit,
     items: List<String>,
     selectedOption: String,
     expanded: Boolean,
@@ -179,7 +180,7 @@ private fun Reminder(
                 .fillMaxWidth()
                 .padding(vertical = 16.dp, horizontal = 12.dp)
                 .clickable {
-                    onAction(TaskDetailsAction.OnToggleReminderDropdownVisibility)
+                    onAction(AgendaItemDetailsAction.OnToggleReminderDropdownVisibility)
                 },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -217,7 +218,7 @@ private fun Reminder(
                 DropdownItem(
                     text = it,
                     onClick = {
-                        onAction(TaskDetailsAction.OnDropdownItemClick(it))
+                        onAction(AgendaItemDetailsAction.OnDropdownItemClick(it))
                     }
                 )
             }
@@ -227,7 +228,7 @@ private fun Reminder(
                     items = itemList,
                     selectedIndex = items.indexOf(selectedOption),
                     onDismissRequest = {
-                        onAction(TaskDetailsAction.OnToggleReminderDropdownVisibility)
+                        onAction(AgendaItemDetailsAction.OnToggleReminderDropdownVisibility)
                     }
                 )
             }
@@ -237,7 +238,7 @@ private fun Reminder(
 
 @Composable
 private fun TaskDateTime(
-    onAction: (TaskDetailsAction) -> Unit,
+    onAction: (AgendaItemDetailsAction) -> Unit,
     showTimerDialog: Boolean,
     timePickerState: TimePickerState,
     showDateDialog: Boolean,
@@ -279,7 +280,7 @@ private fun TaskDateTime(
 
 @Composable
 private fun TimePickerField(
-    onAction: (TaskDetailsAction) -> Unit,
+    onAction: (AgendaItemDetailsAction) -> Unit,
     timePickerState: TimePickerState,
     showTimerDialog: Boolean,
     modifier: Modifier = Modifier
@@ -287,7 +288,7 @@ private fun TimePickerField(
     Row(
         modifier = modifier
             .padding(4.dp)
-            .clickable { onAction(TaskDetailsAction.OnToggleTimerDialogVisibility) },
+            .clickable { onAction(AgendaItemDetailsAction.OnToggleTimerDialogVisibility) },
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
@@ -303,10 +304,10 @@ private fun TimePickerField(
         if (showTimerDialog) {
             TimePickerDialog(
                 onDismiss = {
-                    onAction(TaskDetailsAction.OnToggleTimerDialogVisibility)
+                    onAction(AgendaItemDetailsAction.OnToggleTimerDialogVisibility)
                 },
                 onConfirm = {
-                    onAction(TaskDetailsAction.OnToggleTimerDialogVisibility)
+                    onAction(AgendaItemDetailsAction.OnToggleTimerDialogVisibility)
                 }
             ) {
                 TimePicker(
@@ -321,7 +322,7 @@ private fun TimePickerField(
 
 @Composable
 private fun DatePickerField(
-    onAction: (TaskDetailsAction) -> Unit,
+    onAction: (AgendaItemDetailsAction) -> Unit,
     showModal: Boolean,
     datePickerState: DatePickerState,
     modifier: Modifier = Modifier
@@ -331,7 +332,7 @@ private fun DatePickerField(
             .padding(4.dp)
             .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
             .clickable {
-                onAction(TaskDetailsAction.OnToggleDateDialogVisibility)
+                onAction(AgendaItemDetailsAction.OnToggleDateDialogVisibility)
             },
         horizontalArrangement = Arrangement.Center
     ) {
@@ -350,36 +351,40 @@ private fun DatePickerField(
     if (showModal) {
         DatePickerModal(
             datePickerState = datePickerState,
-            onDateSelected = { onAction(TaskDetailsAction.OnDateSelected(it)) },
-            onDismiss = { onAction(TaskDetailsAction.OnToggleDateDialogVisibility) }
+            onDateSelected = { onAction(AgendaItemDetailsAction.OnDateSelected(it)) },
+            onDismiss = { onAction(AgendaItemDetailsAction.OnToggleDateDialogVisibility) }
         )
     }
 }
 
 @Composable
 private fun ItemDescription(
-    onAction: (TaskDetailsAction) -> Unit,
+    onAction: (AgendaItemDetailsAction) -> Unit,
+    description: String,
     itemType: String
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp, horizontal = 12.dp),
+            .padding(vertical = 16.dp, horizontal = 12.dp)
+            .clickable {
+                onAction(AgendaItemDetailsAction.OnEditDescriptionClick)
+            },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             modifier = Modifier
                 .weight(1f),
-            text = stringResource(R.string.item_description, itemType),
+            text = description.ifEmpty { stringResource(R.string.item_description, itemType) },
             style = MaterialTheme.typography.bodyMedium
         )
-        ChevronButton(onClick = { onAction(TaskDetailsAction.OnEditDescriptionClick) })
+        ChevronIcon()
     }
 }
 
 @Composable
 private fun ItemTitle(
-    onAction: (TaskDetailsAction) -> Unit,
+    onAction: (AgendaItemDetailsAction) -> Unit,
     title: String,
     itemType: String
 ) {
@@ -388,7 +393,7 @@ private fun ItemTitle(
             .fillMaxWidth()
             .padding(vertical = 16.dp, horizontal = 12.dp)
             .clickable {
-                onAction(TaskDetailsAction.OnEditTitleClick)
+                onAction(AgendaItemDetailsAction.OnEditTitleClick)
             },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -412,13 +417,13 @@ private fun ItemTitle(
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.primary
         )
-        ChevronButton(onClick = { })
+        ChevronIcon()
     }
 }
 
 @Composable
 private fun Footer(
-    onAction: (TaskDetailsAction) -> Unit,
+    onAction: (AgendaItemDetailsAction) -> Unit,
     itemType: AgendaItemType
 ) {
     Row(
@@ -434,7 +439,7 @@ private fun Footer(
             color = TaskyRed,
             modifier = Modifier
                 .clickable {
-                    onAction(TaskDetailsAction.OnDeleteClick)
+                    onAction(AgendaItemDetailsAction.OnDeleteClick)
                 }
         )
     }
@@ -465,7 +470,7 @@ private fun ItemType(
         )
 
         Text(
-            text = itemType.name.toUpperCase(Locale.current),
+            text = itemType.name,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Companion.SemiBold,
             color = MaterialTheme.colorScheme.onSurface
@@ -475,7 +480,7 @@ private fun ItemType(
 
 @Composable
 private fun Header(
-    onAction: (TaskDetailsAction) -> Unit
+    onAction: (AgendaItemDetailsAction) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -489,7 +494,7 @@ private fun Header(
             style = MaterialTheme.typography.labelMedium,
             modifier = Modifier
                 .clickable {
-                    onAction(TaskDetailsAction.OnCancelClick)
+                    onAction(AgendaItemDetailsAction.OnCancelClick)
                 }
         )
         Text(
@@ -502,7 +507,7 @@ private fun Header(
             color = TaskyTaskColor,
             modifier = Modifier
                 .clickable {
-                    onAction(TaskDetailsAction.OnSaveClick)
+                    onAction(AgendaItemDetailsAction.OnSaveClick)
                 }
         )
     }
@@ -511,7 +516,7 @@ private fun Header(
 @Preview
 @Composable
 private fun TaskDetailsPreview() {
-    val state = TaskDetailsState()
+    val state = AgendaItemDetailsState()
     TaskyTheme {
         TaskDetails(
             state = state,
