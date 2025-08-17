@@ -50,7 +50,7 @@ val LightTypography = Typography(
     ),
     labelMedium = TextStyle(
         fontFamily = Inter,
-        fontWeight = FontWeight.Companion.Normal,
+        fontWeight = FontWeight.Companion.SemiBold,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         color = TaskyLightOnPrimary

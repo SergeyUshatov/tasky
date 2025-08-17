@@ -81,6 +81,11 @@ kotlinx-datetime = {group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", 
 # Logging
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
+# room
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+
 # Gradle
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }

@@ -102,8 +102,10 @@ fun AgendaItemDetailsRoot(
                         onEditDescriptionClick(state.description)
                     }
 
-                    else -> viewModel.onAction(action)
+                    else -> Unit
                 }
+
+                viewModel.onAction(action)
             }
     )
 }
@@ -121,7 +123,7 @@ private fun TaskDetails(
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.background)
         ) {
-            Header(onAction)
+            Header(onAction = onAction, itemType = itemType)
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -481,7 +483,8 @@ private fun ItemType(
 
 @Composable
 private fun Header(
-    onAction: (AgendaItemDetailsAction) -> Unit
+    onAction: (AgendaItemDetailsAction) -> Unit,
+    itemType: AgendaItemType
 ) {
     Row(
         modifier = Modifier
@@ -499,7 +502,7 @@ private fun Header(
                 }
         )
         Text(
-            text = stringResource(R.string.edit_task),
+            text = stringResource(R.string.edit_item, itemType.name),
             style = MaterialTheme.typography.labelMedium
         )
         Text(
