@@ -16,7 +16,7 @@ import com.sergius.core.database.entity.TaskEntity
         EventEntity::class,
         ReminderEntity::class,
     ],
-    version = 2,
+    version = 1,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
