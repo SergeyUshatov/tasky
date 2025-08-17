@@ -14,13 +14,18 @@ data class AgendaItemDetailsState(
     val title: String = "",
     val description: String = "",
     val showTimerDialog: Boolean = false,
-    val timePickerState: TimePickerState = TimePickerState(initialHour = 0, initialMinute = 0, is24Hour = true),
+    val timePickerState: TimePickerState = TimePickerState(
+        initialHour = 0,
+        initialMinute = 0,
+        is24Hour = true
+    ),
     val showDateDialog: Boolean = false,
     val selectedDate: Long? = null,
     val datePickerState: DatePickerState = DatePickerState(locale = Locale.getDefault()),
     val showReminderDropdown: Boolean = false,
     val reminderOptions: List<String> = ReminderItem.entries.map { it.text },
-    val reminderSelectedOption: String = reminderOptions.first()
+    val reminderSelectedOption: String = reminderOptions.first(),
+    val isDone: Boolean = false,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,8 +34,9 @@ fun TimePickerState.toFormattedTime(): String {
     val minute = if (minute < 10) "0$minute" else minute.toString()
     return "$hour:$minute"
 }
+const val DATE_FORMAT = "MMM dd, yyyy"
 
 fun Long.convertMillisToDate(): String {
-    val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    val formatter = SimpleDateFormat(DATE_FORMAT, Locale.getDefault())
     return formatter.format(Date(this))
 }

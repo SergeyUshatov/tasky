@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.sergius.android.library)
     alias(libs.plugins.sergius.android.room)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -11,4 +12,5 @@ dependencies {
     implementation(projects.core.domain)
 
     implementation(libs.bundles.koin)
+    implementation(libs.kotlin.serialization.json)
 }

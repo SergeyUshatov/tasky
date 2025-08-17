@@ -90,7 +90,7 @@ fun AgendaItemDetailsRoot(
                         onCancelClick()
                     }
 
-                    AgendaItemDetailsAction.OnSaveClick -> {
+                    is AgendaItemDetailsAction.OnSaveClick -> {
                         onSaveClick()
                     }
 
@@ -511,7 +511,7 @@ private fun Header(
             color = TaskyTaskColor,
             modifier = Modifier
                 .clickable {
-                    onAction(AgendaItemDetailsAction.OnSaveClick)
+                    onAction(AgendaItemDetailsAction.OnSaveClick(itemType))
                 }
         )
     }

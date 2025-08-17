@@ -1,8 +1,10 @@
 package com.sergius.agenda.presentation.agendaitem
 
+import com.sergius.core.domain.AgendaItemType
+
 sealed interface AgendaItemDetailsAction {
     object OnCancelClick: AgendaItemDetailsAction
-    object OnSaveClick: AgendaItemDetailsAction
+    data class OnSaveClick(val itemType: AgendaItemType): AgendaItemDetailsAction
     object OnEditTitleClick: AgendaItemDetailsAction
     object OnEditDescriptionClick: AgendaItemDetailsAction
     object OnDeleteClick: AgendaItemDetailsAction

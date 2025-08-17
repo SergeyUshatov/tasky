@@ -2,6 +2,7 @@ package com.sergius.core.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.sergius.core.database.dao.EventDao
 import com.sergius.core.database.dao.ReminderDao
 import com.sergius.core.database.dao.TaskDao
@@ -15,9 +16,10 @@ import com.sergius.core.database.entity.TaskEntity
         EventEntity::class,
         ReminderEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
+@TypeConverters(Converters::class)
 abstract class TaskyDatabase : RoomDatabase() {
     abstract val taskDao: TaskDao
     abstract val eventDao: EventDao
