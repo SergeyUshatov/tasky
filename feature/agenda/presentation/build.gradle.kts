@@ -10,6 +10,7 @@ android {
 dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.data)
+    implementation(projects.feature.agenda.data)
 
     implementation(libs.kotlinx.datetime)
     implementation(libs.androidx.activity.compose)
