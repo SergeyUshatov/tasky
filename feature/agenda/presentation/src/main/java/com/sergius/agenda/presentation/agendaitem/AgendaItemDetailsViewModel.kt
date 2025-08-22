@@ -4,9 +4,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sergius.agenda.presentation.mappers.toEventDto
-import com.sergius.agenda.presentation.mappers.toReminderDto
-import com.sergius.agenda.presentation.mappers.toTaskDto
+import com.sergius.agenda.data.AgendaItemDetailsState
+import com.sergius.agenda.data.mappers.toEvent
+import com.sergius.agenda.data.mappers.toReminder
+import com.sergius.agenda.data.mappers.toTask
 import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.domain.LocalAgendaDataSource
 import kotlinx.coroutines.Dispatchers
@@ -77,15 +78,15 @@ class AgendaItemDetailsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             when (itemType) {
                 AgendaItemType.TASK -> {
-                    val item = _state.value.toTaskDto()
+                    val item = _state.value.toTask()
                     localDataStore.upsertTask(item)
                 }
                 AgendaItemType.EVENT -> {
-                    val item = _state.value.toEventDto()
+                    val item = _state.value.toEvent()
                     localDataStore.upsertEvent(item)
                 }
                 AgendaItemType.REMINDER -> {
-                    val item = _state.value.toReminderDto()
+                    val item = _state.value.toReminder()
                     localDataStore.upsertReminder(item)
                 }
             }

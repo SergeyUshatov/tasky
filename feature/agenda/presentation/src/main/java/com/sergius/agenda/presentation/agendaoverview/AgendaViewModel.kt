@@ -2,12 +2,15 @@ package com.sergius.agenda.presentation.agendaoverview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sergius.agenda.presentation.mapper.toAgendaItemUi
 import com.sergius.core.domain.LocalAgendaDataSource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -32,7 +35,14 @@ class AgendaViewModel(
                     days = getDaysOfMonth()
                 )
             }
-            val tasks = localDataStore.getTasks()
+            viewModelScope.launch(Dispatchers.IO) {
+                val tasks = localDataStore.getTasks().map { it.toAgendaItemUi() }
+                _state.update {
+                    it.copy(
+                        items = tasks
+                    )
+                }
+            }
             isInitialized = true
         }
         .stateIn(
@@ -61,10 +71,11 @@ class AgendaViewModel(
     }
 
     fun onAction(action: AgendaAction) {
-        when(action) {
+        when (action) {
             is AgendaAction.OnCreateAgendaItemClick -> {
                 _state.update { it.copy(fabExpanded = !_state.value.fabExpanded) }
             }
+
             else -> Unit
         }
     }

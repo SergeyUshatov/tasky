@@ -1,14 +1,14 @@
-package com.sergius.agenda.presentation.mappers
+package com.sergius.agenda.data.mappers
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.sergius.agenda.presentation.agendaitem.AgendaItemDetailsState
-import com.sergius.agenda.presentation.agendaitem.DATE_FORMAT
-import com.sergius.agenda.presentation.agendaitem.convertMillisToDate
-import com.sergius.agenda.presentation.agendaitem.toFormattedTime
+import com.sergius.agenda.data.AgendaItemDetailsState
+import com.sergius.agenda.data.DATE_FORMAT
+import com.sergius.agenda.data.convertMillisToDate
+import com.sergius.agenda.data.toFormattedTime
 import com.sergius.core.domain.ReminderItem
-import com.sergius.core.domain.dto.EventDto
-import com.sergius.core.domain.dto.ReminderDto
-import com.sergius.core.domain.dto.TaskDto
+import com.sergius.core.domain.model.Event
+import com.sergius.core.domain.model.Reminder
+import com.sergius.core.domain.model.Task
 import java.text.SimpleDateFormat
 import java.time.temporal.ChronoUnit
 import java.util.Locale
@@ -18,7 +18,7 @@ import kotlin.time.ExperimentalTime
     ExperimentalMaterial3Api::class,
     ExperimentalTime::class
 )
-fun AgendaItemDetailsState.toTaskDto(): TaskDto {
+fun AgendaItemDetailsState.toTask(): Task {
     val formatter = SimpleDateFormat("$DATE_FORMAT hh:mm", Locale.getDefault())
     val dateLong = datePickerState.selectedDateMillis ?: 0L
     val date = dateLong.convertMillisToDate()
@@ -30,7 +30,7 @@ fun AgendaItemDetailsState.toTaskDto(): TaskDto {
         .first { this.reminderSelectedOption == it.text }
     val remindAt = startTimeInMillis.minus(reminder.longVal, ChronoUnit.MILLIS)
 
-    return TaskDto(
+    return Task(
         id = this.id,
         title = this.title,
         description = this.description,
@@ -40,15 +40,15 @@ fun AgendaItemDetailsState.toTaskDto(): TaskDto {
     )
 }
 
-fun AgendaItemDetailsState.toEventDto(): EventDto {
-    return EventDto(
+fun AgendaItemDetailsState.toEvent(): Event {
+    return Event(
         id = this.id
     )
 }
 
 
-fun AgendaItemDetailsState.toReminderDto(): ReminderDto {
-    return ReminderDto(
+fun AgendaItemDetailsState.toReminder(): Reminder {
+    return Reminder(
         id = this.id
     )
 }

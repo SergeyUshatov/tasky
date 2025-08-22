@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sergius.agenda.data.EditTextState
 import com.sergius.agenda.presentation.R.string.cancel
 import com.sergius.agenda.presentation.R.string.edit_screen
 import com.sergius.agenda.presentation.R.string.save
