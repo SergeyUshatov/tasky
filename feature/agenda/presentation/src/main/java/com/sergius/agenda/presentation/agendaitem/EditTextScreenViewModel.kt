@@ -1,6 +1,5 @@
 package com.sergius.agenda.presentation.agendaitem
 
-import androidx.compose.foundation.text.input.clearText
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,13 +11,20 @@ import kotlinx.coroutines.flow.update
 class EditTextScreenViewModel(
     private val initialText: String
 ): ViewModel() {
-    private val _state = MutableStateFlow(EditTextState(initialText = initialText))
+    private val _state = MutableStateFlow(EditTextState())
     val state = _state
-        .onStart { }
+        .onStart {
+            _state.update {
+                it.textState.edit {
+                    append(initialText)
+                }
+                it
+            }
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = EditTextState(initialText = initialText)
+            initialValue = EditTextState()
         )
 
     fun onAction(action: EditTextAction) {
@@ -32,16 +38,6 @@ class EditTextScreenViewModel(
             }
 
             else -> Unit
-        }
-    }
-
-    fun updateText(newText: String) {
-        _state.update {
-            it.textState.clearText()
-            it.textState.edit {
-                append(newText)
-            }
-            it
         }
     }
 }

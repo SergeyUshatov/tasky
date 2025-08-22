@@ -127,18 +127,14 @@ private fun EditTextScreen(
                             modifier = Modifier
                                 .weight(1f)
                         ) {
-                            textType.let {
-                                if (state.textState.text.isEmpty() && !state.isFocused) {
-                                    Text(
-                                        text = textType.capitalize(),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                            .copy(
-                                                alpha = 0.5f
-                                            ),
-                                        modifier = Modifier.fillMaxWidth()
-                                    )
-                                }
+                            if (state.textState.text.isEmpty() && !state.isFocused) {
+                                Text(
+                                    text = textType.capitalize(),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        .copy(alpha = 0.5f),
+                                    modifier = Modifier.fillMaxWidth()
+                                )
                             }
                             innerBox()
                         }
@@ -157,7 +153,7 @@ fun EditTaskTitlePreview(
     TaskyTheme {
         EditTextScreen(
             textType = TextType.TITLE,
-            state = EditTextState("Hello"),
+            state = EditTextState(),
             onAction = {}
         )
     }

@@ -4,13 +4,22 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sergius.agenda.presentation.mappers.toEventDto
+import com.sergius.agenda.presentation.mappers.toReminderDto
+import com.sergius.agenda.presentation.mappers.toTaskDto
+import com.sergius.core.domain.AgendaItemType
+import com.sergius.core.domain.LocalAgendaDataSource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
-class AgendaItemDetailsViewModel : ViewModel() {
+class AgendaItemDetailsViewModel(
+    private val localDataStore: LocalAgendaDataSource
+) : ViewModel() {
 
     private val _state = MutableStateFlow(AgendaItemDetailsState())
     val state = _state
@@ -24,7 +33,7 @@ class AgendaItemDetailsViewModel : ViewModel() {
     fun onAction(action: AgendaItemDetailsAction) {
         when (action) {
             is AgendaItemDetailsAction.OnSaveClick -> {
-                upsertItem()
+                upsertItem(action.itemType)
             }
 
             is AgendaItemDetailsAction.OnToggleTimerDialogVisibility -> {
@@ -64,13 +73,22 @@ class AgendaItemDetailsViewModel : ViewModel() {
         }
     }
 
-    private fun upsertItem() {
-
-    }
-
-    private fun resetState() {
-        _state.update {
-            it.run { AgendaItemDetailsState() }
+    private fun upsertItem(itemType: AgendaItemType) {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (itemType) {
+                AgendaItemType.TASK -> {
+                    val item = _state.value.toTaskDto()
+                    localDataStore.upsertTask(item)
+                }
+                AgendaItemType.EVENT -> {
+                    val item = _state.value.toEventDto()
+                    localDataStore.upsertEvent(item)
+                }
+                AgendaItemType.REMINDER -> {
+                    val item = _state.value.toReminderDto()
+                    localDataStore.upsertReminder(item)
+                }
+            }
         }
     }
 
