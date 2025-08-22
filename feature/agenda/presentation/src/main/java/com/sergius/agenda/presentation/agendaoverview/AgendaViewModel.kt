@@ -2,6 +2,7 @@ package com.sergius.agenda.presentation.agendaoverview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sergius.core.domain.LocalAgendaDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
@@ -17,7 +18,9 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class AgendaViewModel : ViewModel() {
+class AgendaViewModel(
+    private val localDataStore: LocalAgendaDataSource
+) : ViewModel() {
     private var isInitialized = false
     private val _state = MutableStateFlow(AgendaState())
     val state = _state
@@ -29,6 +32,7 @@ class AgendaViewModel : ViewModel() {
                     days = getDaysOfMonth()
                 )
             }
+            val tasks = localDataStore.getTasks()
             isInitialized = true
         }
         .stateIn(
