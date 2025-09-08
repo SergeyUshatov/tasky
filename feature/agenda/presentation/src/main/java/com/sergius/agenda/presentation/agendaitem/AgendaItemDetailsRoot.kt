@@ -39,6 +39,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sergius.agenda.data.AgendaItemDetailsState
+import com.sergius.agenda.data.convertMillisToDate
+import com.sergius.agenda.data.toFormattedTime
 import com.sergius.agenda.presentation.R
 import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.presentation.designsystem.BellIcon

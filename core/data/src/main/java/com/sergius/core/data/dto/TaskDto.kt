@@ -1,4 +1,4 @@
-package com.sergius.core.domain.dto
+package com.sergius.core.data.dto
 
 data class TaskDto(
     val id: String? = null,

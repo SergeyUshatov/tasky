@@ -1,12 +1,12 @@
 package com.sergius.core.database.mapper
 
 import com.sergius.core.database.entity.TaskEntity
-import com.sergius.core.domain.dto.TaskDto
+import com.sergius.core.domain.model.Task
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-fun TaskDto.toTaskEntity(): TaskEntity {
+fun Task.toTaskEntity(): TaskEntity {
     return TaskEntity(
         id = this.id?: Uuid.random().toString(),
         title = this.title,
@@ -17,8 +17,8 @@ fun TaskDto.toTaskEntity(): TaskEntity {
     )
 }
 
-fun TaskEntity.toTaskDto(): TaskDto {
-    return TaskDto(
+fun TaskEntity.toTask(): Task {
+    return Task(
         id = this.id,
         title = this.title,
         description = this.description,

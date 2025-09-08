@@ -2,13 +2,13 @@ package com.sergius.core.database
 
 import android.database.sqlite.SQLiteFullException
 import com.sergius.core.database.dao.TaskDao
-import com.sergius.core.database.mapper.toTaskDto
+import com.sergius.core.database.mapper.toTask
 import com.sergius.core.database.mapper.toTaskEntity
 import com.sergius.core.domain.LocalAgendaDataSource
 import com.sergius.core.domain.TaskId
-import com.sergius.core.domain.dto.EventDto
-import com.sergius.core.domain.dto.ReminderDto
-import com.sergius.core.domain.dto.TaskDto
+import com.sergius.core.domain.model.Event
+import com.sergius.core.domain.model.Reminder
+import com.sergius.core.domain.model.Task
 import com.sergius.core.domain.util.DataError
 import com.sergius.core.domain.util.Result
 
@@ -16,9 +16,9 @@ class RoomLocalAgendaDataSource(
     private val taskDao: TaskDao,
 ): LocalAgendaDataSource {
 
-    override suspend fun upsertTask(taskDto: TaskDto): Result<TaskId, DataError.Local> {
+    override suspend fun upsertTask(task: Task): Result<TaskId, DataError.Local> {
         return try {
-            val entity = taskDto.toTaskEntity()
+            val entity = task.toTaskEntity()
             taskDao.upsertTask(entity)
             Result.Success(entity.id)
         } catch (_: SQLiteFullException) {
@@ -26,16 +26,16 @@ class RoomLocalAgendaDataSource(
         }
     }
 
-    override suspend fun getTasks(): List<TaskDto> {
-        return taskDao.getTasks().map { it.toTaskDto() }
+    override suspend fun getTasks(): List<Task> {
+        return taskDao.getTasks().map { it.toTask() }
     }
 
 
-    override fun upsertEvent(eventDto: EventDto) {
+    override fun upsertEvent(event: Event) {
         TODO("Not yet implemented")
     }
 
-    override fun upsertReminder(reminderDto: ReminderDto) {
+    override fun upsertReminder(reminder: Reminder) {
         TODO("Not yet implemented")
     }
 }

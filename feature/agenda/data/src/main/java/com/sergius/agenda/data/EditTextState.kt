@@ -1,4 +1,4 @@
-package com.sergius.agenda.presentation.agendaitem
+package com.sergius.agenda.data
 
 import androidx.compose.foundation.text.input.TextFieldState
 

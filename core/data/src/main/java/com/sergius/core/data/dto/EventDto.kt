@@ -1,4 +1,4 @@
-package com.sergius.core.domain.dto
+package com.sergius.core.data.dto
 
 data class EventDto(
     val id: String? = null
