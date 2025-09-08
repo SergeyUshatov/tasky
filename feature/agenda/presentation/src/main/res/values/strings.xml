@@ -13,4 +13,7 @@
     <string name="event">Event</string>
     <string name="reminder">Reminder</string>
     <string name="edit_screen">Edit %s</string>
+    <string name="open">Open</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

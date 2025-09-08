@@ -53,3 +53,11 @@ val ChevronRightIcon: ImageVector
 val BellIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.bell_icon)
+
+val TaskDoneIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.task_done_icon)
+
+val MoreIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.more)

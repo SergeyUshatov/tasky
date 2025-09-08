@@ -15,7 +15,6 @@ val TaskyCheckIconColor = Color(0xFF279F70)
 val TaskyTaskColor = Color(0xFF279F70)
 val TaskyTertiary = Color(0xFFCAEF45)
 val TaskyEventColor = TaskyTertiary
-val TaskyReminderColor = Color(0x76808FB2)
 val TaskyCalendarSupplementary = Color(0xFFFDEFA8)
 
 val TaskyDarkBackground = Color(0xFF16161C)
@@ -24,6 +23,7 @@ val TaskyDarkOnPrimary = Color(0xFF16161C)
 val TaskyDarkOnBackground = Color(0xFFFFFFFF)
 val TaskyDarkSurface = Color(0xFF1B1B20)
 val TaskyDarkOnSurface = Color(0xFFF2F3F7)
+val TaskyReminderColor = TaskyDarkOnSurface
 val TaskyDarkOnSurfaceHigh = Color(0xFF242428)
 val TaskyDarkOnSurfaceVariant = Color(0xFF808B9B)
 

@@ -2,6 +2,7 @@ package com.sergius.agenda.presentation.agendaoverview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sergius.agenda.presentation.agendaitem.AgendaItemUiData
 import com.sergius.agenda.presentation.mapper.toAgendaItemUi
 import com.sergius.core.domain.LocalAgendaDataSource
 import kotlinx.coroutines.Dispatchers
@@ -74,6 +75,12 @@ class AgendaViewModel(
         when (action) {
             is AgendaAction.OnCreateAgendaItemClick -> {
                 _state.update { it.copy(fabExpanded = !_state.value.fabExpanded) }
+            }
+
+            is AgendaAction.OnToggleMoreActionsDropdownVisibility -> {
+                _state.update {
+                    it.copy(showMoreActions = !_state.value.showMoreActions)
+                }
             }
 
             else -> Unit
