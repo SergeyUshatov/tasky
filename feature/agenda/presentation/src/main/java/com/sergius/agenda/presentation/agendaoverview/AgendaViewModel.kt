@@ -18,6 +18,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
+import kotlin.collections.plus
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -92,6 +93,13 @@ class AgendaViewModel(
                         AgendaItemType.TASK -> localDataStore.deleteTask(itemId)
                         AgendaItemType.EVENT -> localDataStore.deleteEvent(itemId)
                         AgendaItemType.REMINDER -> localDataStore.deleteReminder(itemId)
+                    }
+
+                    _state.update {
+                        it.copy(
+                            expandedItemId = null,
+                            items = it.items.minus(action.item)
+                        )
                     }
                 }
             }
