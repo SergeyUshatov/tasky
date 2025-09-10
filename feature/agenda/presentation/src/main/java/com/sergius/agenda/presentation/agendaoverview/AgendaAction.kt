@@ -8,7 +8,7 @@ sealed interface AgendaAction {
     object OnTaskCreateClick: AgendaAction
     object OnEventCreateClick: AgendaAction
     object OnReminderCreateClick: AgendaAction
-    object OnToggleMoreActionsDropdownVisibility: AgendaAction
+    data class OnToggleMoreActions(val itemId: String?) : AgendaAction
     data class OnOpenItem(val item: AgendaItemUiData): AgendaAction
     data class OnEditItem(val item: AgendaItemUiData): AgendaAction
     data class OnDeleteItem(val item: AgendaItemUiData): AgendaAction

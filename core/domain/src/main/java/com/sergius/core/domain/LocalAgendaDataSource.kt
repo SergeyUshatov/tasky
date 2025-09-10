@@ -6,10 +6,17 @@ import com.sergius.core.domain.model.Task
 import com.sergius.core.domain.util.DataError
 import com.sergius.core.domain.util.Result
 
-typealias TaskId = String
+typealias ItemId = String
 interface LocalAgendaDataSource {
-    suspend fun upsertTask(task: Task): Result<TaskId, DataError.Local>
+    suspend fun upsertTask(task: Task): Result<ItemId, DataError.Local>
     suspend fun getTasks(): List<Task>
-    fun upsertEvent(event: Event)
-    fun upsertReminder(reminder: Reminder)
+    suspend fun deleteTask(itemId: ItemId)
+
+    suspend fun upsertEvent(event: Event): Result<ItemId, DataError.Local>
+    suspend fun getEvents(): List<Event>
+    suspend fun deleteEvent(itemId: ItemId)
+
+    suspend fun upsertReminder(reminder: Reminder): Result<ItemId, DataError.Local>
+    suspend fun getReminders(): List<Reminder>
+    suspend fun deleteReminder(itemId: ItemId)
 }

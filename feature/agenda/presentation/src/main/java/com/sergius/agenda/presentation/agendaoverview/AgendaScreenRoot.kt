@@ -55,7 +55,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sergius.agenda.data.convertMillisToDate
 import com.sergius.agenda.presentation.R
-import com.sergius.agenda.presentation.agendaitem.AgendaItemDetailsAction
 import com.sergius.agenda.presentation.agendaitem.AgendaItemUiData
 import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.presentation.designsystem.CalendarAddItemIcon
@@ -156,12 +155,21 @@ private fun AgendaScreen(
                     textAlign = TextAlign.Left
                 )
 
-                LazyColumn {
-                    items(state.items) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(
+                        items = state.items,
+                        key = { it.id ?: "" },
+                        contentType = { it.itemType }
+                    ) { agendaItem ->
                         AgendaItemUi(
                             onAction = onAction,
-                            item = it,
-                            showMoreActions = state.showMoreActions
+                            item = agendaItem,
+                            showMoreActions = state.expandedItemId == agendaItem.id
                         )
                     }
                 }
@@ -226,7 +234,9 @@ private fun AgendaItemUi(
                         tint = contentColor,
                         modifier = Modifier.clickable {
                             Toast.makeText(context, "More options state is: $showMoreActions", Toast.LENGTH_SHORT).show()
-                            onAction(AgendaAction.OnToggleMoreActionsDropdownVisibility)
+                            item.id?.let {
+                                onAction(AgendaAction.OnToggleMoreActions(item.id))
+                            }
                         }
                     )
 
@@ -253,7 +263,7 @@ private fun AgendaItemUi(
                                 items = moreActions,
                                 selectedIndex = 0,
                                 onDismissRequest = {
-                                    onAction(AgendaAction.OnToggleMoreActionsDropdownVisibility)
+                                    onAction(AgendaAction.OnToggleMoreActions(null))
                                 }
                             )
                         }
@@ -505,7 +515,9 @@ private fun AgendaScreenPreview() {
                 description = "Description 1",
                 remindAt = 0L,
                 time = Clock.System.now().toEpochMilliseconds(),
-                itemType = AgendaItemType.TASK
+                itemType = AgendaItemType.TASK,
+                from = 0L,
+                to = 0L,
             ),
             AgendaItemUiData(
                 id = "1",
@@ -513,7 +525,9 @@ private fun AgendaScreenPreview() {
                 description = "Description 1",
                 remindAt = 0L,
                 time = Clock.System.now().toEpochMilliseconds(),
-                itemType = AgendaItemType.EVENT
+                itemType = AgendaItemType.EVENT,
+                from = 0L,
+                to = 0L,
             ),
             AgendaItemUiData(
                 id = "1",
@@ -521,7 +535,9 @@ private fun AgendaScreenPreview() {
                 description = "Description 1",
                 remindAt = 0L,
                 time = Clock.System.now().toEpochMilliseconds(),
-                itemType = AgendaItemType.REMINDER
+                itemType = AgendaItemType.REMINDER,
+                from = 0L,
+                to = 0L,
             ),
         )
     )
