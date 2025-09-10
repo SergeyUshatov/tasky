@@ -33,6 +33,14 @@ val Inter = FontFamily(
 )
 
 val LightTypography = Typography(
+    bodySmall = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Companion.Normal,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.sp,
+        color = TaskyLightOnSurface
+    ),
     bodyMedium = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Companion.Normal,

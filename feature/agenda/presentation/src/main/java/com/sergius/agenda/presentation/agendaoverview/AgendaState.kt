@@ -1,13 +1,14 @@
 package com.sergius.agenda.presentation.agendaoverview
 
-import com.sergius.agenda.presentation.agendaitem.AgendaItemUi
+import com.sergius.agenda.presentation.agendaitem.AgendaItemUiData
 
 data class AgendaState(
     val fabExpanded: Boolean = false,
     val month: String = "UNSPECIFIED",
     val monthDays: List<Int> = emptyList(),
     val days: List<CalendarUi> = emptyList(),
-    val items: List<AgendaItemUi> = emptyList()
+    val items: List<AgendaItemUiData> = emptyList(),
+    val showMoreActions: Boolean = false
 )
 
 

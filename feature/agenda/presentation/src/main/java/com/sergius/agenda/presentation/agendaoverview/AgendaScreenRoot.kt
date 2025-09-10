@@ -1,5 +1,6 @@
 package com.sergius.agenda.presentation.agendaoverview
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
@@ -15,6 +16,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +30,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -41,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,14 +53,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sergius.agenda.data.convertMillisToDate
 import com.sergius.agenda.presentation.R
+import com.sergius.agenda.presentation.agendaitem.AgendaItemDetailsAction
+import com.sergius.agenda.presentation.agendaitem.AgendaItemUiData
+import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.presentation.designsystem.CalendarAddItemIcon
 import com.sergius.core.presentation.designsystem.CalendarTodayIcon
 import com.sergius.core.presentation.designsystem.DropdownIcon
 import com.sergius.core.presentation.designsystem.EventIcon
+import com.sergius.core.presentation.designsystem.MoreIcon
 import com.sergius.core.presentation.designsystem.ReminderIcon
+import com.sergius.core.presentation.designsystem.TaskDoneIcon
 import com.sergius.core.presentation.designsystem.TaskIcon
+import com.sergius.core.presentation.designsystem.elements.DropdownItem
+import com.sergius.core.presentation.designsystem.elements.DropdownList
 import com.sergius.core.presentation.designsystem.theme.TaskyCalendarSupplementary
+import com.sergius.core.presentation.designsystem.theme.TaskyEventColor
+import com.sergius.core.presentation.designsystem.theme.TaskyReminderColor
+import com.sergius.core.presentation.designsystem.theme.TaskyTaskColor
 import com.sergius.core.presentation.designsystem.theme.TaskyTheme
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Month
@@ -139,6 +155,132 @@ private fun AgendaScreen(
                         .padding(vertical = 4.dp, horizontal = 12.dp),
                     textAlign = TextAlign.Left
                 )
+
+                LazyColumn {
+                    items(state.items) {
+                        AgendaItemUi(
+                            onAction = onAction,
+                            item = it,
+                            showMoreActions = state.showMoreActions
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AgendaItemUi(
+    onAction: (AgendaAction) -> Unit,
+    item: AgendaItemUiData,
+    showMoreActions: Boolean
+) {
+    val containerColor = when (item.itemType) {
+        AgendaItemType.TASK -> TaskyTaskColor
+        AgendaItemType.EVENT -> TaskyEventColor
+        AgendaItemType.REMINDER -> TaskyReminderColor
+    }
+
+    val contentColor = when (item.itemType) {
+        AgendaItemType.TASK -> MaterialTheme.colorScheme.onPrimary
+        else -> MaterialTheme.colorScheme.onSurface
+    }
+
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor
+        ),
+        modifier = Modifier
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .fillMaxWidth()
+    ) {
+        Row {
+            val paddingValues = when (item.itemType) {
+                AgendaItemType.TASK -> PaddingValues(top = 8.dp, bottom = 16.dp, end = 16.dp)
+                else -> PaddingValues(vertical = 16.dp, horizontal = 16.dp)
+            }
+
+            if (item.itemType == AgendaItemType.TASK) {
+                Icon(imageVector = TaskDoneIcon, contentDescription = null, tint = contentColor)
+            }
+
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = item.title,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = contentColor
+                    )
+                    val context = LocalContext.current
+                    Icon(
+                        imageVector = MoreIcon,
+                        contentDescription = null,
+                        tint = contentColor,
+                        modifier = Modifier.clickable {
+                            Toast.makeText(context, "More options state is: $showMoreActions", Toast.LENGTH_SHORT).show()
+                            onAction(AgendaAction.OnToggleMoreActionsDropdownVisibility)
+                        }
+                    )
+
+                    if (showMoreActions) {
+                        val moreActions = listOf(
+                            DropdownItem(
+                                text = stringResource(R.string.open),
+                                onClick = { onAction(AgendaAction.OnOpenItem(item)) }
+                            ),
+                            DropdownItem(
+                                text = stringResource(R.string.edit),
+                                onClick = { onAction(AgendaAction.OnEditItem(item)) }
+                            ),
+                            DropdownItem(
+                                text = stringResource(R.string.delete),
+                                onClick = { onAction(AgendaAction.OnDeleteItem(item)) }
+                            )
+                        )
+
+                        Row {
+
+                            Spacer(modifier = Modifier.weight(1f))
+                            DropdownList(
+                                items = moreActions,
+                                selectedIndex = 0,
+                                onDismissRequest = {
+                                    onAction(AgendaAction.OnToggleMoreActionsDropdownVisibility)
+                                }
+                            )
+                        }
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = item.description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = contentColor
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    Text(
+                        text = item.time.convertMillisToDate(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = contentColor
+                    )
+                }
             }
         }
     }
@@ -355,7 +497,33 @@ private fun AgendaScreenPreview() {
     val state = AgendaState(
         fabExpanded = true,
         month = Month.AUGUST.name,
-        days = calendarDays
+        days = calendarDays,
+        items = listOf(
+            AgendaItemUiData(
+                id = "1",
+                title = "Task 1",
+                description = "Description 1",
+                remindAt = 0L,
+                time = Clock.System.now().toEpochMilliseconds(),
+                itemType = AgendaItemType.TASK
+            ),
+            AgendaItemUiData(
+                id = "1",
+                title = "Event 1",
+                description = "Description 1",
+                remindAt = 0L,
+                time = Clock.System.now().toEpochMilliseconds(),
+                itemType = AgendaItemType.EVENT
+            ),
+            AgendaItemUiData(
+                id = "1",
+                title = "Reminder 1",
+                description = "Description 1",
+                remindAt = 0L,
+                time = Clock.System.now().toEpochMilliseconds(),
+                itemType = AgendaItemType.REMINDER
+            ),
+        )
     )
 
     TaskyTheme {

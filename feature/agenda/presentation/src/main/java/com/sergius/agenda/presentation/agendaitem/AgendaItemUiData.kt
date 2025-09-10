@@ -2,7 +2,7 @@ package com.sergius.agenda.presentation.agendaitem
 
 import com.sergius.core.domain.AgendaItemType
 
-data class AgendaItemUi(
+data class AgendaItemUiData(
     val id: String? = null,
     val title: String,
     val description: String,
