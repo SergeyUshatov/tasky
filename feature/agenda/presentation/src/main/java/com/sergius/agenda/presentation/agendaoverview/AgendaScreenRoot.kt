@@ -1,6 +1,5 @@
 package com.sergius.agenda.presentation.agendaoverview
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
@@ -45,7 +44,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -72,13 +70,9 @@ import com.sergius.core.presentation.designsystem.theme.TaskyEventColor
 import com.sergius.core.presentation.designsystem.theme.TaskyReminderColor
 import com.sergius.core.presentation.designsystem.theme.TaskyTaskColor
 import com.sergius.core.presentation.designsystem.theme.TaskyTheme
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Month
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.minus
-import kotlinx.datetime.plus
-import kotlinx.datetime.todayIn
 import org.koin.androidx.compose.koinViewModel
+import java.time.LocalDate
+import java.time.Month
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -163,7 +157,7 @@ private fun AgendaScreen(
                 ) {
                     items(
                         items = state.items,
-                        key = { it.id ?: "" },
+                        key = { it.id },
                         contentType = { it.itemType }
                     ) { agendaItem ->
                         AgendaItemUi(
@@ -227,16 +221,12 @@ private fun AgendaItemUi(
                         style = MaterialTheme.typography.headlineMedium,
                         color = contentColor
                     )
-                    val context = LocalContext.current
                     Icon(
                         imageVector = MoreIcon,
                         contentDescription = null,
                         tint = contentColor,
                         modifier = Modifier.clickable {
-                            Toast.makeText(context, "More options state is: $showMoreActions", Toast.LENGTH_SHORT).show()
-                            item.id?.let {
-                                onAction(AgendaAction.OnToggleMoreActions(item.id))
-                            }
+                            onAction(AgendaAction.OnToggleMoreActions(item.id))
                         }
                     )
 
@@ -257,7 +247,6 @@ private fun AgendaItemUi(
                         )
 
                         Row {
-
                             Spacer(modifier = Modifier.weight(1f))
                             DropdownList(
                                 items = moreActions,
@@ -493,15 +482,14 @@ private fun MonthHeaderItem(
 @Preview
 @Composable
 private fun AgendaScreenPreview() {
-    val now = Clock.System.todayIn(TimeZone.currentSystemDefault())
-    val startDay = now.minus(15, DateTimeUnit.DAY)
-    val endDay = startDay.plus(30, DateTimeUnit.DAY)
-
-    val calendarDays = (startDay..endDay).map { date ->
+    val now = LocalDate.now()
+    val startDay = now.minusDays(15)
+    val calendarDays = (0L..30L).map {
+        val day = startDay.plusDays(it)
         CalendarUi(
-            month = date.month,
-            day = date.day,
-            dayOfWeek = date.dayOfWeek.name.take(1)
+            month = day.month,
+            day = day.dayOfMonth,
+            dayOfWeek = day.dayOfWeek.name.take(1)
         )
     }
     val state = AgendaState(

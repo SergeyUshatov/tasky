@@ -2,11 +2,9 @@ package com.sergius.core.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlin.Long
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class, ExperimentalTime::class)
 @Entity

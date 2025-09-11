@@ -1,6 +1,6 @@
 package com.sergius.agenda.presentation.agendaoverview
 
-import kotlinx.datetime.Month
+import java.time.Month
 
 data class CalendarUi(
     val month: Month,

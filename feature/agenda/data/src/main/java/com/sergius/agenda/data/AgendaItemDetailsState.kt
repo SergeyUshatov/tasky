@@ -7,10 +7,12 @@ import com.sergius.core.domain.ReminderItem
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalMaterial3Api::class)
-data class AgendaItemDetailsState(
-    val id: String? = null,
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalUuidApi::class)
+data class AgendaItemDetailsState  constructor(
+    val id: String = Uuid.random().toString(),
     val title: String = "",
     val description: String = "",
     val showTimerDialog: Boolean = false,
