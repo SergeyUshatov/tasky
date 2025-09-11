@@ -13,4 +13,7 @@ interface TaskDao {
 
     @Query("SELECT * FROM TaskEntity ORDER BY time ASC")
     fun getTasks(): List<TaskEntity>
+
+    @Query("DELETE FROM TaskEntity WHERE id = :taskId")
+    suspend fun deleteTask(taskId: String)
 }

@@ -2,8 +2,8 @@ package com.sergius.agenda.presentation.agendaoverview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sergius.agenda.presentation.agendaitem.AgendaItemUiData
 import com.sergius.agenda.presentation.mapper.toAgendaItemUi
+import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.domain.LocalAgendaDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +18,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.todayIn
+import kotlin.collections.plus
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -38,9 +39,11 @@ class AgendaViewModel(
             }
             viewModelScope.launch(Dispatchers.IO) {
                 val tasks = localDataStore.getTasks().map { it.toAgendaItemUi() }
+                val events = localDataStore.getEvents().map { it.toAgendaItemUi() }
+                val reminders = localDataStore.getReminders().map { it.toAgendaItemUi() }
                 _state.update {
                     it.copy(
-                        items = tasks
+                        items = tasks + events + reminders
                     )
                 }
             }
@@ -77,9 +80,27 @@ class AgendaViewModel(
                 _state.update { it.copy(fabExpanded = !_state.value.fabExpanded) }
             }
 
-            is AgendaAction.OnToggleMoreActionsDropdownVisibility -> {
+            is AgendaAction.OnToggleMoreActions -> {
                 _state.update {
-                    it.copy(showMoreActions = !_state.value.showMoreActions)
+                    it.copy(expandedItemId = action.itemId)
+                }
+            }
+
+            is AgendaAction.OnDeleteItem -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val itemId = action.item.id!!
+                    when (action.item.itemType) {
+                        AgendaItemType.TASK -> localDataStore.deleteTask(itemId)
+                        AgendaItemType.EVENT -> localDataStore.deleteEvent(itemId)
+                        AgendaItemType.REMINDER -> localDataStore.deleteReminder(itemId)
+                    }
+
+                    _state.update {
+                        it.copy(
+                            expandedItemId = null,
+                            items = it.items.minus(action.item)
+                        )
+                    }
                 }
             }
 

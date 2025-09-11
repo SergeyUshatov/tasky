@@ -39,16 +39,57 @@ fun AgendaItemDetailsState.toTask(): Task {
         isDone = this.isDone
     )
 }
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalTime::class
+)
 
 fun AgendaItemDetailsState.toEvent(): Event {
+    val formatter = SimpleDateFormat("$DATE_FORMAT hh:mm", Locale.getDefault())
+    val dateLong = datePickerState.selectedDateMillis ?: 0L
+    val date = dateLong.convertMillisToDate()
+    val time = timePickerState.toFormattedTime()
+    val datetime = "$date $time"
+    val startTimeInMillis = formatter.parse(datetime).toInstant()
+
+    val reminder: ReminderItem = ReminderItem.entries
+        .first { this.reminderSelectedOption == it.text }
+    val remindAt = startTimeInMillis.minus(reminder.longVal, ChronoUnit.MILLIS)
+
     return Event(
-        id = this.id
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        remindAt = remindAt.toEpochMilli(),
+        //todo add it to mapper when ready
+        from = 0L,
+        to = 0L,
+        attendeeIds = emptyList(),
+        photoKeys = emptyList(),
     )
 }
 
-
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalTime::class
+)
 fun AgendaItemDetailsState.toReminder(): Reminder {
+    val formatter = SimpleDateFormat("$DATE_FORMAT hh:mm", Locale.getDefault())
+    val dateLong = datePickerState.selectedDateMillis ?: 0L
+    val date = dateLong.convertMillisToDate()
+    val time = timePickerState.toFormattedTime()
+    val datetime = "$date $time"
+    val startTimeInMillis = formatter.parse(datetime).toInstant()
+
+    val reminder: ReminderItem = ReminderItem.entries
+        .first { this.reminderSelectedOption == it.text }
+    val remindAt = startTimeInMillis.minus(reminder.longVal, ChronoUnit.MILLIS)
+
     return Reminder(
-        id = this.id
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        remindAt = remindAt.toEpochMilli(),
+        time = startTimeInMillis.toEpochMilli(),
     )
 }
