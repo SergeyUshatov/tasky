@@ -61,3 +61,7 @@ val TaskDoneIcon: ImageVector
 val MoreIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.more)
+
+val AddIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.plus)

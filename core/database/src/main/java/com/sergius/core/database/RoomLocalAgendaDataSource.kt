@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
+import java.time.ZoneId
 
 class RoomLocalAgendaDataSource(
     private val taskDao: TaskDao,
@@ -40,8 +41,11 @@ class RoomLocalAgendaDataSource(
         }
     }
 
-    override fun getTasks(): Flow<List<Task>> {
-        return taskDao.getTasks().map { it.map { it.toTask() } }
+    override fun getTasksForDate(date: LocalDate): Flow<List<Task>> {
+        return taskDao.getTasks(
+            dateFrom = startOfDay(date),
+            dateTo = endOfDay(date)
+        ).map { it.map { it.toTask() } }
     }
 
     override suspend fun deleteTask(itemId: ItemId) {
@@ -58,8 +62,11 @@ class RoomLocalAgendaDataSource(
         }
     }
 
-    override fun getEvents(): Flow<List<Event>> {
-        return eventDao.getEvents().map { it.map { it.toEvent() } }
+    override fun getEventsForDate(date: LocalDate): Flow<List<Event>> {
+        return eventDao.getEvents(
+            dateFrom = startOfDay(date),
+            dateTo = endOfDay(date)
+        ).map { it.map { it.toEvent() } }
     }
 
     override suspend fun deleteEvent(itemId: ItemId) {
@@ -76,9 +83,26 @@ class RoomLocalAgendaDataSource(
         }
     }
 
-    override fun getReminders(): Flow<List<Reminder>> {
-        return reminderDao.getReminders().map { it.map { it.toReminder() } }
+    override fun getRemindersForDate(date: LocalDate): Flow<List<Reminder>> {
+        val start = startOfDay(date)
+        val end = endOfDay(date)
+        return reminderDao.getReminders(
+            dateFrom = start,
+            dateTo = end
+        ).map { it.map { it.toReminder() } }
     }
+
+    private fun startOfDay(date: LocalDate) = date
+        .atStartOfDay(ZoneId.systemDefault())
+        .toInstant()
+        .toEpochMilli()
+
+    private fun endOfDay(date: LocalDate) = date
+        .plusDays(1)
+        .atStartOfDay(ZoneId.systemDefault())
+        .minusSeconds(1)
+        .toInstant()
+        .toEpochMilli()
 
     override suspend fun deleteReminder(itemId: ItemId) {
         reminderDao.deleteReminder(itemId)
@@ -86,15 +110,13 @@ class RoomLocalAgendaDataSource(
 
     override fun getAgendaForDate(date: LocalDate): Flow<List<AgendaItem>> {
         return combine(
-            getTasks(),
-            getEvents(),
-            getReminders()
+            getTasksForDate(date),
+            getEventsForDate(date),
+            getRemindersForDate(date)
         ) { tasks, events, reminders ->
-            listOf(
-                tasks.map { it.toAgendaItem() },
-                events.map { it.toAgendaItem() },
-                reminders.map { it.toAgendaItem() }
-            ).flatten()
+            (tasks.map<Task, AgendaItem> { it.toAgendaItem() }
+                    + events.map<Event, AgendaItem> { it.toAgendaItem() }
+                    + reminders.map<Reminder, AgendaItem> { it.toAgendaItem() })
                 .sortedBy { it.time }
         }
     }

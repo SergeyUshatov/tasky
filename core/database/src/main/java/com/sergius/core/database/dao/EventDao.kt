@@ -12,8 +12,8 @@ interface EventDao {
     @Upsert
     suspend fun upsertEvent(entity: EventEntity)
 
-    @Query("SELECT * FROM EventEntity ORDER BY `from` ASC")
-    fun getEvents(): Flow<List<EventEntity>>
+    @Query("SELECT * FROM EventEntity WHERE `from` BETWEEN :dateFrom AND :dateTo ORDER BY `from` ASC")
+    fun getEvents(dateFrom: Long, dateTo: Long): Flow<List<EventEntity>>
 
     @Query("DELETE FROM EventEntity WHERE id = :eventId")
     suspend fun deleteEvent(eventId: String)

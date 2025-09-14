@@ -386,7 +386,7 @@ private fun CalendarDays(
                     .clickable {
                         onClick(AgendaAction.OnDayClick(calendarDay))
                     }
-                    .background(color = TaskyCalendarSupplementary),
+                    .background(color = if (calendarDay.isSelected) TaskyCalendarSupplementary else MaterialTheme.colorScheme.onPrimary),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {

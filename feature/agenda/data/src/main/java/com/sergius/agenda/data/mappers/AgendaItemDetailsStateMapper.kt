@@ -6,6 +6,7 @@ import com.sergius.agenda.data.DATE_FORMAT
 import com.sergius.agenda.data.convertMillisToDate
 import com.sergius.agenda.data.toFormattedTime
 import com.sergius.core.domain.ReminderItem
+import com.sergius.core.domain.model.AgendaItemDetails
 import com.sergius.core.domain.model.Event
 import com.sergius.core.domain.model.Reminder
 import com.sergius.core.domain.model.Task
@@ -36,7 +37,7 @@ fun AgendaItemDetailsState.toTask(): Task {
         description = this.description,
         remindAt = remindAt.toEpochMilli(),
         time = startTimeInMillis.toEpochMilli(),
-        isDone = this.isDone
+        isDone = (this.details as AgendaItemDetails.TaskDetails).isDone
     )
 }
 @OptIn(
@@ -46,24 +47,29 @@ fun AgendaItemDetailsState.toTask(): Task {
 
 fun AgendaItemDetailsState.toEvent(): Event {
     val formatter = SimpleDateFormat("$DATE_FORMAT hh:mm", Locale.getDefault())
-    val dateLong = datePickerState.selectedDateMillis ?: 0L
-    val date = dateLong.convertMillisToDate()
-    val time = timePickerState.toFormattedTime()
-    val datetime = "$date $time"
-    val startTimeInMillis = formatter.parse(datetime).toInstant()
+    val startDateLong = datePickerState.selectedDateMillis ?: 0L
+    val startDate = startDateLong.convertMillisToDate()
+    val startTime = timePickerState.toFormattedTime()
+    val startDatetime = "$startDate $startTime"
+    val startTimeInMillis = formatter.parse(startDatetime).toInstant()
+
+    val endDateLong = dateToPickerState.selectedDateMillis ?: 0L
+    val endDate = endDateLong.convertMillisToDate()
+    val endTime = toTimePickerState.toFormattedTime()
+    val endDatetime = "$endDate $endTime"
+    val endTimeInMillis = formatter.parse(endDatetime).toInstant()
 
     val reminder: ReminderItem = ReminderItem.entries
         .first { this.reminderSelectedOption == it.text }
     val remindAt = startTimeInMillis.minus(reminder.longVal, ChronoUnit.MILLIS)
 
     return Event(
-        id = this.id,
-        title = this.title,
-        description = this.description,
+        id = id,
+        title = title,
+        description = description,
         remindAt = remindAt.toEpochMilli(),
-        //todo add it to mapper when ready
-        from = 0L,
-        to = 0L,
+        from = startTimeInMillis?.toEpochMilli() ?: 0L,
+        to = endTimeInMillis.toEpochMilli() ?: 0L,
         attendeeIds = emptyList(),
         photoKeys = emptyList(),
     )

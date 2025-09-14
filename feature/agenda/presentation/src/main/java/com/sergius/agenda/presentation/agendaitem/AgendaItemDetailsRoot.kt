@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -44,6 +45,8 @@ import com.sergius.agenda.data.convertMillisToDate
 import com.sergius.agenda.data.toFormattedTime
 import com.sergius.agenda.presentation.R
 import com.sergius.core.domain.AgendaItemType
+import com.sergius.core.domain.model.PickerType
+import com.sergius.core.presentation.designsystem.AddIcon
 import com.sergius.core.presentation.designsystem.BellIcon
 import com.sergius.core.presentation.designsystem.elements.ChevronIcon
 import com.sergius.core.presentation.designsystem.elements.DatePickerModal
@@ -83,7 +86,7 @@ fun AgendaItemDetailsRoot(
         }
     }
 
-    TaskDetails(
+    ItemDetailsUI(
         itemType = itemType,
         state = state,
         onAction =
@@ -114,7 +117,7 @@ fun AgendaItemDetailsRoot(
 }
 
 @Composable
-private fun TaskDetails(
+private fun ItemDetailsUI(
     onAction: (AgendaItemDetailsAction) -> Unit,
     state: AgendaItemDetailsState,
     itemType: AgendaItemType,
@@ -148,15 +151,37 @@ private fun TaskDetails(
                     onAction = onAction,
                     itemType = itemType.capitalize(),
                 )
-                TaskyDivider()
 
-                TaskDateTime(
-                    onAction = onAction,
-                    showTimerDialog = state.showTimerDialog,
-                    timePickerState = state.timePickerState,
-                    showDateDialog = state.showDateDialog,
-                    datePickerState = state.datePickerState
-                )
+                if (AgendaItemType.EVENT == itemType) {
+                    AddPhotos()
+                    EventDateTimeFrom(
+                        onAction = onAction,
+                        showTimerDialog = state.showTimerDialog,
+                        timePickerState = state.timePickerState,
+                        showDateDialog = state.showDateDialog,
+                        datePickerState = state.datePickerState,
+                    )
+
+                    TaskyDivider()
+                    EventDateTimeTo(
+                        onAction = onAction,
+                        showTimerDialog = state.showToTimerDialog,
+                        timePickerState = state.toTimePickerState,
+                        showDateDialog = state.showDateToDialog,
+                        datePickerState = state.dateToPickerState
+                    )
+                } else {
+                    TaskyDivider()
+                    ItemDateTime(
+                        onAction = onAction,
+                        showTimerDialog = state.showTimerDialog,
+                        timePickerState = state.timePickerState,
+                        showDateDialog = state.showDateDialog,
+                        datePickerState = state.datePickerState,
+                        text = stringResource(R.string.at),
+                        pickerType = PickerType.PickerAt
+                    )
+                }
                 TaskyDivider()
 
                 Reminder(
@@ -196,7 +221,9 @@ private fun Reminder(
                 contentDescription = "reminder icon",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
+                    .clip(shape = RoundedCornerShape(4.dp))
+                    .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
+                    .padding( 8.dp)
             )
 
             Text(
@@ -243,12 +270,14 @@ private fun Reminder(
 }
 
 @Composable
-private fun TaskDateTime(
+private fun ItemDateTime(
     onAction: (AgendaItemDetailsAction) -> Unit,
     showTimerDialog: Boolean,
     timePickerState: TimePickerState,
     showDateDialog: Boolean,
-    datePickerState: DatePickerState
+    datePickerState: DatePickerState,
+    text: String,
+    pickerType: PickerType
 ) {
     Row(
         modifier = Modifier
@@ -258,17 +287,20 @@ private fun TaskDateTime(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = stringResource(R.string.at),
+            text = text,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .weight(2f)
         )
 
         TimePickerField(
             onAction = onAction,
+            pickerType = pickerType,
             timePickerState = timePickerState,
             showTimerDialog = showTimerDialog,
             modifier = Modifier
-                .weight(1f)
+                .weight(4f)
                 .padding(vertical = 12.dp, horizontal = 4.dp)
                 .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
         )
@@ -276,17 +308,88 @@ private fun TaskDateTime(
         DatePickerField(
             showModal = showDateDialog,
             onAction = onAction,
+            pickerType = pickerType,
             datePickerState = datePickerState,
             modifier = Modifier
-                .weight(1f)
+                .weight(4f)
                 .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
         )
     }
 }
 
 @Composable
+private fun AddPhotos() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(120.dp)
+            .background(color = MaterialTheme.colorScheme.surfaceContainerHigh),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = AddIcon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+            )
+            Text(
+                text = "Add Photos".uppercase(),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                modifier = Modifier
+                    .padding(start = 8.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun EventDateTimeFrom(
+    onAction: (AgendaItemDetailsAction) -> Unit,
+    showTimerDialog: Boolean,
+    timePickerState: TimePickerState,
+    showDateDialog: Boolean,
+    datePickerState: DatePickerState
+) {
+    ItemDateTime(
+        onAction = onAction,
+        showTimerDialog = showTimerDialog,
+        timePickerState = timePickerState,
+        showDateDialog = showDateDialog,
+        datePickerState = datePickerState,
+        text = stringResource(R.string.from),
+        pickerType = PickerType.PickerFrom
+    )
+}
+
+@Composable
+private fun EventDateTimeTo(
+    onAction: (AgendaItemDetailsAction) -> Unit,
+    showTimerDialog: Boolean,
+    timePickerState: TimePickerState,
+    showDateDialog: Boolean,
+    datePickerState: DatePickerState
+) {
+    ItemDateTime(
+        onAction = onAction,
+        showTimerDialog = showTimerDialog,
+        timePickerState = timePickerState,
+        showDateDialog = showDateDialog,
+        datePickerState = datePickerState,
+        text = stringResource(R.string.to),
+        pickerType = PickerType.PickerTo
+    )
+}
+
+@Composable
 private fun TimePickerField(
     onAction: (AgendaItemDetailsAction) -> Unit,
+    pickerType: PickerType,
     timePickerState: TimePickerState,
     showTimerDialog: Boolean,
     modifier: Modifier = Modifier
@@ -294,7 +397,7 @@ private fun TimePickerField(
     Row(
         modifier = modifier
             .padding(4.dp)
-            .clickable { onAction(AgendaItemDetailsAction.OnToggleTimerDialogVisibility) },
+            .clickable { onAction(AgendaItemDetailsAction.OnToggleTimerDialogVisibility(pickerType)) },
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
@@ -310,10 +413,10 @@ private fun TimePickerField(
         if (showTimerDialog) {
             TimePickerDialog(
                 onDismiss = {
-                    onAction(AgendaItemDetailsAction.OnToggleTimerDialogVisibility)
+                    onAction(AgendaItemDetailsAction.OnToggleTimerDialogVisibility(pickerType))
                 },
                 onConfirm = {
-                    onAction(AgendaItemDetailsAction.OnToggleTimerDialogVisibility)
+                    onAction(AgendaItemDetailsAction.OnToggleTimerDialogVisibility(pickerType))
                 }
             ) {
                 TimePicker(
@@ -329,6 +432,7 @@ private fun TimePickerField(
 @Composable
 private fun DatePickerField(
     onAction: (AgendaItemDetailsAction) -> Unit,
+    pickerType: PickerType,
     showModal: Boolean,
     datePickerState: DatePickerState,
     modifier: Modifier = Modifier
@@ -338,7 +442,7 @@ private fun DatePickerField(
             .padding(4.dp)
             .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
             .clickable {
-                onAction(AgendaItemDetailsAction.OnToggleDateDialogVisibility)
+                onAction(AgendaItemDetailsAction.OnToggleDateDialogVisibility(pickerType))
             },
         horizontalArrangement = Arrangement.Center
     ) {
@@ -358,7 +462,7 @@ private fun DatePickerField(
         DatePickerModal(
             datePickerState = datePickerState,
             onDateSelected = { onAction(AgendaItemDetailsAction.OnDateSelected(it)) },
-            onDismiss = { onAction(AgendaItemDetailsAction.OnToggleDateDialogVisibility) }
+            onDismiss = { onAction(AgendaItemDetailsAction.OnToggleDateDialogVisibility(pickerType)) }
         )
     }
 }
@@ -525,10 +629,10 @@ private fun Header(
 private fun TaskDetailsPreview() {
     val state = AgendaItemDetailsState()
     TaskyTheme {
-        TaskDetails(
+        ItemDetailsUI(
             state = state,
             onAction = {},
-            itemType = AgendaItemType.TASK,
+            itemType = AgendaItemType.EVENT,
         )
     }
 }

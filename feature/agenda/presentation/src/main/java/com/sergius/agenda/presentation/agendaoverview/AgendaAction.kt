@@ -3,7 +3,7 @@ package com.sergius.agenda.presentation.agendaoverview
 import com.sergius.agenda.presentation.agendaitem.AgendaItemUiData
 
 sealed interface AgendaAction {
-    data class OnDayClick(val day: CalendarUi) : AgendaAction
+    data class OnDayClick(val date: CalendarUi) : AgendaAction
     object OnCreateAgendaItemClick: AgendaAction
     object OnTaskCreateClick: AgendaAction
     object OnEventCreateClick: AgendaAction
