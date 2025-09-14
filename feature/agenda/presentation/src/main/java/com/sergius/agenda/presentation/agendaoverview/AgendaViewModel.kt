@@ -8,18 +8,12 @@ import com.sergius.core.domain.LocalAgendaDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.minus
-import kotlinx.datetime.plus
-import kotlinx.datetime.todayIn
-import kotlin.collections.plus
-import kotlin.time.Clock
+import java.time.LocalDate
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -38,14 +32,7 @@ class AgendaViewModel(
                 )
             }
             viewModelScope.launch(Dispatchers.IO) {
-                val tasks = localDataStore.getTasks().map { it.toAgendaItemUi() }
-                val events = localDataStore.getEvents().map { it.toAgendaItemUi() }
-                val reminders = localDataStore.getReminders().map { it.toAgendaItemUi() }
-                _state.update {
-                    it.copy(
-                        items = tasks + events + reminders
-                    )
-                }
+                refreshAgendaItems()
             }
             isInitialized = true
         }
@@ -55,21 +42,27 @@ class AgendaViewModel(
             initialValue = AgendaState()
         )
 
-    private fun getCurrentMonth(): String {
-        return now().month.name
+    private suspend fun refreshAgendaItems() {
+        val items = localDataStore.getAgendaForDate(LocalDate.now())
+        _state.update {
+            it.copy(
+                items = items.first().map { it.toAgendaItemUi() }
+            )
+        }
     }
 
-    private fun now(): LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
+    private fun getCurrentMonth(): String {
+        return LocalDate.now().month.name
+    }
 
     private fun getDaysOfMonth(): List<CalendarUi> {
-        val startDay = now().minus(15, DateTimeUnit.DAY)
-        val endDay = startDay.plus(30, DateTimeUnit.DAY)
-
-        return (startDay..endDay).map { date ->
+        val startDay = LocalDate.now().minusDays(15)
+        return (0L..30L).map {
+            val day = startDay.plusDays(it)
             CalendarUi(
-                month = date.month,
-                day = date.day,
-                dayOfWeek = date.dayOfWeek.name.take(1)
+                month = day.month,
+                day = day.dayOfMonth,
+                dayOfWeek = day.dayOfWeek.name.take(1)
             )
         }
     }
@@ -78,6 +71,7 @@ class AgendaViewModel(
         when (action) {
             is AgendaAction.OnCreateAgendaItemClick -> {
                 _state.update { it.copy(fabExpanded = !_state.value.fabExpanded) }
+                isInitialized = false
             }
 
             is AgendaAction.OnToggleMoreActions -> {
@@ -88,7 +82,7 @@ class AgendaViewModel(
 
             is AgendaAction.OnDeleteItem -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val itemId = action.item.id!!
+                    val itemId = action.item.id
                     when (action.item.itemType) {
                         AgendaItemType.TASK -> localDataStore.deleteTask(itemId)
                         AgendaItemType.EVENT -> localDataStore.deleteEvent(itemId)
@@ -96,11 +90,9 @@ class AgendaViewModel(
                     }
 
                     _state.update {
-                        it.copy(
-                            expandedItemId = null,
-                            items = it.items.minus(action.item)
-                        )
+                        it.copy(expandedItemId = null)
                     }
+                    refreshAgendaItems()
                 }
             }
 

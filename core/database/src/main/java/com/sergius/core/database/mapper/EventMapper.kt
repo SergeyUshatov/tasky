@@ -1,14 +1,13 @@
 package com.sergius.core.database.mapper
 
 import com.sergius.core.database.entity.EventEntity
+import com.sergius.core.domain.AgendaItemType
+import com.sergius.core.domain.model.AgendaItem
 import com.sergius.core.domain.model.Event
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
 fun Event.toEventEntity(): EventEntity {
     return EventEntity(
-        id = this.id ?: Uuid.random().toString(),
+        id = this.id,
         title = this.title,
         description = this.description,
         remindAt = this.remindAt,
@@ -30,5 +29,20 @@ fun EventEntity.toEvent(): Event {
         to = this.to,
         attendeeIds = this.attendeeIds,
         photoKeys = this.photoKeys
+    )
+}
+
+fun Event.toAgendaItem(): AgendaItem {
+    return AgendaItem(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        time = this.from,
+        from = this.from,
+        to = this.to,
+        remindAt = this.remindAt,
+        attendeeIds = this.attendeeIds,
+        photoKeys = this.photoKeys,
+        itemType = AgendaItemType.EVENT
     )
 }

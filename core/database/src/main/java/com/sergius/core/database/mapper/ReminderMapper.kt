@@ -1,14 +1,13 @@
 package com.sergius.core.database.mapper
 
 import com.sergius.core.database.entity.ReminderEntity
+import com.sergius.core.domain.AgendaItemType
+import com.sergius.core.domain.model.AgendaItem
 import com.sergius.core.domain.model.Reminder
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
 fun Reminder.toReminderEntity(): ReminderEntity {
     return ReminderEntity(
-        id = this.id ?: Uuid.random().toString(),
+        id = this.id,
         title = this.title,
         description = this.description,
         remindAt = this.remindAt,
@@ -24,5 +23,16 @@ fun ReminderEntity.toReminder(): Reminder {
         remindAt = this.remindAt,
         updatedAt = this.updatedAt,
         time = this.time
+    )
+}
+
+fun Reminder.toAgendaItem(): AgendaItem {
+    return AgendaItem(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        time = this.time,
+        remindAt = this.remindAt,
+        itemType = AgendaItemType.REMINDER
     )
 }

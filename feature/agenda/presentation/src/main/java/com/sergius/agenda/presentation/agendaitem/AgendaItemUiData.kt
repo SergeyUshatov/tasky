@@ -1,9 +1,12 @@
 package com.sergius.agenda.presentation.agendaitem
 
 import com.sergius.core.domain.AgendaItemType
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalUuidApi::class)
 data class AgendaItemUiData(
-    val id: String? = null,
+    val id: String = Uuid.random().toString(),
     val title: String,
     val description: String,
     val remindAt: Long,

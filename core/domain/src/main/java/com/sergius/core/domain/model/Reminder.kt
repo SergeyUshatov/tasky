@@ -1,10 +1,15 @@
 package com.sergius.core.domain.model
 
 import kotlin.time.ExperimentalTime
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalTime::class)
+@OptIn(
+    ExperimentalUuidApi::class,
+    ExperimentalTime::class
+)
 data class Reminder(
-    val id: String? = null,
+    val id: String = Uuid.random().toString(),
     val title: String,
     val description: String,
     val remindAt: Long,
