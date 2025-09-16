@@ -12,15 +12,15 @@ import java.time.LocalDate
 typealias ItemId = String
 interface LocalAgendaDataSource {
     suspend fun upsertTask(task: Task): Result<ItemId, DataError.Local>
-    fun getTasks(): Flow<List<Task>>
+    fun getTasksForDate(date: LocalDate): Flow<List<Task>>
     suspend fun deleteTask(itemId: ItemId)
 
     suspend fun upsertEvent(event: Event): Result<ItemId, DataError.Local>
-    fun getEvents(): Flow<List<Event>>
+    fun getEventsForDate(date: LocalDate): Flow<List<Event>>
     suspend fun deleteEvent(itemId: ItemId)
 
     suspend fun upsertReminder(reminder: Reminder): Result<ItemId, DataError.Local>
-    fun getReminders(): Flow<List<Reminder>>
+    fun getRemindersForDate(date: LocalDate): Flow<List<Reminder>>
     suspend fun deleteReminder(itemId: ItemId)
 
     fun getAgendaForDate(date: LocalDate): Flow<List<AgendaItem>>

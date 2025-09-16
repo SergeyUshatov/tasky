@@ -12,8 +12,8 @@ interface ReminderDao {
     @Upsert
     suspend fun upsertReminder(reminder: ReminderEntity)
 
-    @Query("SELECT * FROM ReminderEntity ORDER BY time ASC")
-    fun getReminders(): Flow<List<ReminderEntity>>
+    @Query("SELECT * FROM ReminderEntity WHERE time BETWEEN :dateFrom AND :dateTo ORDER BY time ASC")
+    fun getReminders(dateFrom: Long, dateTo: Long): Flow<List<ReminderEntity>>
 
     @Query("DELETE FROM ReminderEntity WHERE id = :reminderId")
     suspend fun deleteReminder(reminderId: String)

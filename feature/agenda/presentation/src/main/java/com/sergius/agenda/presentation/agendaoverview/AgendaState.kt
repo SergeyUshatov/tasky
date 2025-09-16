@@ -8,7 +8,8 @@ data class AgendaState(
     val monthDays: List<Int> = emptyList(),
     val days: List<CalendarUi> = emptyList(),
     val items: List<AgendaItemUiData> = emptyList(),
-    val expandedItemId: String? = null
+    val expandedItemId: String? = null,
+    val isLoading: Boolean = false
 )
 
 

@@ -6,41 +6,43 @@ import com.sergius.agenda.presentation.mapper.toAgendaItemUi
 import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.domain.LocalAgendaDataSource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class)
 class AgendaViewModel(
     private val localDataStore: LocalAgendaDataSource
 ) : ViewModel() {
-    private var isInitialized = false
+    //    private var isInitialized = false
     private val _state = MutableStateFlow(AgendaState())
-    val state = _state
-        .onStart {
-            if (isInitialized) return@onStart
-            _state.update {
-                it.copy(
-                    month = getCurrentMonth(),
-                    days = getDaysOfMonth()
-                )
-            }
-            viewModelScope.launch(Dispatchers.IO) {
-                refreshAgendaItems()
-            }
-            isInitialized = true
+    private val _selectedDate = MutableStateFlow(LocalDate.now())
+    val state = combine(
+        _state,
+        _selectedDate.flatMapLatest { date ->
+            // whenever the date changes, cancel the old flow and start collecting the new one
+            localDataStore.getAgendaForDate(date)
         }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = AgendaState()
+    ) { uiState, agendaItems ->
+        uiState.copy(
+            items = agendaItems.map { it.toAgendaItemUi() },
+            month = getCurrentMonth(),
+            days = getDaysOfMonth(),
+            isLoading = false
         )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = AgendaState(isLoading = true)
+    )
 
     private suspend fun refreshAgendaItems() {
         val items = localDataStore.getAgendaForDate(LocalDate.now())
@@ -52,26 +54,27 @@ class AgendaViewModel(
     }
 
     private fun getCurrentMonth(): String {
-        return LocalDate.now().month.name
+        return _selectedDate.value.month.name
     }
 
     private fun getDaysOfMonth(): List<CalendarUi> {
-        val startDay = LocalDate.now().minusDays(15)
-        return (0L..30L).map {
-            val day = startDay.plusDays(it)
-            CalendarUi(
-                month = day.month,
-                day = day.dayOfMonth,
-                dayOfWeek = day.dayOfWeek.name.take(1)
-            )
-        }
+        return (1.._selectedDate.value.month.maxLength())
+            .map {
+                val date = LocalDate.of(_selectedDate.value.year, _selectedDate.value.month, it)
+                CalendarUi(
+                    year = date.year,
+                    month = date.month,
+                    day = date.dayOfMonth,
+                    dayOfWeek = date.dayOfWeek.name.take(1),
+                    isSelected = it == _selectedDate.value.dayOfMonth
+                )
+            }
     }
 
     fun onAction(action: AgendaAction) {
         when (action) {
             is AgendaAction.OnCreateAgendaItemClick -> {
                 _state.update { it.copy(fabExpanded = !_state.value.fabExpanded) }
-                isInitialized = false
             }
 
             is AgendaAction.OnToggleMoreActions -> {
@@ -93,6 +96,12 @@ class AgendaViewModel(
                         it.copy(expandedItemId = null)
                     }
                     refreshAgendaItems()
+                }
+            }
+
+            is AgendaAction.OnDayClick -> {
+                _selectedDate.update {
+                    LocalDate.of(action.date.year, action.date.month, action.date.day)
                 }
             }
 

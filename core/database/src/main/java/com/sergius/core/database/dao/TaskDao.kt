@@ -12,8 +12,8 @@ interface TaskDao {
     @Upsert
     suspend fun upsertTask(task: TaskEntity)
 
-    @Query("SELECT * FROM TaskEntity ORDER BY time ASC")
-    fun getTasks(): Flow<List<TaskEntity>>
+    @Query("SELECT * FROM TaskEntity WHERE time BETWEEN :dateFrom AND :dateTo ORDER BY time ASC")
+    fun getTasks(dateFrom: Long, dateTo: Long): Flow<List<TaskEntity>>
 
     @Query("DELETE FROM TaskEntity WHERE id = :taskId")
     suspend fun deleteTask(taskId: String)

@@ -10,6 +10,7 @@ import com.sergius.agenda.data.mappers.toReminder
 import com.sergius.agenda.data.mappers.toTask
 import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.domain.LocalAgendaDataSource
+import com.sergius.core.domain.model.PickerType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
@@ -39,17 +40,33 @@ class AgendaItemDetailsViewModel(
 
             is AgendaItemDetailsAction.OnToggleTimerDialogVisibility -> {
                 _state.update {
-                    it.copy(
-                        showTimerDialog = !it.showTimerDialog
-                    )
+                    if (action.pickerType == PickerType.PickerFrom) {
+                        it.copy(
+                            showTimerDialog = !it.showTimerDialog,
+                            showToTimerDialog = false
+                        )
+                    } else {
+                        it.copy(
+                            showToTimerDialog = !it.showToTimerDialog,
+                            showTimerDialog = false
+                        )
+                    }
                 }
             }
 
             is AgendaItemDetailsAction.OnToggleDateDialogVisibility -> {
                 _state.update {
-                    it.copy(
-                        showDateDialog = !it.showDateDialog
-                    )
+                    if (action.pickerType == PickerType.PickerFrom) {
+                        it.copy(
+                            showDateDialog = !it.showDateDialog,
+                            showDateToDialog = false
+                        )
+                    } else {
+                        it.copy(
+                            showDateToDialog = !it.showDateToDialog,
+                            showDateDialog = false,
+                        )
+                    }
                 }
             }
 
