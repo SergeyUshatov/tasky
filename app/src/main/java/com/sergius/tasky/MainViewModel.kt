@@ -20,7 +20,15 @@ class MainViewModel(
             viewModelScope.launch {
                 _state.update { it.copy(isCheckingAuth = true) }
                 _state.update {
-                    it.copy(isLoggedIn = sessionStorage.get() != null)
+                    val get = sessionStorage.get()
+                    it.copy(isLoggedIn = get != null
+                            && get.accessToken.isNotEmpty()
+                            && get.accessToken != "UNDEFINED"
+                            && get.refreshToken.isNotEmpty()
+                            && get.refreshToken != "UNDEFINED"
+                            && get.userId.isNotEmpty()
+                            && get.userId != "UNDEFINED"
+                    )
                 }
 
                 _state.update { it.copy(isCheckingAuth = false) }

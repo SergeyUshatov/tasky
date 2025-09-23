@@ -31,13 +31,19 @@ fun AgendaItemDetailsState.toTask(): Task {
         .first { this.reminderSelectedOption == it.text }
     val remindAt = startTimeInMillis.minus(reminder.longVal, ChronoUnit.MILLIS)
 
+    val details = if (this.details == null) {
+        AgendaItemDetails.TaskDetails(isDone = false)
+    } else {
+        (this.details as AgendaItemDetails.TaskDetails)
+    }
+
     return Task(
         id = this.id,
         title = this.title,
         description = this.description,
         remindAt = remindAt.toEpochMilli(),
         time = startTimeInMillis.toEpochMilli(),
-        isDone = (this.details as AgendaItemDetails.TaskDetails).isDone
+        isDone = details.isDone,
     )
 }
 @OptIn(

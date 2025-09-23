@@ -56,18 +56,17 @@ class HttpClientFactory(
                     }
                     refreshTokens {
                         val info = sessionStorage.get()
-                        val response = client.post<AccessTokenRequest, AccessTokenResponse>(
-                            route = "/accessToken",
-                            body = AccessTokenRequest(
+                        val response = client.post<RefreshTokenRequest, ResponseTokenResponse>(
+                            route = "auth/refresh",
+                            body = RefreshTokenRequest(
                                 refreshToken = info?.refreshToken ?: "",
-                                userId = info?.userId ?: ""
                             )
                         )
 
                         if(response is Result.Success) {
                             val newAuthInfo = AuthInfo(
                                 accessToken = response.data.accessToken,
-                                refreshToken = info?.refreshToken ?: "",
+                                refreshToken = response.data.refreshToken,
                                 userId = info?.userId ?: ""
                             )
                             sessionStorage.set(newAuthInfo)

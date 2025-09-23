@@ -21,6 +21,7 @@ dependencies {
     implementation(projects.auth.data)
     implementation(projects.auth.presentation)
     implementation(projects.feature.agenda.presentation)
+    implementation(projects.feature.agenda.data)
 
     implementation(libs.bundles.koin)
 
