@@ -56,7 +56,7 @@ class HttpClientFactory(
                     }
                     refreshTokens {
                         val info = sessionStorage.get()
-                        val response = client.post<RefreshTokenRequest, ResponseTokenResponse>(
+                        val response = client.post<RefreshTokenRequest, RefreshTokenResponse>(
                             route = "auth/refresh",
                             body = RefreshTokenRequest(
                                 refreshToken = info?.refreshToken ?: "",
