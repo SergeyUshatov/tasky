@@ -10,9 +10,13 @@ import com.sergius.agenda.data.mappers.toReminder
 import com.sergius.agenda.data.mappers.toTask
 import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.domain.LocalAgendaDataSource
+import com.sergius.core.domain.RemoteAgendaDataSource
 import com.sergius.core.domain.model.PickerType
+import com.sergius.core.domain.util.onSuccess
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -20,7 +24,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 class AgendaItemDetailsViewModel(
-    private val localDataStore: LocalAgendaDataSource
+    private val localDataStore: LocalAgendaDataSource,
+    private val remoteDataStore: RemoteAgendaDataSource,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AgendaItemDetailsState())
@@ -28,7 +33,7 @@ class AgendaItemDetailsViewModel(
         .onStart { }
         .stateIn(
             scope = viewModelScope,
-            started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.WhileSubscribed(5000),
             initialValue = AgendaItemDetailsState()
         )
 
@@ -40,7 +45,7 @@ class AgendaItemDetailsViewModel(
 
             is AgendaItemDetailsAction.OnToggleTimerDialogVisibility -> {
                 _state.update {
-                    if (action.pickerType == PickerType.PickerFrom) {
+                    if (action.pickerType == PickerType.PickerFrom || action.pickerType == PickerType.PickerAt) {
                         it.copy(
                             showTimerDialog = !it.showTimerDialog,
                             showToTimerDialog = false
@@ -56,7 +61,7 @@ class AgendaItemDetailsViewModel(
 
             is AgendaItemDetailsAction.OnToggleDateDialogVisibility -> {
                 _state.update {
-                    if (action.pickerType == PickerType.PickerFrom) {
+                    if (action.pickerType == PickerType.PickerFrom || action.pickerType == PickerType.PickerAt) {
                         it.copy(
                             showDateDialog = !it.showDateDialog,
                             showDateToDialog = false
@@ -97,14 +102,25 @@ class AgendaItemDetailsViewModel(
                 AgendaItemType.TASK -> {
                     val item = _state.value.toTask()
                     localDataStore.upsertTask(item)
+                        .onSuccess {
+                            remoteDataStore.createTask(item)
+                        }
                 }
+
                 AgendaItemType.EVENT -> {
                     val item = _state.value.toEvent()
                     localDataStore.upsertEvent(item)
+                        .onSuccess {
+                            remoteDataStore.upsertEvent(item)
+                        }
                 }
+
                 AgendaItemType.REMINDER -> {
                     val item = _state.value.toReminder()
                     localDataStore.upsertReminder(item)
+                        .onSuccess {
+                            remoteDataStore.upsertReminder(item)
+                        }
                 }
             }
         }

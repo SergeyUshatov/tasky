@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZoneId
 
 class RoomLocalAgendaDataSource(
@@ -98,9 +99,8 @@ class RoomLocalAgendaDataSource(
         .toEpochMilli()
 
     private fun endOfDay(date: LocalDate) = date
-        .plusDays(1)
-        .atStartOfDay(ZoneId.systemDefault())
-        .minusSeconds(1)
+        .atTime(LocalTime.MAX) // 23:59:59.999999999
+        .atZone(ZoneId.systemDefault())
         .toInstant()
         .toEpochMilli()
 

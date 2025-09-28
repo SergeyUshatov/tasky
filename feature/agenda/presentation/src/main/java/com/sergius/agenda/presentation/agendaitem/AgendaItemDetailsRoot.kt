@@ -154,22 +154,7 @@ private fun ItemDetailsUI(
 
                 if (AgendaItemType.EVENT == itemType) {
                     AddPhotos()
-                    EventDateTimeFrom(
-                        onAction = onAction,
-                        showTimerDialog = state.showTimerDialog,
-                        timePickerState = state.timePickerState,
-                        showDateDialog = state.showDateDialog,
-                        datePickerState = state.datePickerState,
-                    )
-
-                    TaskyDivider()
-                    EventDateTimeTo(
-                        onAction = onAction,
-                        showTimerDialog = state.showToTimerDialog,
-                        timePickerState = state.toTimePickerState,
-                        showDateDialog = state.showDateToDialog,
-                        datePickerState = state.dateToPickerState
-                    )
+                    EventItemDateTimePickers(onAction, state)
                 } else {
                     TaskyDivider()
                     ItemDateTime(
@@ -199,6 +184,29 @@ private fun ItemDetailsUI(
 }
 
 @Composable
+private fun EventItemDateTimePickers(
+    onAction: (AgendaItemDetailsAction) -> Unit,
+    state: AgendaItemDetailsState
+) {
+    EventDateTimeFrom(
+        onAction = onAction,
+        showTimerDialog = state.showTimerDialog,
+        timePickerState = state.timePickerState,
+        showDateDialog = state.showDateDialog,
+        datePickerState = state.datePickerState,
+    )
+
+    TaskyDivider()
+    EventDateTimeTo(
+        onAction = onAction,
+        showTimerDialog = state.showToTimerDialog,
+        timePickerState = state.toTimePickerState,
+        showDateDialog = state.showDateToDialog,
+        datePickerState = state.dateToPickerState
+    )
+}
+
+@Composable
 private fun Reminder(
     onAction: (AgendaItemDetailsAction) -> Unit,
     items: List<String>,
@@ -223,7 +231,7 @@ private fun Reminder(
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(4.dp))
                     .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
-                    .padding( 8.dp)
+                    .padding(8.dp)
             )
 
             Text(
@@ -338,7 +346,7 @@ private fun AddPhotos() {
                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
             )
             Text(
-                text = "Add Photos".uppercase(),
+                text = stringResource(R.string.add_photos).uppercase(),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                 modifier = Modifier

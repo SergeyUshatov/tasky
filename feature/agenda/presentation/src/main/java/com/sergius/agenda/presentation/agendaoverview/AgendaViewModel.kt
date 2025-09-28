@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.sergius.agenda.presentation.mapper.toAgendaItemUi
 import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.domain.LocalAgendaDataSource
+import com.sergius.core.domain.RemoteAgendaDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,9 +21,9 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class)
 class AgendaViewModel(
-    private val localDataStore: LocalAgendaDataSource
+    private val localDataStore: LocalAgendaDataSource,
+    private val remoteDataStore: RemoteAgendaDataSource,
 ) : ViewModel() {
-    //    private var isInitialized = false
     private val _state = MutableStateFlow(AgendaState())
     private val _selectedDate = MutableStateFlow(LocalDate.now())
     val state = combine(
@@ -87,7 +88,10 @@ class AgendaViewModel(
                 viewModelScope.launch(Dispatchers.IO) {
                     val itemId = action.item.id
                     when (action.item.itemType) {
-                        AgendaItemType.TASK -> localDataStore.deleteTask(itemId)
+                        AgendaItemType.TASK -> {
+                            localDataStore.deleteTask(itemId)
+                            remoteDataStore.deleteTask(itemId)
+                        }
                         AgendaItemType.EVENT -> localDataStore.deleteEvent(itemId)
                         AgendaItemType.REMINDER -> localDataStore.deleteReminder(itemId)
                     }

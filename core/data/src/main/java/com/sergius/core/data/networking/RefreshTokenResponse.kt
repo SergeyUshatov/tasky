@@ -3,7 +3,7 @@ package com.sergius.core.data.networking
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AccessTokenResponse(
+data class RefreshTokenResponse(
     val accessToken: String,
-    val expirationTimestamp: Long
+    val refreshToken: String
 )
