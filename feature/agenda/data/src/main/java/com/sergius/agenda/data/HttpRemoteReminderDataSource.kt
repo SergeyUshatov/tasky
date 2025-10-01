@@ -1,5 +1,7 @@
 package com.sergius.agenda.data
 
+import com.sergius.agenda.data.dto.CreateReminderRequest
+import com.sergius.agenda.data.dto.ReminderResponse
 import com.sergius.agenda.data.mappers.toCreateReminderRequest
 import com.sergius.agenda.data.mappers.toReminder
 import com.sergius.core.data.networking.delete
@@ -16,8 +18,9 @@ import com.sergius.core.domain.util.asEmptyDataResult
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
+
+private const val _REMINDER = "/reminder"
 
 class HttpRemoteReminderDataSource(
     private val httpClient: HttpClient,
@@ -26,20 +29,20 @@ class HttpRemoteReminderDataSource(
     override suspend fun createReminder(reminder: Reminder): EmptyResult<DataError.Network> {
         return applicationScope.async {
             httpClient.post<CreateReminderRequest, ReminderResponse>(
-                route = "/reminder",
+                route = _REMINDER,
                 body = reminder.toCreateReminderRequest()
             )
         }.await().asEmptyDataResult()
     }
 
-    override fun getRemindersForDate(date: LocalDate): Flow<List<Reminder>> {
+    override fun getRemindersForDate(date: LocalDate): List<Reminder> {
         TODO("Not yet implemented")
     }
 
     override suspend fun deleteReminder(itemId: ItemId) {
         applicationScope.async {
             httpClient.delete<Unit>(
-                route = "/reminder/$itemId"
+                route = "$_REMINDER/$itemId"
             )
         }.await()
     }
@@ -47,7 +50,7 @@ class HttpRemoteReminderDataSource(
     override suspend fun updateReminder(reminder: Reminder): EmptyResult<DataError.Network> {
         return applicationScope.async {
             httpClient.put<CreateReminderRequest, ReminderResponse>(
-                route = "/reminder",
+                route = _REMINDER,
                 body = reminder.toCreateReminderRequest()
             )
         }.await().asEmptyDataResult()
@@ -56,7 +59,7 @@ class HttpRemoteReminderDataSource(
     override suspend fun getReminder(itemId: ItemId): Result<Reminder, DataError.Network> {
         val result = applicationScope.async {
             httpClient.get<ReminderResponse>(
-                route = "/reminder/$itemId",
+                route = "$_REMINDER/$itemId",
             )
         }.await()
 
