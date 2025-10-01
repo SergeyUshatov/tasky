@@ -1,7 +1,7 @@
 package com.sergius.agenda.data.mappers
 
-import com.sergius.agenda.data.CreateTaskRequest
-import com.sergius.agenda.data.TaskResponse
+import com.sergius.agenda.data.dto.CreateTaskRequest
+import com.sergius.agenda.data.dto.TaskResponse
 import com.sergius.core.domain.model.Task
 import java.time.Instant
 

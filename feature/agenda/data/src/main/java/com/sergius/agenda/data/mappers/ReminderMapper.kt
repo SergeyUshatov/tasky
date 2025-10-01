@@ -1,7 +1,7 @@
 package com.sergius.agenda.data.mappers
 
-import com.sergius.agenda.data.CreateReminderRequest
-import com.sergius.agenda.data.ReminderResponse
+import com.sergius.agenda.data.dto.CreateReminderRequest
+import com.sergius.agenda.data.dto.ReminderResponse
 import com.sergius.core.domain.model.Reminder
 import java.time.Instant
 
