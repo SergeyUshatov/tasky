@@ -3,6 +3,7 @@ package com.sergius.core.data.networking
 import com.sergius.core.data.BuildConfig
 import com.sergius.core.domain.AuthInfo
 import com.sergius.core.domain.SessionStorage
+import com.sergius.core.domain.util.Result
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.auth.Auth
@@ -19,7 +20,6 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import timber.log.Timber
-import com.sergius.core.domain.util.Result
 
 class HttpClientFactory(
     private val sessionStorage: SessionStorage
@@ -60,10 +60,11 @@ class HttpClientFactory(
                             route = "auth/refresh",
                             body = RefreshTokenRequest(
                                 refreshToken = info?.refreshToken ?: "",
-                            )
+                            ),
+                            requestParams = { markAsRefreshTokenRequest() }
                         )
 
-                        if(response is Result.Success) {
+                        if (response is Result.Success) {
                             val newAuthInfo = AuthInfo(
                                 accessToken = response.data.accessToken,
                                 refreshToken = response.data.refreshToken,

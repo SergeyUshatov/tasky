@@ -10,11 +10,12 @@ import com.sergius.agenda.data.mappers.toReminder
 import com.sergius.agenda.data.mappers.toTask
 import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.domain.LocalAgendaDataSource
-import com.sergius.core.domain.RemoteAgendaDataSource
+import com.sergius.core.domain.RemoteEventDataSource
+import com.sergius.core.domain.RemoteReminderDataSource
+import com.sergius.core.domain.RemoteTaskDataSource
 import com.sergius.core.domain.model.PickerType
 import com.sergius.core.domain.util.onSuccess
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
@@ -25,7 +26,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 class AgendaItemDetailsViewModel(
     private val localDataStore: LocalAgendaDataSource,
-    private val remoteDataStore: RemoteAgendaDataSource,
+    private val taskRemoteDataStore: RemoteTaskDataSource,
+    private val eventRemoteDataStore: RemoteEventDataSource,
+    private val reminderRemoteDataStore: RemoteReminderDataSource,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AgendaItemDetailsState())
@@ -103,7 +106,7 @@ class AgendaItemDetailsViewModel(
                     val item = _state.value.toTask()
                     localDataStore.upsertTask(item)
                         .onSuccess {
-                            remoteDataStore.createTask(item)
+                            taskRemoteDataStore.createTask(item)
                         }
                 }
 
@@ -111,7 +114,7 @@ class AgendaItemDetailsViewModel(
                     val item = _state.value.toEvent()
                     localDataStore.upsertEvent(item)
                         .onSuccess {
-                            remoteDataStore.upsertEvent(item)
+                            eventRemoteDataStore.createEvent(item)
                         }
                 }
 
@@ -119,7 +122,7 @@ class AgendaItemDetailsViewModel(
                     val item = _state.value.toReminder()
                     localDataStore.upsertReminder(item)
                         .onSuccess {
-                            remoteDataStore.upsertReminder(item)
+                            reminderRemoteDataStore.createReminder(item)
                         }
                 }
             }

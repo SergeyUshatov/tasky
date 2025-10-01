@@ -5,7 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.sergius.agenda.presentation.mapper.toAgendaItemUi
 import com.sergius.core.domain.AgendaItemType
 import com.sergius.core.domain.LocalAgendaDataSource
-import com.sergius.core.domain.RemoteAgendaDataSource
+import com.sergius.core.domain.RemoteEventDataSource
+import com.sergius.core.domain.RemoteReminderDataSource
+import com.sergius.core.domain.RemoteTaskDataSource
+import com.sergius.core.domain.util.onSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +25,9 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class)
 class AgendaViewModel(
     private val localDataStore: LocalAgendaDataSource,
-    private val remoteDataStore: RemoteAgendaDataSource,
+    private val taskRemoteDataStore: RemoteTaskDataSource,
+    private val eventRemoteDataStore: RemoteEventDataSource,
+    private val reminderRemoteDataStore: RemoteReminderDataSource,
 ) : ViewModel() {
     private val _state = MutableStateFlow(AgendaState())
     private val _selectedDate = MutableStateFlow(LocalDate.now())
@@ -90,10 +95,22 @@ class AgendaViewModel(
                     when (action.item.itemType) {
                         AgendaItemType.TASK -> {
                             localDataStore.deleteTask(itemId)
-                            remoteDataStore.deleteTask(itemId)
+                                .onSuccess {
+                                    taskRemoteDataStore.deleteTask(itemId)
+                                }
                         }
-                        AgendaItemType.EVENT -> localDataStore.deleteEvent(itemId)
-                        AgendaItemType.REMINDER -> localDataStore.deleteReminder(itemId)
+                        AgendaItemType.EVENT -> {
+                            localDataStore.deleteEvent(itemId)
+                                .onSuccess {
+                                    eventRemoteDataStore.deleteEvent(itemId)
+                                }
+                        }
+                        AgendaItemType.REMINDER -> {
+                            localDataStore.deleteReminder(itemId)
+                                .onSuccess {
+                                    reminderRemoteDataStore.deleteReminder(itemId)
+                                }
+                        }
                     }
 
                     _state.update {

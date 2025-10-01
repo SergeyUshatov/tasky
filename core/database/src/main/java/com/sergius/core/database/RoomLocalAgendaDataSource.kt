@@ -18,6 +18,7 @@ import com.sergius.core.domain.model.Event
 import com.sergius.core.domain.model.Reminder
 import com.sergius.core.domain.model.Task
 import com.sergius.core.domain.util.DataError
+import com.sergius.core.domain.util.EmptyResult
 import com.sergius.core.domain.util.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -49,8 +50,13 @@ class RoomLocalAgendaDataSource(
         ).map { it.map { it.toTask() } }
     }
 
-    override suspend fun deleteTask(itemId: ItemId) {
-        taskDao.deleteTask(itemId)
+    override suspend fun deleteTask(itemId: ItemId): EmptyResult<DataError.Local> {
+        return try {
+            taskDao.deleteTask(itemId)
+            Result.Success(Unit)
+        } catch (_: SQLiteFullException) {
+            Result.Error(DataError.Local.DISK_FULL)
+        }
     }
 
     override suspend fun upsertEvent(event: Event): Result<ItemId, DataError.Local> {
@@ -70,8 +76,14 @@ class RoomLocalAgendaDataSource(
         ).map { it.map { it.toEvent() } }
     }
 
-    override suspend fun deleteEvent(itemId: ItemId) {
-        eventDao.deleteEvent(itemId)
+    override suspend fun deleteEvent(itemId: ItemId): EmptyResult<DataError.Local> {
+
+        return try {
+            eventDao.deleteEvent(itemId)
+            Result.Success(Unit)
+        } catch (_: SQLiteFullException) {
+            Result.Error(DataError.Local.DISK_FULL)
+        }
     }
 
     override suspend fun upsertReminder(reminder: Reminder): Result<ItemId, DataError.Local> {
@@ -104,8 +116,13 @@ class RoomLocalAgendaDataSource(
         .toInstant()
         .toEpochMilli()
 
-    override suspend fun deleteReminder(itemId: ItemId) {
-        reminderDao.deleteReminder(itemId)
+    override suspend fun deleteReminder(itemId: ItemId): EmptyResult<DataError.Local> {
+        return try {
+            reminderDao.deleteReminder(itemId)
+            Result.Success(Unit)
+        } catch (_: SQLiteFullException) {
+            Result.Error(DataError.Local.DISK_FULL)
+        }
     }
 
     override fun getAgendaForDate(date: LocalDate): Flow<List<AgendaItem>> {
